@@ -55,7 +55,7 @@ class PaymentManager(
         return AppResult.Error(AppError.PaymentError("Tiempo de espera agotado"))
     }
 
-    suspend fun confirmPayment(verification: PaymentVerification, tier: SubscriptionTier): AppResult<Unit> {
+    suspend fun confirmPayment(@Suppress("UNUSED_PARAMETER") verification: PaymentVerification, tier: SubscriptionTier): AppResult<Unit> {
         val id = UUID.randomUUID().toString()
         return subscriptionRepo.activate(id, tier, null, 30)
     }

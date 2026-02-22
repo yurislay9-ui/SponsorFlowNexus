@@ -45,8 +45,8 @@ fun NexusNavHost(
 
 @Composable
 fun HomeScreen(
-    onNavigateToInventory: () -> Unit,
-    onNavigateToSettings: () -> Unit
+    @Suppress("UNUSED_PARAMETER") onNavigateToInventory: () -> Unit,
+    @Suppress("UNUSED_PARAMETER") onNavigateToSettings: () -> Unit
 ) {
     // Pantalla principal simplificada
     androidx.compose.material3.Text("SponsorFlow Nexus - Home")

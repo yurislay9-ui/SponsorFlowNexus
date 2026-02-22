@@ -61,7 +61,7 @@ object OfflineQueueManager {
     }
     
     // Intento de envío directo
-    private suspend fun tryDirectSend(item: OfflineQueueEntity): Boolean {
+    private suspend fun tryDirectSend(@Suppress("UNUSED_PARAMETER") item: OfflineQueueEntity): Boolean {
         // Lógica de envío directo
         return false // Por defecto, encolar
     }

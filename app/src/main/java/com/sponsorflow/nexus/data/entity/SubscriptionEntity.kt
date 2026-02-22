@@ -29,7 +29,7 @@ data class SubscriptionEntity(
     }
 
     fun getDaysRemaining(): Int {
-        val endTime = if (isExpired() && gracePeriodEnd != null) gracePeriodEnd!! else endDate
+        val endTime = if (isExpired() && gracePeriodEnd != null) gracePeriodEnd else endDate
         val remaining = endTime - System.currentTimeMillis()
         return if (remaining > 0) (remaining / 86400000).toInt() else 0
     }

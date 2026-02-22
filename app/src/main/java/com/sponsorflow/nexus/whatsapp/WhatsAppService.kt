@@ -53,7 +53,7 @@ class WhatsAppService : AccessibilityService() {
         val root = rootInActiveWindow ?: return
         val input = findNode(root, "entry") ?: return
         val sendBtn = findNode(root, "send") ?: return
-        val (sender, msg) = pending.removeAt(0)
+        val (_, msg) = pending.removeAt(0)
         
         scope.launch {
             // Anti-detección obligatorio via SubscriptionGate

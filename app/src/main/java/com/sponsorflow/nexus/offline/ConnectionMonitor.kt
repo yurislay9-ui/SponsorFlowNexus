@@ -35,7 +35,7 @@ object ConnectionMonitor {
     private var pingEndpoint: String = "/api/health"
     
     // Iniciar monitoreo
-    fun startMonitoring(context: Context, serverUrl: String) {
+    fun startMonitoring(@Suppress("UNUSED_PARAMETER") context: Context, serverUrl: String) {
         this.serverUrl = serverUrl
         
         scope.launch {
