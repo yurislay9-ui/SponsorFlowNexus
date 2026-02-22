@@ -57,7 +57,7 @@ class NexusAccessibilityService : AccessibilityService() {
 
 class MessageHandler {
 
-    fun processIncoming(text: String, source: Any?) {
+    fun processIncoming(text: String, @Suppress("UNUSED_PARAMETER") source: Any?) {
         // Procesar mensaje entrante
     }
 
