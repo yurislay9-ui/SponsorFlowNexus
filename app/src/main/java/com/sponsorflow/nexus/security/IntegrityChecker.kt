@@ -6,21 +6,47 @@ package com.sponsorflow.nexus.security
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.core.content.pm.PackageInfoCompat
 
 class IntegrityChecker(private val expectedSignature: String = "") {
 
     fun checkSignature(context: Context): Boolean = try {
-        val sigs = context.packageManager.getPackageInfo(
-            context.packageName, PackageManager.GET_SIGNATURES
-        ).signatures
-        val hash = sigs.firstOrNull()?.let { hashSHA256(it.toByteArray()) } ?: ""
-        hash == expectedSignature
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            val packageInfo = context.packageManager.getPackageInfo(
+                context.packageName,
+                PackageManager.GET_SIGNING_CERTIFICATES
+            )
+            val signingInfo = packageInfo.signingInfo
+            val signatures = if (signingInfo.hasMultipleSigners()) {
+                signingInfo.apkContentsSigners
+            } else {
+                signingInfo.signingCertificateHistory
+            }
+            val hash = signatures.firstOrNull()?.let { hashSHA256(it.toByteArray()) } ?: ""
+            hash == expectedSignature
+        } else {
+            @Suppress("DEPRECATION")
+            val sigs = context.packageManager.getPackageInfo(
+                context.packageName, PackageManager.GET_SIGNATURES
+            ).signatures
+            val hash = sigs.firstOrNull()?.let { hashSHA256(it.toByteArray()) } ?: ""
+            hash == expectedSignature
+        }
     } catch (e: Exception) {
         false
     }
 
     fun checkInstaller(context: Context): Boolean {
-        val installer = context.packageManager.getInstallerPackageName(context.packageName)
+        val installer = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            try {
+                context.packageManager.getInstallSourceInfo(context.packageName).installingPackageName
+            } catch (e: PackageManager.NameNotFoundException) {
+                null
+            }
+        } else {
+            @Suppress("DEPRECATION")
+            context.packageManager.getInstallerPackageName(context.packageName)
+        }
         return installer == "com.android.vending" || installer == null
     }
 

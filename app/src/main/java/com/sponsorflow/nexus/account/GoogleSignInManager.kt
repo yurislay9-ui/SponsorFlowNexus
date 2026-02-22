@@ -4,14 +4,9 @@
 package com.sponsorflow.nexus.account
 
 import android.content.Context
-import android.content.Intent
 import android.content.IntentSender
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.tasks.Tasks
 import com.sponsorflow.nexus.core.result.AppError
 import com.sponsorflow.nexus.core.result.AppResult
 import kotlinx.coroutines.tasks.await
@@ -36,11 +31,11 @@ class GoogleSignInManager(private val context: Context, private val clientId: St
         AppResult.Error(AppError.fromException(e))
     }
 
-    suspend fun handleResult(data: Intent): AppResult<UserSession> = try {
+    suspend fun handleResult(data: android.content.Intent): AppResult<UserSession> = try {
         val credential = signInClient.getSignInCredentialFromIntent(data)
         val session = UserSession(
             userId = credential.id,
-            email = credential.id ?: "",
+            email = credential.id,
             displayName = credential.displayName ?: "",
             idToken = credential.googleIdToken ?: ""
         )

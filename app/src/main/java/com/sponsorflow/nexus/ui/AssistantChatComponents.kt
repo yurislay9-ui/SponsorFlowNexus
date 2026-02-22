@@ -6,7 +6,7 @@ package com.sponsorflow.nexus.ui
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 fun MessageBubble(message: ChatMessage) {
     val bgColor = if (message.isFromUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant
     val textColor = if (message.isFromUser) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
-    
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = if (message.isFromUser) Arrangement.End else Arrangement.Start
@@ -53,7 +53,7 @@ fun MessageInput(
             )
             Spacer(modifier = Modifier.width(8.dp))
             FilledIconButton(onClick = onSend, enabled = text.isNotBlank()) {
-                Icon(Icons.Default.Send, "Enviar")
+                Icon(Icons.AutoMirrored.Filled.Send, "Enviar")
             }
         }
     }

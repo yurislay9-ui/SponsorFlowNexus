@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Message
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -23,14 +24,14 @@ import com.sponsorflow.nexus.plugin.*
 class PluginManagerViewModel : ViewModel() {
     private val _plugins = mutableStateListOf<PluginInfo>()
     val plugins: List<PluginInfo> get() = _plugins.toList()
-    
+
     private val _enabledStates = mutableStateMapOf<String, Boolean>()
     fun isEnabled(id: String) = _enabledStates[id] ?: true
-    
+
     init {
         loadPlugins()
     }
-    
+
     private fun loadPlugins() {
         // Plugins de ejemplo preinstalados
         _plugins.addAll(listOf(
@@ -41,11 +42,11 @@ class PluginManagerViewModel : ViewModel() {
         ))
         _plugins.forEach { _enabledStates[it.id] = it.enabled }
     }
-    
+
     fun togglePlugin(id: String) {
         _enabledStates[id] = !(_enabledStates[id] ?: true)
     }
-    
+
     fun getPluginCount(): Int = _plugins.size
     fun getEnabledCount(): Int = _enabledStates.values.count { it }
 }
@@ -94,7 +95,7 @@ fun PluginManagerScreen(
                     StatItem("Activos", viewModel.getEnabledCount().toString())
                 }
             }
-            
+
             // SDK Banner para Empresario
             if (hasSDK) {
                 Card(
@@ -119,7 +120,7 @@ fun PluginManagerScreen(
                 }
                 Spacer(Modifier.height(8.dp))
             }
-            
+
             // Plugin list
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
@@ -159,14 +160,14 @@ fun PluginCard(
                     PluginType.ACTION -> Icons.Default.PlayArrow
                     PluginType.ANALYZER -> Icons.Default.Analytics
                     PluginType.INTEGRATION -> Icons.Default.Link
-                    PluginType.RESPONSE -> Icons.Default.Message
+                    PluginType.RESPONSE -> Icons.AutoMirrored.Filled.Message
                 },
                 contentDescription = null,
                 tint = if (isEnabled) MaterialTheme.colorScheme.primary else Color.Gray
             )
-            
+
             Spacer(Modifier.width(16.dp))
-            
+
             // Info
             Column(modifier = Modifier.weight(1f)) {
                 Text(plugin.name, style = MaterialTheme.typography.titleMedium)
@@ -177,7 +178,7 @@ fun PluginCard(
                     color = MaterialTheme.colorScheme.primary
                 )
             }
-            
+
             // Toggle
             Switch(
                 checked = isEnabled,
