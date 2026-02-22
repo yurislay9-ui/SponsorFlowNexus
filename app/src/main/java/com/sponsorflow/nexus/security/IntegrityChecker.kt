@@ -7,7 +7,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 
-class IntegrityChecker(private val expectedSignature: String) {
+class IntegrityChecker(private val expectedSignature: String = "") {
 
     fun checkSignature(context: Context): Boolean = try {
         val sigs = context.packageManager.getPackageInfo(

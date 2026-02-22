@@ -3,5 +3,9 @@
     <string name="app_name">SponsorFlow Nexus</string>
     <string name="service_name">Nexus AI Service</string>
     <string name="notification_channel_name">Nexus Service</string>
+    <string name="notification_channel_description">Canal para el servicio en primer plano de SponsorFlow Nexus</string>
+    <string name="notification_channel_id">nexus_foreground_service</string>
+    <string name="service_running_title">SponsorFlow Nexus activo</string>
+    <string name="service_running_text">Monitoreando operaciones en segundo plano</string>
     <string name="appbar_scrolling_view_behavior">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
 </resources>

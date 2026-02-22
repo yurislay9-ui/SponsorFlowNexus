@@ -1,5 +1,6 @@
 /*
  * SponsorFlow Nexus v2.3 - Memory Limiter
+ * Plan: OBSERVADOR, DESARROLLO, EMPRESARIO
  */
 package com.sponsorflow.nexus.ai
 
@@ -9,11 +10,11 @@ import android.content.Context
 object MemoryLimiter {
     
     // MB mínimos requeridos por plan
+    // Claves alineadas con SubscriptionTier enum
     private val planMemoryRequirements = mapOf(
-        "FREE" to 512L,
-        "BASIC" to 1024L,
-        "PRO" to 2048L,
-        "ENTERPRISE" to 4096L
+        "OBSERVADOR" to 512L,
+        "DESARROLLO" to 1024L,
+        "EMPRESARIO" to 2048L
     )
     
     // Obtener memoria disponible en MB
@@ -37,7 +38,7 @@ object MemoryLimiter {
     // Verificar si hay suficiente memoria para el plan
     fun canLoadModel(context: Context, plan: String): Boolean {
         val available = getAvailableMemoryMB(context)
-        val required = planMemoryRequirements[plan] ?: 1024L
+        val required = planMemoryRequirements[plan] ?: 512L
         return available >= required
     }
     

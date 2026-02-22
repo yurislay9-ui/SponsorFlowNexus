@@ -5,6 +5,7 @@ package com.sponsorflow.nexus.account
 
 import android.content.Context
 import android.content.Intent
+import android.content.IntentSender
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -19,7 +20,7 @@ class GoogleSignInManager(private val context: Context, private val clientId: St
 
     private val signInClient = Identity.getSignInClient(context)
 
-    suspend fun beginSignIn(): AppResult<Intent> = try {
+    suspend fun beginSignIn(): AppResult<IntentSender> = try {
         val request = BeginSignInRequest.builder()
             .setGoogleIdTokenRequestOptions(
                 BeginSignInRequest.GoogleIdTokenRequestOptions.builder()

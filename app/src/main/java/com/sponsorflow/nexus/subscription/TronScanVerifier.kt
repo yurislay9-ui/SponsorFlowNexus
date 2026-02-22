@@ -25,11 +25,12 @@ class TronScanVerifier {
             .build()
         val response = client.newCall(request).execute()
         if (!response.isSuccessful) {
-            return AppResult.Error(AppError.PaymentError("Transacción no encontrada"))
+            AppResult.Error(AppError.PaymentError("Transacción no encontrada"))
+        } else {
+            val txInfo = parseTransaction(response.body?.string() ?: "")
+            val isValid = validateTransaction(txInfo, expectedAmount, recipientAddress)
+            AppResult.Success(isValid)
         }
-        val txInfo = parseTransaction(response.body?.string() ?: "")
-        val isValid = validateTransaction(txInfo, expectedAmount, recipientAddress)
-        AppResult.Success(isValid)
     } catch (e: Exception) {
         AppResult.Error(AppError.fromException(e))
     }

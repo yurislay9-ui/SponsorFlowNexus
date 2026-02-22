@@ -1,6 +1,6 @@
 /*
  * SponsorFlow Nexus v2.3 - AI Memory Manager
- * Plan: BÁSICO, PRO, ENTERPRISE
+ * Plan: OBSERVADOR, DESARROLLO, EMPRESARIO
  */
 package com.sponsorflow.nexus.cache
 
@@ -31,7 +31,7 @@ class AIMemoryManager(
 
     // Construir contexto para la IA
     fun buildContext(phone: String, newMessage: String): String {
-        if (tier == SubscriptionTier.FREE) {
+        if (tier == SubscriptionTier.OBSERVADOR) {
             // Sin memoria - cada mensaje es independiente
             return newMessage
         }
@@ -39,16 +39,16 @@ class AIMemoryManager(
         val ctx = contextMap[phone] ?: loadContext(phone)
         
         return when (tier) {
-            SubscriptionTier.BASIC -> buildBasicContext(ctx, newMessage)
-            SubscriptionTier.PRO -> buildProContext(ctx, newMessage)
-            SubscriptionTier.ENTERPRISE -> buildEnterpriseContext(ctx, newMessage)
+            SubscriptionTier.OBSERVADOR -> buildBasicContext(ctx, newMessage)
+            SubscriptionTier.DESARROLLO -> buildProContext(ctx, newMessage)
+            SubscriptionTier.EMPRESARIO -> buildEnterpriseContext(ctx, newMessage)
             else -> newMessage
         }
     }
 
     // Actualizar memoria después de respuesta
     fun updateMemory(phone: String, message: String, response: String) {
-        if (tier == SubscriptionTier.FREE) return
+        if (tier == SubscriptionTier.OBSERVADOR) return
 
         val current = contextMap[phone]
         
@@ -65,7 +65,7 @@ class AIMemoryManager(
 
     // Obtener historial para mostrar al usuario
     fun getHistory(phone: String): List<Pair<String, String>> {
-        if (tier == SubscriptionTier.FREE) return emptyList()
+        if (tier == SubscriptionTier.OBSERVADOR) return emptyList()
         return contextMap[phone]?.conversationHistory ?: loadHistory(phone)
     }
 
@@ -121,9 +121,9 @@ class AIMemoryManager(
         
         // Limitar según plan
         return when (tier) {
-            SubscriptionTier.BASIC -> current.takeLast(10)
-            SubscriptionTier.PRO -> current.takeLast(50)
-            SubscriptionTier.ENTERPRISE -> current
+            SubscriptionTier.OBSERVADOR -> current.takeLast(10)
+            SubscriptionTier.DESARROLLO -> current.takeLast(50)
+            SubscriptionTier.EMPRESARIO -> current
             else -> current.takeLast(10)
         }
     }

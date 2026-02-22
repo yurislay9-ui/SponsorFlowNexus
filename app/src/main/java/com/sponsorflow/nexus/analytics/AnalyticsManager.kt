@@ -1,6 +1,6 @@
 /*
  * SponsorFlow Nexus v2.3 - Analytics Manager
- * Plan: BÁSICO, PRO, ENTERPRISE
+ * Plan: OBSERVADOR, DESARROLLO, EMPRESARIO
  */
 package com.sponsorflow.nexus.analytics
 
@@ -31,13 +31,13 @@ class AnalyticsManager(
     }
 
     fun getAnalytics(): AnalyticsData {
-        if (tier == SubscriptionTier.FREE) return AnalyticsData()
+        if (tier == SubscriptionTier.OBSERVADOR) return AnalyticsData()
         
         return AnalyticsData(
             messagesToday = getDaily(),
             messagesTotal = getTotal(),
-            topClients = if (tier.ordinal >= SubscriptionTier.PRO.ordinal) getTopClients() else emptyList(),
-            peakHours = if (tier.ordinal >= SubscriptionTier.PRO.ordinal) getPeakHours() else emptyList(),
+            topClients = if (tier.ordinal >= SubscriptionTier.DESARROLLO.ordinal) getTopClients() else emptyList(),
+            peakHours = if (tier.ordinal >= SubscriptionTier.DESARROLLO.ordinal) getPeakHours() else emptyList(),
             avgResponseTime = getAvgResponseTime()
         )
     }
