@@ -1,0 +1,276 @@
+---
+name: code-agent-general
+description: Agente de código con 10 habilidades: análisis de código, refactorización, detección de error>
+---
+
+# Agente de Código General
+
+## Propósito
+Asistente de desarrollo con 10 habilidades especializadas para análisis, refactorización, optimización y >
+
+## Cuándo Usar Este Skill
+- Programar o escribir código
+- Analizar calidad de código existente
+- Detectar errores y bugs
+- Optimizar rendimiento
+- Generar documentación
+- Crear tests
+- Revisar seguridad
+
+---
+
+## Habilidades Disponibles
+
+### 1. Análisis de Código
+**Activadores:** "analiza este código", "revisa la calidad", "qué problemas tiene"
+
+**Acciones:**
+- Evaluar calidad del código (alta/media/baja)
+- Detectar issues y problemas
+- Generar sugerencias de mejora
+- Calcular complejidad
+- Verificar mejores prácticas
+- Comprobar seguridad básica
+
+**Output esperado:**
+```
+Calidad: [alta/media/baja]
+Issues: [lista de problemas]
+Sugerencias: [lista de mejoras]
+Complejidad: [baja/media/alta]
+```
+
+---
+
+### 2. Refactorización
+**Activadores:** "refactoriza", "mejora este código", "hazlo más legible"
+
+**Acciones:**
+- Aplicar mejoras de estructura
+- Mejorar legibilidad
+- Optimizar eficiencia
+- Listar cambios realizados
+
+**Principios:**
+- Nombres descriptivos para variables y funciones
+- Funciones pequeñas con responsabilidad única
+- Eliminar código duplicado (DRY)
+- Reducir complejidad ciclomática
+
+---
+
+### 3. Detección de Errores
+**Activadores:** "busca errores", "hay bugs", "encuentra fallos"
+
+**Checklist de errores:**
+- [ ] Errores de sintaxis
+- [ ] Errores lógicos
+- [ ] Errores en runtime
+- [ ] Casos edge no manejados
+- [ ] Memory leaks
+- [ ] Race conditions (async)
+
+**Formato de reporte:**
+```
+Error: [descripción]
+Severidad: [crítica/alta/media/baja]
+Línea: [número]
+Fix sugerido: [código corregido]
+```
+
+---
+
+### 4. Optimización de Rendimiento
+**Activadores:** "optimiza", "es lento", "mejora el rendimiento"
+
+**Análisis:**
+- Identificar bottlenecks
+- Analizar complejidad temporal O(n)
+- Revisar uso de memoria
+- Detectar operaciones costosas
+
+**Optimizaciones comunes:**
+- Cachear resultados repetidos
+- Evitar loops anidados innecesarios
+- Usar estructuras de datos eficientes
+- Lazy loading cuando aplique
+- Batch operations
+
+### 5. Generación de Documentación
+**Activadores:** "documenta", "genera docs", "añade comentarios"
+
+**Formato JSDoc:**
+```javascript
+/**
+ * Descripción de la función
+  * @param {Tipo} nombre - Descripción del parámetro
+   * @returns {Tipo} Descripción del retorno
+    * @example
+     * nombreFuncion(parametro)
+      */
+      ```
+
+      **Incluir:**
+      - Descripción clara del propósito
+      - Parámetros con tipos
+      - Valores de retorno
+      - Ejemplos de uso
+      - Notas importantes
+
+      ---
+
+      ### 6. Testing Automático
+      **Activadores:** "crea tests", "test unitarios", "pruebas"
+
+      **Estructura de test:**
+      ```javascript
+      describe('NombreModulo', () => {
+          test('debe hacer X cuando Y', () => {
+                // Arrange
+                    const input = ...;
+                        // Act
+                            const result = funcion(input);
+                                // Assert
+                                    expect(result).toBe(expected);
+          });
+      });
+      ```
+
+      **Cobrir:**
+      - Casos normales
+      - Casos edge
+      - Casos de error
+      - Inputs inválidos
+
+      ---
+
+      ### 7. Mejores Prácticas
+      **Activadores:** "mejores prácticas", "clean code", "buenas prácticas"
+
+      **Verificar:**
+      - Nombres descriptivos
+      - Funciones pequeñas (< 20 líneas)
+      - Principio DRY
+      - Principio SRP
+      - Manejo de errores
+      - Code style consistente
+
+      **Patrones recomendados:**
+      - Factory, Singleton, Observer según contexto
+      - Dependency Injection
+      - Strategy Pattern para lógica variable
+
+      ---
+
+      ### 8. Conversión de Código
+      **Activadores:** "convierte a", "traduce a", "pasa a Python/Java/..."
+
+      **Proceso:**
+      1. Identificar equivalentes en lenguaje destino
+      2. Adaptar sintaxis específica
+      3. Usar idiomas del lenguaje destino
+      4. Verificar compatibilidad
+
+      **Considerar:**
+      - Diferencias de tipado
+      - Librerías equivalentes
+      - Convenciones del lenguaje
+      - Features no disponibles
+
+      ---
+
+      ### 9. Análisis de Complejidad
+      **Activadores:** "complejidad", "qué tan complejo es", "métricas"
+
+      **Métricas:**
+      - **Ciclomática:** Número de caminos independientes
+      - **Cognitiva:** Esfuerzo mental para entender
+      - **Halstead:** Volumen y dificultad
+      - **Mantenibilidad:** Índice 0-100
+
+      **Umbrales:**
+      | Métrica | Bueno | Aceptable | Malo |
+      |---------|-------|-----------|------|
+      | Ciclomática | < 10 | 10-20 | > 20 |
+      | Cognitiva | < 15 | 15-25 | > 25 |
+      | Mantenibilidad | > 65 | 50-65 | < 50 |
+
+      ---
+
+      ### 10. Análisis de Seguridad
+      **Activadores:** "seguridad", "vulnerabilidades", "es seguro"
+
+      **Checklist OWASP:**
+      - [ ] Inyección SQL/NoSQL
+      - [ ] XSS (Cross-Site Scripting)
+      - [ ] CSRF
+      - [ ] Autenticación rota
+      - [ ] Exposición de datos sensibles
+      - [ ] Control de acceso roto
+      - [ ] Configuración incorrecta
+      - [ ] Librerías vulnerables
+
+      **Formato de alerta:**
+      ```
+      🚨 VULNERABILIDAD: [tipo]
+      Severidad: [crítica/alta/media/baja]
+      Ubicación: [archivo:línea]
+      Descripción: [detalle]
+      Remediación: [código seguro]
+      ```
+
+      ---
+
+      ## Flujo de Trabajo Recomendado
+
+      ### Al escribir código nuevo:
+      1. Aplicar mejores prácticas desde el inicio
+      2. Documentar mientras se programa
+      3. Crear tests junto con el código
+      4. Verificar seguridad
+
+      ### Al revisar código existente:
+      1. Análisis de código completo
+      2. Detección de errores
+      3. Análisis de complejidad
+      4. Refactorizar si es necesario
+      5. Añadir tests y documentación
+
+      ---
+
+      ## Ejemplo de Uso Integrado
+
+      **Input:**
+      > "Analiza este código, busca errores y optimiza el rendimiento"
+
+      **Proceso:**
+      1. Ejecutar Skill 1 (Análisis)
+      2. Ejecutar Skill 3 (Errores)
+      3. Ejecutar Skill 4 (Optimización)
+      4. Generar reporte consolidado
+
+      **Output:**
+      ```markdown
+      ## Análisis de Código
+      Calidad: Media
+      Issues: 3 detectados
+
+      ## Errores Encontrados
+      1. [Linea 42] Error lógico: condición siempre verdadera
+      2. [Linea 67] Posible null reference
+
+      ## Optimizaciones Sugeridas
+      1. Cachear resultado de getItems() en loop
+      2. Usar Set en lugar de Array.includes()
+
+      ## Código Refactorizado
+      [código mejorado]
+      ```
+
+      ---
+
+      ## Archivos de Referencia
+
+      Skill original: `/root/Desktop/code-agent-general.js`
+          })
+      })
