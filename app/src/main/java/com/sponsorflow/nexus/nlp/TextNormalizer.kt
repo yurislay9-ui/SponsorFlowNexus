@@ -41,13 +41,13 @@ object TextNormalizer {
     }
     
     fun detectIntent(text: String): String {
-        val normalized = normalizeInput(text)
+        val normalizedText = normalizeInput(text)
         var bestIntent = "desconocido"
         var bestScore = 0.0
-        
+
         intents.forEach { (intent, keywords) ->
             keywords.forEach { keyword ->
-                val score = similarity(normalized, keyword)
+                val score = similarity(normalizedText, keyword)
                 if (score > bestScore && score > 0.6) {
                     bestScore = score
                     bestIntent = intent

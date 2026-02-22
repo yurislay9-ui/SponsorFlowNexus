@@ -1,0 +1,249 @@
+================================================================================
+              SPONSORFLOW NEXUS - BASE DE CONOCIMIENTO
+              Sistema de Preguntas Frecuentes para IA
+================================================================================
+
+=== INFORMACIÓN GENERAL ===
+
+P: ¿Qué es SponsorFlow Nexus?
+R: Es una aplicación móvil para gestionar patrocinios y pagos con criptomonedas, que incluye un asistente de inteligencia artificial integrado para automatizar comunicaciones.
+
+P: ¿Para qué sirve la aplicación?
+R: Sirve para realizar pagos de suscripciones con USDT, gestionar licencias, usar chat con IA, automatizar mensajes y gestionar contactos.
+
+P: ¿En qué dispositivos funciona?
+R: Funciona en dispositivos Android versión 8.0 o superior.
+
+P: ¿Es gratis la aplicación?
+R: Sí, puedes usar el plan Gratis sin costo. También hay planes de pago con más funciones.
+
+================================================================================
+=== PLANES Y SUSCRIPCIONES ===
+
+P: ¿Qué planes de suscripción existen?
+R: Existen cuatro planes: Gratis, Observador, Desarrollo y Empresario.
+
+--------------------------------------------------------------------------------
+PLAN GRATIS - $0 USD/mes
+--------------------------------------------------------------------------------
+
+P: ¿Qué incluye el plan Gratis?
+R: El plan Gratis incluye:
+- Acceso básico a la aplicación
+- Sin prompts personalizados
+- Sin gestión de inventario
+- Sin memoria de IA
+- Sin plugins
+
+P: ¿Para quién es el plan Gratis?
+R: Es ideal para probar la aplicación y conocer sus funciones básicas antes de adquirir un plan de pago.
+
+--------------------------------------------------------------------------------
+PLAN OBSERVADOR - $9 USD/mes
+--------------------------------------------------------------------------------
+
+P: ¿Qué incluye el plan Observador?
+R: El plan Observador incluye:
+- Prompts personalizados
+- Gestión de inventario
+- Memoria de IA (límite 5)
+- Plugins disponibles
+- Soporte por email
+
+P: ¿Para quién es el plan Observador?
+R: Es ideal para usuarios individuales que quieren comenzar a automatizar sus comunicaciones con funciones de IA.
+
+--------------------------------------------------------------------------------
+PLAN DESARROLLO - $19 USD/mes
+--------------------------------------------------------------------------------
+
+P: ¿Qué incluye el plan Desarrollo?
+R: El plan Desarrollo incluye:
+- Prompts personalizados
+- Gestión de inventario
+- Memoria de IA (límite 20)
+- Plugins disponibles
+- Soporte prioritario
+
+P: ¿Qué ventajas tiene el plan Desarrollo sobre Observador?
+R: Tiene mayor capacidad de memoria de IA (20 vs 5), lo que permite recordar más conversaciones y contexto.
+
+P: ¿Para quién es el plan Desarrollo?
+R: Es ideal para usuarios avanzados que necesitan más capacidad de memoria y un mejor seguimiento de conversaciones.
+
+--------------------------------------------------------------------------------
+PLAN EMPRESARIO - $29 USD/mes
+--------------------------------------------------------------------------------
+
+P: ¿Qué incluye el plan Empresario?
+R: El plan Empresario incluye:
+- Prompts personalizados
+- Gestión de inventario
+- Memoria de IA ILIMITADA
+- Plugins disponibles
+- SDK de Plugins (crea tus propios plugins)
+- Soporte prioritario
+
+P: ¿Qué ventajas tiene el plan Empresario?
+R: Incluye memoria ilimitada de IA y acceso al SDK de Plugins, lo que permite crear plugins personalizados para integrar con otros sistemas.
+
+P: ¿Para quién es el plan Empresario?
+R: Es ideal para empresas y emprendedores que necesitan máxima capacidad, memoria ilimitada y la posibilidad de personalizar la aplicación.
+
+--------------------------------------------------------------------------------
+
+P: ¿Cómo puedo mejorar mi plan?
+R: Puedes actualizar tu plan en cualquier momento desde la aplicación en la sección "Mi suscripción". El pago se realiza con USDT.
+
+P: ¿Qué métodos de pago aceptan?
+R: Aceptamos pagos con USDT (Tether) en la red TRON.
+
+================================================================================
+=== PAGOS CON USDT ===
+
+P: ¿Qué es USDT?
+R: USDT es una criptomoneda estable vinculada al valor del dólar estadounidense. 1 USDT = 1 USD aproximadamente.
+
+P: ¿Cómo realizo un pago?
+R: Para pagar:
+1. Abre la aplicación
+2. Ve a "Mi suscripción"
+3. Selecciona el plan deseado
+4. Escanea el código QR con tu wallet
+5. Envía el monto exacto en USDT
+6. Espera la confirmación automática
+
+P: ¿Qué wallets puedo usar?
+R: Puedes usar TronLink, Trust Wallet, SafePal, o cualquier wallet compatible con la red TRON.
+
+P: ¿Cuánto tarda en confirmar el pago?
+R: Generalmente entre 1 a 3 minutos. La activación es automática.
+
+P: El pago falló, ¿qué hago?
+R: Verifica:
+- Tu conexión a internet
+- Saldo suficiente en tu wallet
+- Que estás enviando por la red TRON
+- La dirección del código QR
+
+P: ¿Puedo obtener reembolso?
+R: Los pagos con criptomonedas son irreversibles. Si tienes problemas, contacta a soporte.
+
+================================================================================
+=== INTELIGENCIA ARTIFICIAL ===
+
+P: ¿Qué puede hacer la IA?
+R: La IA puede:
+- Responder preguntas
+- Generar textos
+- Ayudar a redactar mensajes
+- Recordar conversaciones (según tu plan)
+- Sugerir respuestas automáticas
+
+P: ¿Qué es la memoria de IA?
+R: Es la capacidad de la IA para recordar conversaciones anteriores. El límite depende de tu plan:
+- Gratis: Sin memoria
+- Observador: 5 memorias
+- Desarrollo: 20 memorias
+- Empresario: Memoria ilimitada
+
+P: ¿Cómo uso el chat con IA?
+R: Abre la aplicación, ve a la sección "IA Chat" y escribe tu pregunta. La IA responderá automáticamente.
+
+P: La IA no carga o responde lento
+R: Intenta:
+- Libera espacio (mínimo 500MB)
+- Cierra otras aplicaciones
+- Reinicia la aplicación
+- Verifica tu conexión a internet
+
+P: ¿La IA funciona sin internet?
+R: Sí, una vez descargado el modelo, funciona sin conexión.
+
+P: ¿Mis conversaciones son privadas?
+R: Sí, las conversaciones se guardan localmente en tu dispositivo de forma segura y cifrada.
+
+================================================================================
+=== PROMPTS PERSONALIZADOS ===
+
+P: ¿Qué son los prompts personalizados?
+R: Son instrucciones que puedes crear para que la IA responda de manera específica según tus necesidades.
+
+P: ¿Cómo creo un prompt personalizado?
+R: Ve a "Configuración" > "Prompts" y crea nuevas instrucciones para la IA. Disponible desde el plan Observador.
+
+================================================================================
+=== GESTIÓN DE INVENTARIO ===
+
+P: ¿Qué es la gestión de inventario?
+R: Es una función para gestionar productos y stock desde la aplicación. Disponible desde el plan Observador.
+
+P: ¿Para qué sirve?
+R: Sirve para llevar control de productos, precios y disponibilidad, integrado con la IA para respuestas automáticas.
+
+================================================================================
+=== PLUGINS ===
+
+P: ¿Qué son los plugins?
+R: Son extensiones que agregan funciones adicionales a la aplicación.
+
+P: ¿Cómo instalo un plugin?
+R: Ve a "Plugins" en la aplicación y selecciona los disponibles. Disponible desde el plan Observador.
+
+P: ¿Puedo crear mis propios plugins?
+R: Sí, el plan Empresario incluye acceso al SDK de Plugins para que desarrolles tus propias integraciones.
+
+================================================================================
+=== LICENCIAS ===
+
+P: ¿Cómo activo mi licencia?
+R: Para activar:
+1. Abre la aplicación
+2. Ve a Configuración
+3. Selecciona "Licencia"
+4. Ingresa tu código
+5. Presiona "Activar"
+
+P: Mi licencia no funciona
+R: Verifica:
+- Que el código sea correcto
+- Que no haya expirado
+- Tu conexión a internet
+
+P: ¿Puedo usar mi licencia en otro dispositivo?
+R: Cada licencia está vinculada a un dispositivo. Si necesitas cambiar, contacta a soporte.
+
+================================================================================
+=== PROBLEMAS COMUNES ===
+
+P: La app no abre o se cierra
+R: Intenta:
+- Borrar caché de la aplicación
+- Liberar espacio (mínimo 1GB)
+- Reinstalar la app
+
+P: Error de conexión
+R: Verifica:
+- Tu conexión WiFi o datos
+- Desactiva VPN si usas una
+- Intenta con otra red
+
+P: Los mensajes no se envían
+R: Verifica:
+- Que WhatsApp esté actualizado
+- Concede los permisos necesarios
+- Reinicia WhatsApp
+
+================================================================================
+=== SOPORTE ===
+
+P: ¿Cómo contacto a soporte?
+R: Email: soporte@sponsorflow.com
+Horario: Lunes a Viernes 9:00 - 18:00
+
+P: ¿Qué debo incluir al contactar?
+R: Tu nombre, descripción del problema y captura de pantalla si aplica.
+
+================================================================================
+                    © 2026 SponsorFlow Nexus
+================================================================================

@@ -1,0 +1,53 @@
+{
+  "config_url": "https://raw.githubusercontent.com/yurislay9-ui/nexus-backend/refs/heads/main/config.json",
+  "serverUrl": "https://TU-URL-NGROK.ngrok-free.app",
+  "minAppVersion": "2.4.0",
+  "maintenanceMode": false,
+  "announcement": null,
+
+  "google_client_id": "TU_CLIENT_ID_GOOGLE_AQUI",
+  "app_signature": "TU_FIRMA_SHA256_AQUI",
+
+  "payment_config": {
+    "wallet_address": "TU_DIRECCION_TRON_TRC20_AQUI",
+    "usdt_contract": "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
+    "required_confirmations": 20
+  },
+
+  "webhooks": {
+    "nexus": "https://TU-URL-NGROK.ngrok-free.app/webhook/nexus",
+    "license": "https://TU-URL-NGROK.ngrok-free.app/webhook/license",
+    "payment": "https://TU-URL-NGROK.ngrok-free.app/webhook/payment"
+  },
+
+  "admin_webhooks": {
+    "heartbeat_url": "https://TU-N8N-URL/webhook/admin_heartbeat",
+    "error_url": "https://TU-N8N-URL/webhook/admin_error_report"
+  },
+
+  "admin_commands": {
+    "global": [],
+    "devices": {}
+  },
+
+  "admin_banned_devices": [],
+
+  "heartbeat_interval_hours": 1,
+
+  "ai_model": {
+    "download_url": "URL_DEL_MODELO_EN_GITHUB_O_HUGGINGFACE",
+    "version": "1.0.0",
+    "filename": "modelo.gguf",
+    "size_mb": 0
+  },
+
+  "github_updates": {
+    "app_update_url": "https://api.github.com/repos/TU-USUARIO/nexus-app/releases/latest",
+    "whatsapp_fix_url": "https://api.github.com/repos/TU-USUARIO/nexus-whatsapp-fix/releases/latest"
+  },
+
+  "whatsapp_config": {
+    "minVersion": "2.24.1",
+    "updateRequired": false
+  }
+}

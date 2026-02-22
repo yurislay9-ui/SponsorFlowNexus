@@ -53,7 +53,7 @@ class AdminControlManager(private val context: Context) {
         appVersion = "2.4.0",
         lastUserAction = prefs.getString(KEY_LAST_ACTION, "none") ?: "none",
         modelDownloaded = prefs.getBoolean(KEY_MODEL_DOWNLOADED, false),
-        networkType = getNetworkType() ?: "unknown",
+        networkType = getNetworkType(),
         batteryLevel = getBatteryLevel()
     )
     

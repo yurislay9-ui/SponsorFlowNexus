@@ -97,7 +97,7 @@ class AIMemoryManager(
         val history = ctx?.conversationHistory ?: emptyList()
         val profile = ctx?.userProfile
         val products = ctx?.lastProductsDiscussed ?: emptyList()
-        val prefs = ctx?.preferences ?: emptyMap()
+        val preferences = ctx?.preferences ?: emptyMap()
 
         val profileStr = if (profile != null) {
             "\nPerfil: idioma=${profile.language}, intereses=${profile.interests.joinToString()}"
