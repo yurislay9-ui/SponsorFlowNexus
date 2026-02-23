@@ -1,6 +1,6 @@
 /*
  * SponsorFlow Nexus v2.4 - Dynamic Config Manager
- * CORREGIDO: Asignar config al campo de instancia, usar Dispatchers.IO
+ * CORREGIDO: Asignar config al campo de instancia, usar Dispatchers.IO, integrado con Hilt
  */
 package com.sponsorflow.nexus.config
 
@@ -8,14 +8,20 @@ import android.content.Context
 import android.util.Log
 import com.sponsorflow.nexus.core.result.AppError
 import com.sponsorflow.nexus.core.result.AppResult
+import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.Request
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.sponsorflow.nexus.network.NetworkHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class DynamicConfigManager(context: Context) {
+@Singleton
+class DynamicConfigManager @Inject constructor(
+    @ApplicationContext private val context: Context
+) {
 
     private val prefs = context.getSharedPreferences("nexus_config", Context.MODE_PRIVATE)
     private val client = NetworkHelper.createClient()
