@@ -749,5 +749,116 @@ suspend fun sendMessage(...) = withContext(Dispatchers.IO) {
 
 ---
 
-**Última actualización:** 23 Feb 2026, 17:30 UTC
-**Progreso:** 30/175 errores corregidos (17%)
+### 31. SubscriptionGate.kt (ALTO)
+**Estado:** ✅ CORREGIDO
+**Fecha:** 23 Feb 2026
+
+**Problema original:**
+- checkAccess() usaba función síncrona inconsistente
+
+**Corrección aplicada:**
+```kotlin
+// getCurrentTierAsync() para consistencia
+private fun getCurrentTierAsync(): SubscriptionTier {
+    return licenseValidator.getCachedLicenseInfo()?.tier ?: SubscriptionTier.FREE
+}
+```
+
+---
+
+### 32. LicenseTransferManager.kt (ALTO)
+**Estado:** ✅ CORREGIDO
+**Fecha:** 23 Feb 2026
+
+**Problema original:**
+- Funciones suspend con execute() bloqueante sin Dispatchers.IO
+
+**Corrección aplicada:**
+```kotlin
+suspend fun requestTransfer(...) = withContext(Dispatchers.IO) {
+    // ... código de red
+}
+```
+
+---
+
+### 33. ResourceDownloadManager.kt (ALTO)
+**Estado:** ✅ CORREGIDO
+**Fecha:** 23 Feb 2026
+
+**Problema original:**
+- Sin timeouts en OkHttpClient para descargas grandes
+
+**Corrección aplicada:**
+```kotlin
+private val client = OkHttpClient.Builder()
+    .connectTimeout(60, TimeUnit.SECONDS)
+    .readTimeout(300, TimeUnit.SECONDS)
+    .writeTimeout(60, TimeUnit.SECONDS)
+    .build()
+```
+
+---
+
+### 34. AdminControlManager.kt (ALTO)
+**Estado:** ✅ CORREGIDO
+**Fecha:** 23 Feb 2026
+
+**Problema original:**
+- sendHeartbeat() y reportError() con execute() sin Dispatchers.IO
+
+**Corrección aplicada:**
+```kotlin
+suspend fun sendHeartbeat(): Boolean = withContext(Dispatchers.IO) {
+    // ... código de red
+}
+
+suspend fun reportError(...) = withContext(Dispatchers.IO) {
+    // ... código de red
+}
+```
+
+---
+
+### 35. CloudAIProvider.kt (ALTO)
+**Estado:** ✅ CORREGIDO
+**Fecha:** 23 Feb 2026
+
+**Problema original:**
+- Sin timeouts, execute() sin Dispatchers.IO
+
+**Corrección aplicada:**
+```kotlin
+private val client = OkHttpClient.Builder()
+    .connectTimeout(30, TimeUnit.SECONDS)
+    .readTimeout(60, TimeUnit.SECONDS)
+    .build()
+
+suspend fun generateResponse(...) = withContext(Dispatchers.IO) {
+    // ...
+}
+```
+
+---
+
+### 36. AnalyticsManager.kt (MEDIO)
+**Estado:** ✅ CORREGIDO
+**Fecha:** 23 Feb 2026
+
+**Problema original:**
+- Sin límite, clientes ilimitados en prefs causaban memory leak
+
+**Corrección aplicada:**
+```kotlin
+companion object {
+    private const val MAX_CLIENTS_STORED = 100
+}
+
+// En updateClient()
+if (clientKeys.size >= MAX_CLIENTS_STORED) return
+```
+
+---
+
+**Última actualización:** 23 Feb 2026, 18:10 UTC
+**Progreso:** 36/175 errores corregidos (21%)
