@@ -1,11 +1,14 @@
 /*
- * SponsorFlow Nexus v2.3 - AI Memory Manager
- * Plan: OBSERVADOR, DESARROLLO, EMPRESARIO
+ * SponsorFlow Nexus v2.4 - AI Memory Manager
+ * CORREGIDO: ConcurrentHashMap, JSON serialization
  */
 package com.sponsorflow.nexus.cache
 
 import android.content.Context
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.sponsorflow.nexus.core.enums.SubscriptionTier
+import java.util.concurrent.ConcurrentHashMap
 
 data class AIContext(
     val phone: String,
@@ -27,7 +30,10 @@ class AIMemoryManager(
     private val tier: SubscriptionTier
 ) {
     private val prefs = context.getSharedPreferences("nexus_ai_memory", Context.MODE_PRIVATE)
-    private val contextMap = mutableMapOf<String, AIContext>()
+    private val gson = Gson()
+    
+    // CORREGIDO: ConcurrentHashMap thread-safe
+    private val contextMap = ConcurrentHashMap<String, AIContext>()
 
     // Construir contexto para la IA
     fun buildContext(phone: String, newMessage: String): String {

@@ -1,11 +1,13 @@
 /*
  * SponsorFlow Nexus v2.4 - Database Module (Hilt)
- * Proporciona instancias de Room y DAOs
+ * CORREGIDO: Migraciones en lugar de fallbackToDestructiveMigration
  */
 package com.sponsorflow.nexus.di
 
 import android.content.Context
 import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
 import com.sponsorflow.nexus.data.dao.*
 import com.sponsorflow.nexus.data.database.NexusDatabase
 import dagger.Module
@@ -19,6 +21,15 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
 
+    // Migración de ejemplo para versión 1 -> 2
+    // Agregar más migraciones según sea necesario
+    private val MIGRATION_1_2 = object : Migration(1, 2) {
+        override fun migrate(database: androidx.sqlite.db.SupportSQLiteDatabase) {
+            // Ejemplo: agregar nueva tabla o columna
+            // database.execSQL("ALTER TABLE products ADD COLUMN new_column TEXT")
+        }
+    }
+
     @Provides
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): NexusDatabase {
@@ -27,7 +38,10 @@ object DatabaseModule {
             NexusDatabase::class.java,
             "nexus_database.db"
         )
-            .fallbackToDestructiveMigration()
+            // CORREGIDO: Usar addMigrations en lugar de fallbackToDestructiveMigration
+            .addMigrations(MIGRATION_1_2)
+            // Solo usar como último recurso si no hay migraciones
+            .fallbackToDestructiveMigrationOnDowngrade()
             .build()
     }
 

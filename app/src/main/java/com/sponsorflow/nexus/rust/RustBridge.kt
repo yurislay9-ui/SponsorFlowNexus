@@ -16,10 +16,37 @@ package com.sponsorflow.nexus.rust
  */
 object RustBridge {
 
+    // Bandera para verificar si la librería está cargada
+    @Volatile
+    private var isLibraryLoaded = false
+
     init {
         // Cargar la librería nativa
         // El archivo se llama libnexus_rust.so en Android
-        System.loadLibrary("nexus_rust")
+        try {
+            System.loadLibrary("nexus_rust")
+            isLibraryLoaded = true
+        } catch (e: UnsatisfiedLinkError) {
+            isLibraryLoaded = false
+            android.util.Log.e("RustBridge", "No se pudo cargar la librería: ${e.message}")
+        }
+    }
+
+    /**
+     * Verifica si la librería Rust está disponible
+     * IMPORTANTE: Debe llamarse antes de usar cualquier función nativa
+     * 
+     * @return true si la librería está cargada y funcionando
+     */
+    @JvmStatic
+    fun isAvailable(): Boolean {
+        return try {
+            if (!isLibraryLoaded) return false
+            // Verificar que la función healthCheck responde
+            healthCheck()
+        } catch (e: Exception) {
+            false
+        }
     }
 
     // ==================== FUNCIONES DE PRUEBA ====================

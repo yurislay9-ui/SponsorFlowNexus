@@ -1,67 +1,98 @@
 /*
  * SponsorFlow Nexus - Inventory ViewModel
+ * CORREGIDO: Persistencia con ProductDao y Flow
  */
 package com.sponsorflow.nexus.ui.inventory
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.sponsorflow.nexus.data.dao.ProductDao
 import com.sponsorflow.nexus.data.entity.ProductEntity
 import com.sponsorflow.nexus.data.entity.StockStatus
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
-class InventoryViewModel : ViewModel() {
-    private val _products = mutableStateListOf<ProductEntity>()
-    val products: List<ProductEntity> get() = _products.toList()
+class InventoryViewModel(
+    private val productDao: ProductDao
+) : ViewModel() {
     
-    var searchQuery by mutableStateOf("")
-        private set
+    private val _products = MutableStateFlow<List<ProductEntity>>(emptyList())
+    val products: StateFlow<List<ProductEntity>> = _products.asStateFlow()
     
-    var showAddDialog by mutableStateOf(false)
-        private set
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
     
-    init { loadProducts() }
+    private val _showAddDialog = MutableStateFlow(false)
+    val showAddDialog: StateFlow<Boolean> = _showAddDialog.asStateFlow()
+    
+    init { 
+        loadProducts() 
+    }
     
     private fun loadProducts() {
-        _products.addAll(listOf(
-            ProductEntity(1, "SKU-001", "Camiseta Premium", "Algodón 100%", 29.99, 15.0, 50, 10, "Ropa"),
-            ProductEntity(2, "SKU-002", "Zapatillas Sport", "Running", 89.99, 45.0, 3, 5, "Calzado"),
-            ProductEntity(3, "SKU-003", "Mochila Pro", "20L resistente", 45.0, 20.0, 0, 5, "Accesorios"),
-            ProductEntity(4, "SKU-004", "Gorra Classic", "Ajustable", 19.99, 8.0, 25, 10, "Accesorios")
-        ))
-    }
-    
-    fun onSearchChange(query: String) { searchQuery = query }
-    
-    fun getFilteredProducts(): List<ProductEntity> {
-        if (searchQuery.isBlank()) return products
-        return products.filter { it.name.contains(searchQuery, true) || it.sku.contains(searchQuery, true) }
-    }
-    
-    fun increaseStock(productId: Long) {
-        val index = _products.indexOfFirst { it.id == productId }
-        if (index >= 0) { _products[index] = _products[index].copy(stockQuantity = _products[index].stockQuantity + 1) }
-    }
-    
-    fun decreaseStock(productId: Long) {
-        val index = _products.indexOfFirst { it.id == productId }
-        if (index >= 0 && _products[index].stockQuantity > 0) {
-            _products[index] = _products[index].copy(stockQuantity = _products[index].stockQuantity - 1)
+        viewModelScope.launch {
+            productDao.getAll().collect { productList ->
+                _products.value = productList
+            }
         }
     }
     
-    fun addProduct(product: ProductEntity) { _products.add(product); showAddDialog = false }
-    fun openAddDialog() { showAddDialog = true }
-    fun closeAddDialog() { showAddDialog = false }
+    fun onSearchChange(query: String) { _searchQuery.value = query }
     
-    fun getStats(): InventoryStats = InventoryStats(
-        totalProducts = products.size,
-        inStock = products.count { it.getStockStatus() == StockStatus.IN_STOCK },
-        lowStock = products.count { it.getStockStatus() == StockStatus.LOW_STOCK },
-        outOfStock = products.count { it.getStockStatus() == StockStatus.OUT_OF_STOCK },
-        totalValue = products.sumOf { it.price * it.stockQuantity }
-    )
+    fun getFilteredProducts(): List<ProductEntity> {
+        val query = _searchQuery.value
+        val productList = _products.value
+        if (query.isBlank()) return productList
+        return productList.filter { it.name.contains(query, true) || it.sku.contains(query, true) }
+    }
+    
+    fun increaseStock(productId: Long) {
+        viewModelScope.launch {
+            val currentList = _products.value.toMutableList()
+            val index = currentList.indexOfFirst { it.id == productId }
+            if (index >= 0) { 
+                val updated = currentList[index].copy(stockQuantity = currentList[index].stockQuantity + 1)
+                currentList[index] = updated
+                _products.value = currentList
+                productDao.update(updated)
+            }
+        }
+    }
+    
+    fun decreaseStock(productId: Long) {
+        viewModelScope.launch {
+            val currentList = _products.value.toMutableList()
+            val index = currentList.indexOfFirst { it.id == productId }
+            if (index >= 0 && currentList[index].stockQuantity > 0) {
+                val updated = currentList[index].copy(stockQuantity = currentList[index].stockQuantity - 1)
+                currentList[index] = updated
+                _products.value = currentList
+                productDao.update(updated)
+            }
+        }
+    }
+    
+    fun addProduct(product: ProductEntity) { 
+        viewModelScope.launch {
+            productDao.insert(product)
+            _showAddDialog.value = false
+        }
+    }
+    fun openAddDialog() { _showAddDialog.value = true }
+    fun closeAddDialog() { _showAddDialog.value = false }
+    
+    fun getStats(): InventoryStats {
+        val productList = _products.value
+        return InventoryStats(
+            totalProducts = productList.size,
+            inStock = productList.count { it.getStockStatus() == StockStatus.IN_STOCK },
+            lowStock = productList.count { it.getStockStatus() == StockStatus.LOW_STOCK },
+            outOfStock = productList.count { it.getStockStatus() == StockStatus.OUT_OF_STOCK },
+            totalValue = productList.sumOf { it.price * it.stockQuantity }
+        )
+    }
 }
 
 data class InventoryStats(

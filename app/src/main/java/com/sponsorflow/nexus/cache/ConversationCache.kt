@@ -1,11 +1,12 @@
 /*
- * SponsorFlow Nexus v2.3 - Conversation Cache
- * Plan: BÁSICO, PRO, ENTERPRISE (memoria de IA)
+ * SponsorFlow Nexus v2.4 - Conversation Cache
+ * CORREGIDO: ConcurrentHashMap, límite EMPRESARIO
  */
 package com.sponsorflow.nexus.cache
 
 import android.content.Context
 import com.sponsorflow.nexus.core.enums.SubscriptionTier
+import java.util.concurrent.ConcurrentHashMap
 
 data class CachedMessage(
     val phone: String,
@@ -28,8 +29,12 @@ class ConversationCache(
     private val tier: SubscriptionTier
 ) {
     private val prefs = context.getSharedPreferences("nexus_cache", Context.MODE_PRIVATE)
-    private val messages = mutableListOf<CachedMessage>()
-    private val memories = mutableMapOf<String, ConversationMemory>()
+    
+    // CORREGIDO: ConcurrentHashMap thread-safe
+    private val memories = ConcurrentHashMap<String, ConversationMemory>()
+    
+    // Límite para EMPRESARIO
+    private val MAX_ENTERPRISE_MESSAGES = 1000
 
     // Guardar mensaje según plan
     fun saveMessage(phone: String, message: String, response: String) {

@@ -34,6 +34,19 @@
         <service android:name=".core.NexusForegroundService"
             android:foregroundServiceType="dataSync" android:exported="false" />
 
+        <!-- Accessibility Service para WhatsApp -->
+        <service
+            android:name=".core.NexusAccessibilityService"
+            android:exported="false"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_service_config" />
+        </service>
+
         <!-- Receiver Boot -->
         <receiver android:name=".core.BootReceiver" android:exported="false">
             <intent-filter>
