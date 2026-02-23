@@ -1,6 +1,7 @@
 /*
- * SponsorFlow Nexus v2.3 - Plugin API
+ * SponsorFlow Nexus v2.4 - Plugin API
  * API para que desarrolladores creen plugins
+ * CORREGIDO: Version actualizada a v2.4
  */
 package com.sponsorflow.nexus.plugin
 

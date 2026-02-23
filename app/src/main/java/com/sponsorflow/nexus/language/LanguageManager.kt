@@ -1,11 +1,11 @@
 /*
- * SponsorFlow Nexus v2.3 - Multi-Language Manager
+ * SponsorFlow Nexus v2.4 - Multi-Language Manager
  * Plan: PRO y ENTERPRISE
+ * CORREGIDO: Version actualizada a v2.4
  */
 package com.sponsorflow.nexus.language
 
 import android.content.Context
-import java.util.Locale
 
 enum class SupportedLanguage(val code: String, val displayName: String) {
     ES("es", "Español"),
@@ -39,7 +39,7 @@ class LanguageManager(private val context: Context) {
 
     fun getResponseLanguage(phone: String): SupportedLanguage {
         val code = prefs.getString("client_$phone", "es") ?: "es"
-        return SupportedLanguage.values().find { it.code == code } ?: SupportedLanguage.ES
+        return SupportedLanguage.entries.find { it.code == code } ?: SupportedLanguage.ES
     }
 
     fun setClientLanguage(phone: String, lang: SupportedLanguage) {

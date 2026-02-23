@@ -1,5 +1,6 @@
 /*
- * SponsorFlow Nexus v2.3 - Storage Helper
+ * SponsorFlow Nexus v2.4 - Storage Helper
+ * CORREGIDO: Version actualizada a v2.4
  */
 package com.sponsorflow.nexus.ai.download
 
@@ -10,7 +11,6 @@ import java.io.File
 
 class StorageHelper(private val context: Context) {
     
-    // Obtener espacio disponible en bytes
     fun getAvailableSpace(): Long {
         return try {
             val stat = StatFs(context.filesDir.path)
@@ -20,19 +20,16 @@ class StorageHelper(private val context: Context) {
         }
     }
     
-    // Verificar si hay suficiente espacio
     fun hasSpace(requiredMB: Int): Boolean {
         val available = getAvailableSpace()
-        val required = (requiredMB + 50) * 1024L * 1024L // +50MB buffer
+        val required = (requiredMB + 50) * 1024L * 1024L
         return available >= required
     }
     
-    // Obtener espacio en MB
     fun getAvailableMB(): Int {
         return (getAvailableSpace() / (1024 * 1024)).toInt()
     }
     
-    // Limpiar archivos temporales
     fun cleanTempFiles(directory: File) {
         try {
             directory.listFiles()
@@ -47,7 +44,6 @@ class StorageHelper(private val context: Context) {
         }
     }
     
-    // Obtener uso de almacenamiento
     fun getUsageMB(directory: File): Int {
         return (directory.walkTopDown()
             .filter { it.isFile }

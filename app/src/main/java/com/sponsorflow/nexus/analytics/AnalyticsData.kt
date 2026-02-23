@@ -1,5 +1,6 @@
 /*
- * SponsorFlow Nexus v2.3 - Analytics Data Models
+ * SponsorFlow Nexus v2.4 - Analytics Data Models
+ * CORREGIDO: Version actualizada a v2.4
  */
 package com.sponsorflow.nexus.analytics
 

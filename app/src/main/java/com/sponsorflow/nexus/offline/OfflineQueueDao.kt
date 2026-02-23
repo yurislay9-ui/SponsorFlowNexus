@@ -1,5 +1,6 @@
 /*
- * SponsorFlow Nexus v2.3 - Offline Queue DAO
+ * SponsorFlow Nexus v2.4 - Offline Queue DAO
+ * CORREGIDO: Version actualizada a v2.4
  */
 package com.sponsorflow.nexus.offline
 
