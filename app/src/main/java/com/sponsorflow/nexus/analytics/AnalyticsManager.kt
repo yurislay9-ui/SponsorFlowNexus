@@ -12,6 +12,11 @@ class AnalyticsManager(
     private val context: Context,
     private val tier: SubscriptionTier
 ) {
+    companion object {
+        // Límite de clientes almacenados para evitar consumo excesivo de memoria
+        private const val MAX_CLIENTS_STORED = 100
+    }
+    
     private val prefs = context.getSharedPreferences("nexus_analytics", Context.MODE_PRIVATE)
 
     fun logMessage(phone: String) {
@@ -51,7 +56,19 @@ class AnalyticsManager(
         prefs.edit().putLong("total", prefs.getLong("total", 0) + 1).apply()
     }
 
+    /**
+     * Actualiza estadísticas del cliente
+     * CORREGIDO: Limitar número de clientes almacenados para evitar consumo de memoria
+     */
     private fun updateClient(phone: String) {
+        // Obtener solo las claves de cliente actuales
+        val clientKeys = prefs.all.keys.filter { it.startsWith("client_") }.toList()
+        
+        // Si ya hay demasiados clientes, no agregar más
+        if (clientKeys.size >= MAX_CLIENTS_STORED) {
+            return
+        }
+        
         val count = prefs.getInt("client_$phone", 0) + 1
         prefs.edit()
             .putInt("client_$phone", count)

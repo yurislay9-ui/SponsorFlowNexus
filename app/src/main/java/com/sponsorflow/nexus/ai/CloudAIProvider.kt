@@ -6,11 +6,14 @@ package com.sponsorflow.nexus.ai
 
 import com.sponsorflow.nexus.core.result.AppResult
 import com.sponsorflow.nexus.core.result.AppError
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.MediaType.Companion.toMediaType
 import com.google.gson.Gson
+import java.util.concurrent.TimeUnit
 
 enum class CloudProvider {
     OPENAI, GEMINI, ANTHROPIC, OPENROUTER
@@ -24,10 +27,21 @@ data class CloudAIConfig(
 
 class CloudAIProvider(private val config: CloudAIConfig) {
 
-    private val client = OkHttpClient.Builder().build()
+    // CORREGIDO: Timeouts configurados
+    private val client = OkHttpClient.Builder()
+        .connectTimeout(30, TimeUnit.SECONDS)
+        .readTimeout(60, TimeUnit.SECONDS)
+        .writeTimeout(30, TimeUnit.SECONDS)
+        .build()
+    
     private val gson = Gson()
 
-    suspend fun generateResponse(prompt: String): AppResult<String> = try {
+    /**
+     * Genera respuesta usando provider cloud
+     * CORREGIDO: withContext(Dispatchers.IO) para llamada bloqueante
+     */
+    suspend fun generateResponse(prompt: String): AppResult<String> = withContext(Dispatchers.IO) {
+        try {
         val url = getApiUrl()
         val body = buildRequestBody(prompt)
         
