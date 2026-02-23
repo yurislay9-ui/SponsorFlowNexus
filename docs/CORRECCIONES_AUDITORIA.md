@@ -666,5 +666,88 @@ class DynamicConfigManager @Inject constructor(
 
 ---
 
-**Última actualización:** 23 Feb 2026, 15:43 UTC
-**Progreso:** 26/175 errores corregidos (15%)
+### 27. ProductManager.kt (ALTO)
+**Estado:** ✅ CORREGIDO
+**Fecha:** 23 Feb 2026
+
+**Problema original:**
+- updateStock() usaba patrón read-modify-write no atómico
+- Race conditions en inventario
+
+**Corrección aplicada:**
+```kotlin
+// Usa operaciones atómicas del DAO
+suspend fun decreaseStock(productId: Long, quantity: Int): AppResult<Unit> {
+    val success = productRepo.decreaseStock(productId, quantity)
+    // ...
+}
+```
+
+---
+
+### 28. RetryManager.kt (ALTO)
+**Estado:** ✅ CORREGIDO
+**Fecha:** 23 Feb 2026
+
+**Problema original:**
+- Sin delay entre reintentos
+- retryCount variable no thread-safe
+
+**Corrección aplicada:**
+```kotlin
+// Exponential backoff con jitter
+private val retryCount = AtomicInteger(0)
+
+private fun calculateDelay(attempt: Int): Long {
+    val exponentialDelay = initialDelayMs * 2.0.pow(attempt.toDouble()).toLong()
+    // ...
+}
+```
+
+---
+
+### 29. PluginManager.kt (ALTO)
+**Estado:** ✅ CORREGIDO
+**Fecha:** 23 Feb 2026
+
+**Problema original:**
+- executeByType() no capturaba excepciones
+- Un plugin fallido romría toda la lista
+
+**Corrección aplicada:**
+```kotlin
+.map { plugin ->
+    try {
+        plugin.execute(input)
+    } catch (e: Exception) {
+        PluginResult(success = false, error = "Plugin falló...")
+    }
+}
+```
+
+---
+
+### 30. WhatsAppAPI.kt (ALTO)
+**Estado:** ✅ CORREGIDO
+**Fecha:** 23 Feb 2026
+
+**Problema original:**
+- Sin timeouts en OkHttpClient
+- Llamada bloqueante sin Dispatchers.IO
+
+**Corrección aplicada:**
+```kotlin
+private val client = OkHttpClient.Builder()
+    .connectTimeout(30, TimeUnit.SECONDS)
+    .readTimeout(30, TimeUnit.SECONDS)
+    .build()
+
+suspend fun sendMessage(...) = withContext(Dispatchers.IO) {
+    // ...
+}
+```
+
+---
+
+**Última actualización:** 23 Feb 2026, 17:30 UTC
+**Progreso:** 30/175 errores corregidos (17%)
