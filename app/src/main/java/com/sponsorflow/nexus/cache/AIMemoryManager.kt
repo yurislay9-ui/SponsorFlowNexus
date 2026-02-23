@@ -1,6 +1,6 @@
 /*
  * SponsorFlow Nexus v1.0 - AI Memory Manager
- * CORREGIDO: ConcurrentHashMap, JSON serialization
+ * CORREGIDO: ConcurrentHashMap, JSON serialization, CopyOnWriteArrayList
  */
 package com.sponsorflow.nexus.cache
 
@@ -9,6 +9,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.sponsorflow.nexus.core.enums.SubscriptionTier
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CopyOnWriteArrayList
 
 data class AIContext(
     val phone: String,
@@ -38,7 +39,6 @@ class AIMemoryManager(
     // Construir contexto para la IA
     fun buildContext(phone: String, newMessage: String): String {
         if (tier == SubscriptionTier.OBSERVADOR) {
-            // Sin memoria - cada mensaje es independiente
             return newMessage
         }
 
@@ -77,7 +77,6 @@ class AIMemoryManager(
 
     // Métodos privados
     private fun buildBasicContext(ctx: AIContext?, message: String): String {
-        // Solo últimos 3 mensajes como contexto
         val history = ctx?.conversationHistory?.takeLast(3) ?: emptyList()
         if (history.isEmpty()) return message
         
@@ -122,7 +121,8 @@ class AIMemoryManager(
         response: String
     ): List<Pair<String, String>> {
         val newEntry = message to response
-        val current = history?.toMutableList() ?: mutableListOf()
+        // CORREGIDO: CopyOnWriteArrayList para thread-safety
+        val current = history?.toMutableList()?.let { CopyOnWriteArrayList(it) } ?: CopyOnWriteArrayList()
         current.add(newEntry)
         
         // Limitar según plan

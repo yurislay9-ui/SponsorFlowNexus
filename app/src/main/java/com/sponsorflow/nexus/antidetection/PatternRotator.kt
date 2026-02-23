@@ -4,8 +4,8 @@
  */
 package com.sponsorflow.nexus.antidetection
 
+import java.util.concurrent.ThreadLocalRandom
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.random.Random
 
 object PatternRotator {
 
@@ -32,7 +32,7 @@ object PatternRotator {
     fun getRandomGreeting(): String {
         if (greetings.size <= 1) return greetings.getOrElse(0) { "" }
         var index: Int
-        do { index = Random.nextInt(greetings.size) } while (index == lastGreetingIndex.get())
+        do { index = ThreadLocalRandom.current().nextInt(greetings.size) } while (index == lastGreetingIndex.get())
         lastGreetingIndex.set(index)
         return greetings[index]
     }
@@ -40,7 +40,7 @@ object PatternRotator {
     fun getRandomClosing(): String {
         if (closings.size <= 1) return closings.getOrElse(0) { "" }
         var index: Int
-        do { index = Random.nextInt(closings.size) } while (index == lastClosingIndex.get())
+        do { index = ThreadLocalRandom.current().nextInt(closings.size) } while (index == lastClosingIndex.get())
         lastClosingIndex.set(index)
         return closings[index]
     }
@@ -48,7 +48,7 @@ object PatternRotator {
     fun getRandomAcknowledgment(): String {
         if (acknowledgments.size <= 1) return acknowledgments.getOrElse(0) { "" }
         var index: Int
-        do { index = Random.nextInt(acknowledgments.size) } while (index == lastAckIndex.get())
+        do { index = ThreadLocalRandom.current().nextInt(acknowledgments.size) } while (index == lastAckIndex.get())
         lastAckIndex.set(index)
         return acknowledgments[index]
     }
@@ -56,6 +56,6 @@ object PatternRotator {
     fun formatResponse(text: String): String {
         return text.trim()
             .replace(Regex("\\s+"), " ")
-            .let { if (Random.nextFloat() < 0.3f) it.lowercase() else it }
+            .let { if (ThreadLocalRandom.current().nextFloat() < 0.3f) it.lowercase() else it }
     }
 }

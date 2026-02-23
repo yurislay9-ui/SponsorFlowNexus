@@ -1,6 +1,6 @@
 /*
  * SponsorFlow Nexus v1.0 - Accessibility Service
- * CORREGIDO: MessageHandler implementado con funcionalidad completa
+ * CORREGIDO: MessageHandler implementado, mutableSetOf -> ConcurrentHashMap
  */
 package com.sponsorflow.nexus.core
 
@@ -13,6 +13,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import java.util.concurrent.ConcurrentHashMap
 
 class NexusAccessibilityService : AccessibilityService() {
 
@@ -64,7 +65,6 @@ class NexusAccessibilityService : AccessibilityService() {
     }
 
     private fun handleWindowChange(event: AccessibilityEvent) {
-        // Detectar cuándo se abre el chat
         val className = event.className?.toString() ?: return
         if (className.contains("ConversationActivity")) {
             messageHandler.onChatOpened()
@@ -84,29 +84,27 @@ class NexusAccessibilityService : AccessibilityService() {
 
 /**
  * MessageHandler - Procesa mensajes entrantes de WhatsApp
- * CORREGIDO: Implementación completa
+ * CORREGIDO: Thread-safe con ConcurrentHashMap
  */
 class MessageHandler(
     private val service: AccessibilityService
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     
-    // Cache para evitar procesar el mismo mensaje múltiples veces
-    private val processedMessages = mutableSetOf<String>()
+    // CORREGIDO: ConcurrentHashMap.newKeySet() para thread-safety
+    private val processedMessages = ConcurrentHashMap.newKeySet<String>()
     private val maxCacheSize = 100
 
     /**
      * Procesar mensaje entrante desde notificación
      */
     suspend fun processIncoming(text: String) {
-        // Evitar duplicados
+        // Evitar duplicados - thread-safe
         if (processedMessages.contains(text) || text.isBlank()) return
         
         // Agregar al cache
         addToCache(text)
         
-        // Aquí se integraría con el AI para generar respuesta
-        // Por ahora solo loggeamos
         android.util.Log.d("MessageHandler", "Mensaje recibido: $text")
     }
     
@@ -119,18 +117,14 @@ class MessageHandler(
 
     /**
      * Enviar respuesta mediante accesibilidad
-     * NOTA: Esta función requiere permisos adicionales y configuración
      */
     fun sendReply(message: String): Boolean {
         return try {
-            // Obtener el campo de texto del chat
             val inputField = findInputField() ?: return false
             
-            // Establecer el texto
             inputField.text?.clear()
             inputField.text?.append(message)
             
-            // Buscar y presionar el botón de enviar
             val sendButton = findSendButton()
             if (sendButton != null) {
                 sendButton.performAction(AccessibilityNodeInfo.ACTION_CLICK)
@@ -150,13 +144,11 @@ class MessageHandler(
     private fun findInputField(): AccessibilityNodeInfo? {
         val rootNode = service.rootInActiveWindow ?: return null
         
-        // Buscar por ID de recurso (puede variar según versión de WhatsApp)
         val inputFields = rootNode.findAccessibilityNodeInfosByViewId(
             "com.whatsapp:id/entry"
         )
         
         if (inputFields.isEmpty()) {
-            // Alternativa: buscar por texto de hint
             val textFields = rootNode.findAccessibilityNodeInfosByText("Mensaje")
             return textFields.firstOrNull()
         }
@@ -170,7 +162,6 @@ class MessageHandler(
     private fun findSendButton(): AccessibilityNodeInfo? {
         val rootNode = service.rootInActiveWindow ?: return null
         
-        // Buscar botón de enviar por ID
         val sendButtons = rootNode.findAccessibilityNodeInfosByViewId(
             "com.whatsapp:id/send"
         )
