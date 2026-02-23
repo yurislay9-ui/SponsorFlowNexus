@@ -1,108 +1,103 @@
 /*
- * SponsorFlow Nexus v2.3 - Product Manager
+ * SponsorFlow Nexus v2.4 - Product Manager
+ * CORREGIDO: Thread-safe, operaciones atómicas
  */
 package com.sponsorflow.nexus.inventory
 
 import com.sponsorflow.nexus.core.result.AppResult
+import com.sponsorflow.nexus.core.result.AppError
 import com.sponsorflow.nexus.data.entity.ProductEntity
-import com.sponsorflow.nexus.data.repositories.ProductRepository
+import com.sponsorflow.nexus.data.repository.ProductRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class ProductManager(private val productRepo: ProductRepository) {
+@Singleton
+class ProductManager @Inject constructor(
+    private val productRepo: ProductRepository
+) {
+    private val stockMutex = Mutex()
 
-    suspend fun addProduct(
-        name: String,
-        description: String,
-        price: Double,
-        category: String,
-        stockQuantity: Int = 0
-    ): AppResult<Long> {
-        val product = ProductEntity(
-            name = name,
-            description = description,
-            price = price,
-            category = category,
-            stockQuantity = stockQuantity
-        )
-        return productRepo.insert(product)
-    }
-
-    suspend fun searchProducts(query: String): AppResult<List<ProductEntity>> {
-        return productRepo.getAll().map { products ->
-            products.filter {
-                it.name.contains(query, ignoreCase = true) ||
-                it.description.contains(query, ignoreCase = true)
+    suspend fun getAllProducts(): AppResult<List<ProductEntity>> {
+        return withContext(Dispatchers.IO) {
+            try {
+                AppResult.Success(productRepo.getAll())
+            } catch (e: Exception) {
+                AppResult.Error(e.message?.let { AppError.Database(it) } ?: AppError.Unknown)
             }
         }
     }
 
-    suspend fun getProductsByCategory(category: String): AppResult<List<ProductEntity>> {
-        return productRepo.getByCategory(category)
+    suspend fun getProduct(id: Long): AppResult<ProductEntity?> {
+        return withContext(Dispatchers.IO) {
+            try {
+                AppResult.Success(productRepo.getById(id))
+            } catch (e: Exception) {
+                AppResult.Error(e.message?.let { AppError.Database(it) } ?: AppError.Unknown)
+            }
+        }
     }
 
-    /**
-     * Actualiza stock de forma atómica usando operaciones del DAO
-     * CORREGIDO: Usa operaciones atómicas en lugar de read-modify-write
-     */
-    suspend fun updateStock(productId: Long, newStock: Int): AppResult<Unit> {
-        val currentStock = productRepo.getStock(productId)
-        
-        return when {
-            currentStock == null -> {
-                AppResult.Error(AppError.ValidationError("id", "Producto no encontrado"))
-            }
-            newStock < 0 -> {
-                AppResult.Error(AppError.ValidationError("stock", "Stock no puede ser negativo"))
-            }
-            newStock > currentStock -> {
-                // Aumentar stock - operación atómica
-                val increase = newStock - currentStock
-                productRepo.increaseStock(productId, increase)
-                AppResult.Success(Unit)
-            }
-            newStock < currentStock -> {
-                // Disminuir stock - operación atómica
-                val decrease = currentStock - newStock
-                val success = productRepo.decreaseStock(productId, decrease)
-                if (success) {
+    // CORREGIDO: Operación atómica con mutex
+    suspend fun decreaseStock(productId: Long, quantity: Int): AppResult<Unit> {
+        return stockMutex.withLock {
+            withContext(Dispatchers.IO) {
+                try {
+                    val product = productRepo.getById(productId)
+                    if (product == null) {
+                        return@withContext AppResult.Error(AppError.NotFound("Producto no encontrado"))
+                    }
+                    if (product.stock < quantity) {
+                        return@withContext AppResult.Error(AppError.InsufficientStock("Stock insuficiente"))
+                    }
+                    productRepo.update(product.copy(stock = product.stock - quantity))
                     AppResult.Success(Unit)
-                } else {
-                    AppResult.Error(AppError.ValidationError("stock", "Stock insuficiente"))
+                } catch (e: Exception) {
+                    AppResult.Error(e.message?.let { AppError.Database(it) } ?: AppError.Unknown)
                 }
             }
-            else -> {
-                // Sin cambios
-                AppResult.Success(Unit)
-            }
-        }
-    }
-    
-    /**
-     * Aumenta stock de forma atómica
-     */
-    suspend fun increaseStock(productId: Long, quantity: Int): AppResult<Unit> {
-        val success = productRepo.increaseStock(productId, quantity)
-        return if (success) {
-            AppResult.Success(Unit)
-        } else {
-            AppResult.Error(AppError.ValidationError("id", "Producto no encontrado"))
-        }
-    }
-    
-    /**
-     * Disminuye stock de forma atómica
-     */
-    suspend fun decreaseStock(productId: Long, quantity: Int): AppResult<Unit> {
-        val success = productRepo.decreaseStock(productId, quantity)
-        return if (success) {
-            AppResult.Success(Unit)
-        } else {
-            AppResult.Error(AppError.ValidationError("stock", "Stock insuficiente"))
         }
     }
 
-    suspend fun getCategories(): AppResult<List<String>> {
-        return productRepo.getAll().map { products ->
-            products.map { it.category }.distinct()
+    suspend fun increaseStock(productId: Long, quantity: Int): AppResult<Unit> {
+        return stockMutex.withLock {
+            withContext(Dispatchers.IO) {
+                try {
+                    val product = productRepo.getById(productId)
+                    if (product == null) {
+                        return@withContext AppResult.Error(AppError.NotFound("Producto no encontrado"))
+                    }
+                    productRepo.update(product.copy(stock = product.stock + quantity))
+                    AppResult.Success(Unit)
+                } catch (e: Exception) {
+                    AppResult.Error(e.message?.let { AppError.Database(it) } ?: AppError.Unknown)
+                }
+            }
+        }
+    }
+
+    suspend fun addProduct(product: ProductEntity): AppResult<Long> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val id = productRepo.insert(product)
+                AppResult.Success(id)
+            } catch (e: Exception) {
+                AppResult.Error(e.message?.let { AppError.Database(it) } ?: AppError.Unknown)
+            }
+        }
+    }
+
+    suspend fun deleteProduct(id: Long): AppResult<Unit> {
+        return withContext(Dispatchers.IO) {
+            try {
+                productRepo.delete(id)
+                AppResult.Success(Unit)
+            } catch (e: Exception) {
+                AppResult.Error(e.message?.let { AppError.Database(it) } ?: AppError.Unknown)
+            }
         }
     }
 }

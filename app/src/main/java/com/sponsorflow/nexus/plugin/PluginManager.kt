@@ -1,11 +1,12 @@
 /*
- * SponsorFlow Nexus v2.3 - Plugin Manager
+ * SponsorFlow Nexus v2.4 - Plugin Manager
  * Plan: ENTERPRISE
+ * CORREGIDO: Thread-safe con ConcurrentHashMap
  */
 package com.sponsorflow.nexus.plugin
 
 import android.content.Context
-import java.io.File
+import java.util.concurrent.ConcurrentHashMap
 
 interface NexusPlugin {
     val info: PluginInfo
@@ -16,7 +17,8 @@ interface NexusPlugin {
 
 class PluginManager(private val context: Context) {
 
-    private val plugins = mutableMapOf<String, NexusPlugin>()
+    // CORREGIDO: Thread-safe con ConcurrentHashMap
+    private val plugins = ConcurrentHashMap<String, NexusPlugin>()
     private val prefs = context.getSharedPreferences("nexus_plugins", Context.MODE_PRIVATE)
 
     fun registerPlugin(plugin: NexusPlugin): Boolean {

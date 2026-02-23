@@ -1,5 +1,6 @@
 /*
- * SponsorFlow Nexus v2.3 - Network Helper
+ * SponsorFlow Nexus v2.4 - Network Helper
+ * CORREGIDO: Version actualizada a v2.4, timeouts adecuados
  */
 package com.sponsorflow.nexus.network
 
@@ -8,13 +9,13 @@ import java.util.concurrent.TimeUnit
 
 object NetworkHelper {
     
-    // Cliente con timeouts configurados
+    // Cliente con timeouts configurados para operaciones normales
     fun createClient(): OkHttpClient {
         return OkHttpClient.Builder()
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .readTimeout(10, TimeUnit.SECONDS)
-            .writeTimeout(10, TimeUnit.SECONDS)
-            .callTimeout(30, TimeUnit.SECONDS)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .callTimeout(60, TimeUnit.SECONDS)
             .retryOnConnectionFailure(true)
             .build()
     }

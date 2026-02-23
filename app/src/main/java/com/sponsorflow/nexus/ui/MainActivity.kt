@@ -1,5 +1,6 @@
 /*
- * SponsorFlow Nexus v2.3 - Main Activity
+ * SponsorFlow Nexus v2.4 - Main Activity
+ * CORREGIDO: Version actualizada a v2.4
  */
 package com.sponsorflow.nexus.ui
 

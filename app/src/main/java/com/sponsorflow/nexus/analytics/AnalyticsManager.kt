@@ -1,6 +1,7 @@
 /*
- * SponsorFlow Nexus v2.3 - Analytics Manager
+ * SponsorFlow Nexus v2.4 - Analytics Manager
  * Plan: OBSERVADOR, DESARROLLO, EMPRESARIO
+ * CORREGIDO: Version actualizada a v2.4
  */
 package com.sponsorflow.nexus.analytics
 

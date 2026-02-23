@@ -1,5 +1,6 @@
 /*
- * SponsorFlow Nexus v2.3 - License Transfer Manager
+ * SponsorFlow Nexus v2.4 - License Transfer Manager
+ * CORREGIDO: Version actualizada a v2.4, withContext en todas las funciones
  */
 package com.sponsorflow.nexus.account
 
@@ -70,11 +71,12 @@ object LicenseTransferManager {
         }
     }
 
+    // CORREGIDO: withContext agregado
     suspend fun verifyTransferCode(
         licenseKey: String,
         code: String,
         sessionManager: SessionManager
-    ): TransferState {
+    ): TransferState = withContext(Dispatchers.IO) {
         val configUrl = com.sponsorflow.nexus.BuildConfig.CONFIG_URL
         val newDeviceId = sessionManager.getDeviceId()
 
@@ -85,7 +87,7 @@ object LicenseTransferManager {
             "action" to "verify_transfer"
         ))
 
-        return try {
+        try {
             val request = Request.Builder()
                 .url("$configUrl/api/license/transfer/verify")
                 .post(requestBody.toRequestBody("application/json".toMediaType()))
@@ -99,11 +101,12 @@ object LicenseTransferManager {
         }
     }
 
+    // CORREGIDO: withContext agregado
     suspend fun linkToGoogleAccount(
         licenseKey: String,
         googleIdToken: String,
         sessionManager: SessionManager
-    ): TransferState {
+    ): TransferState = withContext(Dispatchers.IO) {
         val configUrl = com.sponsorflow.nexus.BuildConfig.CONFIG_URL
         val deviceId = sessionManager.getDeviceId()
 
@@ -114,7 +117,7 @@ object LicenseTransferManager {
             "action" to "link_google"
         ))
 
-        return try {
+        try {
             val request = Request.Builder()
                 .url("$configUrl/api/license/link-google")
                 .post(requestBody.toRequestBody("application/json".toMediaType()))
@@ -128,10 +131,11 @@ object LicenseTransferManager {
         }
     }
 
-    suspend fun getLicenseInfoByEmail(email: String): LicenseInfoResult {
+    // CORREGIDO: withContext agregado
+    suspend fun getLicenseInfoByEmail(email: String): LicenseInfoResult = withContext(Dispatchers.IO) {
         val configUrl = com.sponsorflow.nexus.BuildConfig.CONFIG_URL
 
-        return try {
+        try {
             val request = Request.Builder()
                 .url("$configUrl/api/license/lookup?email=$email")
                 .get()

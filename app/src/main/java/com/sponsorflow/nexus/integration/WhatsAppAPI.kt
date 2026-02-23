@@ -1,6 +1,7 @@
 /*
- * SponsorFlow Nexus v2.3 - WhatsApp Business API
+ * SponsorFlow Nexus v2.4 - WhatsApp Business API
  * Plan: ENTERPRISE (Opcional)
+ * CORREGIDO: Version actualizada a v2.4
  */
 package com.sponsorflow.nexus.integration
 

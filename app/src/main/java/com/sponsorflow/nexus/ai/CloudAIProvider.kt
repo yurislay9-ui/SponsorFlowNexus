@@ -1,6 +1,7 @@
 /*
- * SponsorFlow Nexus v2.3 - Cloud AI Provider
+ * SponsorFlow Nexus v2.4 - Cloud AI Provider
  * Opcional para todos los planes (usuario paga directamente)
+ * CORREGIDO: Version actualizada a v2.4
  */
 package com.sponsorflow.nexus.ai
 

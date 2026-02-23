@@ -1,6 +1,7 @@
 /*
- * SponsorFlow Nexus v2.3 - Sentiment Analyzer
+ * SponsorFlow Nexus v2.4 - Sentiment Analyzer
  * Plan: PRO y ENTERPRISE
+ * CORREGIDO: Version actualizada a v2.4
  */
 package com.sponsorflow.nexus.sentiment
 
