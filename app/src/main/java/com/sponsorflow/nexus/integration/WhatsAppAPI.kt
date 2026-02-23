@@ -39,29 +39,31 @@ class WhatsAppAPI(private val config: WhatsAppConfig) {
      * CORREGIDO: withContext(Dispatchers.IO) para llamada bloqueante
      */
     suspend fun sendMessage(to: String, message: String): AppResult<String> = withContext(Dispatchers.IO) {
-        val url = "$baseUrl/${config.phoneNumberId}/messages"
-        val body = gson.toJson(mapOf(
-            "messaging_product" to "whatsapp",
-            "to" to to,
-            "type" to "text",
-            "text" to mapOf("body" to message)
-        ))
-        
-        val request = Request.Builder()
-            .url(url)
-            .addHeader("Authorization", "Bearer ${config.accessToken}")
-            .post(body.toRequestBody("application/json".toMediaType()))
-            .build()
+        try {
+            val url = "$baseUrl/${config.phoneNumberId}/messages"
+            val body = gson.toJson(mapOf(
+                "messaging_product" to "whatsapp",
+                "to" to to,
+                "type" to "text",
+                "text" to mapOf("body" to message)
+            ))
+            
+            val request = Request.Builder()
+                .url(url)
+                .addHeader("Authorization", "Bearer ${config.accessToken}")
+                .post(body.toRequestBody("application/json".toMediaType()))
+                .build()
 
-        val response = client.newCall(request).execute()
-        
-        if (response.isSuccessful) {
-            AppResult.Success("Mensaje enviado")
-        } else {
-            AppResult.Error(AppError.NetworkError(response.code))
+            val response = client.newCall(request).execute()
+            
+            if (response.isSuccessful) {
+                AppResult.Success("Mensaje enviado")
+            } else {
+                AppResult.Error(AppError.NetworkError(response.code))
+            }
+        } catch (e: Exception) {
+            AppResult.Error(AppError.fromException(e))
         }
-    } catch (e: Exception) {
-        AppResult.Error(AppError.fromException(e))
     }
 
     suspend fun sendTemplate(to: String, templateName: String, lang: String = "es"): AppResult<String> = withContext(Dispatchers.IO) {
