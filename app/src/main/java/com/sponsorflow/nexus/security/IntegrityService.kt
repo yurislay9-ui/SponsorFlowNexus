@@ -1,6 +1,6 @@
 /*
  * SponsorFlow Nexus v2.4 - Play Integrity Service
- * Verifica que el dispositivo y la app son legítimos
+ * CORREGIDO: Cloud Project Number, fallback seguro, verificación server-side recomendada
  */
 package com.sponsorflow.nexus.security
 
@@ -9,10 +9,16 @@ import android.util.Log
 import com.google.android.play.core.integrity.IntegrityManager
 import com.google.android.play.core.integrity.IntegrityTokenRequest
 import com.google.android.play.core.integrity.IntegrityTokenResponse
+import com.sponsorflow.nexus.network.NetworkHelper
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.resume
@@ -33,8 +39,18 @@ class IntegrityService @Inject constructor(
 ) {
     companion object {
         private const val TAG = "IntegrityService"
-        // Reemplazar con tu Cloud Project Number en producción
-        private const val CLOUD_PROJECT_NUMBER = 123456789L
+        // CORREGIDO: Obtener desde BuildConfig o config
+        private fun getCloudProjectNumber(): Long {
+            return try {
+                com.sponsorflow.nexus.BuildConfig.CLOUD_PROJECT_NUMBER.takeIf { it > 0 } 
+                    ?: 123456789L // Fallback - debe configurarse en producción
+            } catch (e: Exception) {
+                123456789L
+            }
+        }
+        
+        // URL del endpoint de verificación server-side
+        private const val VERIFICATION_ENDPOINT = "/api/integrity/verify"
     }
 
     sealed class IntegrityResult {
@@ -45,26 +61,86 @@ class IntegrityService @Inject constructor(
     /**
      * Solicita un token de integridad y lo verifica
      * Debe llamarse antes de operaciones críticas como pagos
+     * 
+     * CORREGIDO: Enviar token al servidor para verificación segura
      */
     suspend fun verifyIntegrity(nonce: String = generateNonce()): IntegrityResult {
         return try {
             val token = requestIntegrityToken(nonce)
-            val verdict = parseVerdict(token)
             
-            when {
-                verdict.deviceRecognitionVerdict == "MEETS_DEVICE_INTEGRITY" &&
-                verdict.appRecognitionVerdict == "PLAY_RECOGNIZED" -> {
-                    IntegrityResult.Success(verdict)
-                }
-                else -> {
-                    IntegrityResult.Error(
-                        "Integrity check failed: device=${verdict.deviceRecognitionVerdict}, app=${verdict.appRecognitionVerdict}"
-                    )
-                }
+            // CORREGIDO: Intentar verificación server-side primero
+            val serverResult = verifyWithServer(token, nonce)
+            if (serverResult != null) {
+                return serverResult
             }
+            
+            // Fallback local solo para desarrollo
+            if (com.sponsorflow.nexus.BuildConfig.DEBUG) {
+                val verdict = parseVerdictLocal(token)
+                Log.w(TAG, "Using local verification (DEBUG only)")
+                return evaluateVerdict(verdict)
+            }
+            
+            // En producción sin server, denegar por seguridad
+            IntegrityResult.Error("Server verification unavailable, denying for security")
+            
         } catch (e: Exception) {
             Log.e(TAG, "Integrity verification failed", e)
-            IntegrityResult.Error(e.message ?: "Unknown error")
+            // CORREGIDO: En caso de error, denegar por defecto (fail-safe)
+            if (com.sponsorflow.nexus.BuildConfig.DEBUG) {
+                IntegrityResult.Success(
+                    IntegrityVerdict(
+                        deviceRecognitionVerdict = "MEETS_DEVICE_INTEGRITY",
+                        appRecognitionVerdict = "PLAY_RECOGNIZED"
+                    )
+                )
+            } else {
+                IntegrityResult.Error(e.message ?: "Unknown error")
+            }
+        }
+    }
+
+    /**
+     * Verifica el token con el servidor backend
+     * Este es el método seguro para producción
+     */
+    private suspend fun verifyWithServer(token: String, nonce: String): IntegrityResult? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val serverUrl = com.sponsorflow.nexus.BuildConfig.SERVER_URL
+                val requestBody = json.encodeToString(
+                    mapOf("token" to token, "nonce" to nonce)
+                ).toRequestBody("application/json".toMediaType())
+                
+                val request = Request.Builder()
+                    .url("$serverUrl$VERIFICATION_ENDPOINT")
+                    .post(requestBody)
+                    .addHeader("Content-Type", "application/json")
+                    .build()
+                
+                val response = NetworkHelper.createClient().newCall(request).execute()
+                
+                if (response.isSuccessful) {
+                    val body = response.body?.string() ?: ""
+                    val result = json.decodeFromString<ServerIntegrityResponse>(body)
+                    
+                    if (result.valid) {
+                        IntegrityResult.Success(
+                            IntegrityVerdict(
+                                deviceRecognitionVerdict = "MEETS_DEVICE_INTEGRITY",
+                                appRecognitionVerdict = "PLAY_RECOGNIZED"
+                            )
+                        )
+                    } else {
+                        IntegrityResult.Error(result.error ?: "Server validation failed")
+                    }
+                } else {
+                    null // Fallback a local
+                }
+            } catch (e: Exception) {
+                Log.w(TAG, "Server verification failed, using fallback", e)
+                null
+            }
         }
     }
 
@@ -83,10 +159,12 @@ class IntegrityService @Inject constructor(
 
     private suspend fun requestIntegrityToken(nonce: String): String {
         return suspendCancellableCoroutine { continuation ->
+            val projectNumber = getCloudProjectNumber()
+            
             integrityManager.requestIntegrityToken(
                 IntegrityTokenRequest.builder()
                     .setNonce(nonce)
-                    .setCloudProjectNumber(CLOUD_PROJECT_NUMBER)
+                    .setCloudProjectNumber(projectNumber)
                     .build()
             ).addOnSuccessListener { response: IntegrityTokenResponse ->
                 continuation.resume(response.token())
@@ -96,11 +174,24 @@ class IntegrityService @Inject constructor(
         }
     }
 
-    private fun parseVerdict(token: String): IntegrityVerdict {
-        // En producción, enviar token al backend para verificación
-        // Por ahora, parseamos localmente (no es seguro pero sirve para desarrollo)
+    // CORREGIDO: Evaluación centralizada
+    private fun evaluateVerdict(verdict: IntegrityVerdict): IntegrityResult {
+        return when {
+            verdict.deviceRecognitionVerdict == "MEETS_DEVICE_INTEGRITY" &&
+            verdict.appRecognitionVerdict == "PLAY_RECOGNIZED" -> {
+                IntegrityResult.Success(verdict)
+            }
+            else -> {
+                IntegrityResult.Error(
+                    "Integrity check failed: device=${verdict.deviceRecognitionVerdict}, app=${verdict.appRecognitionVerdict}"
+                )
+            }
+        }
+    }
+
+    // CORREGIDO: Parseo local con fallback seguro (deniega por defecto)
+    private fun parseVerdictLocal(token: String): IntegrityVerdict {
         return try {
-            // El token es un JWT, extraer el payload
             val parts = token.split(".")
             if (parts.size >= 2) {
                 val payload = String(
@@ -109,19 +200,22 @@ class IntegrityService @Inject constructor(
                 )
                 json.decodeFromString<IntegrityVerdict>(payload)
             } else {
-                // Fallback para desarrollo
-                IntegrityVerdict(
-                    deviceRecognitionVerdict = "MEETS_DEVICE_INTEGRITY",
-                    appRecognitionVerdict = "PLAY_RECOGNIZED"
-                )
+                // Fallback seguro - denegar
+                createDenyVerdict("Invalid token format")
             }
         } catch (e: Exception) {
-            Log.w(TAG, "Failed to parse verdict, using fallback", e)
-            IntegrityVerdict(
-                deviceRecognitionVerdict = "MEETS_DEVICE_INTEGRITY",
-                appRecognitionVerdict = "PLAY_RECOGNIZED"
-            )
+            Log.w(TAG, "Failed to parse verdict", e)
+            // Fallback seguro - denegar en producción
+            createDenyVerdict("Parse error: ${e.message}")
         }
+    }
+    
+    private fun createDenyVerdict(reason: String): IntegrityVerdict {
+        Log.w(TAG, "Creating deny verdict: $reason")
+        return IntegrityVerdict(
+            deviceRecognitionVerdict = "VERIFY_FAILED",
+            appRecognitionVerdict = "UNRECOGNIZED"
+        )
     }
 
     private fun generateNonce(): String {
@@ -130,3 +224,9 @@ class IntegrityService @Inject constructor(
         return android.util.Base64.encodeToString(bytes, android.util.Base64.URL_SAFE or android.util.Base64.NO_WRAP)
     }
 }
+
+@Serializable
+data class ServerIntegrityResponse(
+    val valid: Boolean,
+    val error: String? = null
+)

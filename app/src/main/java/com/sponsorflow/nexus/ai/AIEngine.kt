@@ -1,5 +1,6 @@
 /*
- * SponsorFlow Nexus v2.3 - AI Engine (Singleton)
+ * SponsorFlow Nexus v2.4 - AI Engine (Singleton)
+ * CORREGIDO: Thread-safe con Mutex y AtomicBoolean
  */
 package com.sponsorflow.nexus.ai
 
@@ -7,14 +8,23 @@ import com.sponsorflow.nexus.core.contracts.ai.IAIEngine
 import com.sponsorflow.nexus.core.contracts.ai.ModelInfo
 import com.sponsorflow.nexus.core.result.AppError
 import com.sponsorflow.nexus.core.result.AppResult
+import kotlinx.coroutines.Mutex
+import kotlinx.coroutines.withLock
 import java.io.File
+import java.util.concurrent.atomic.AtomicBoolean
 
 object AIEngine : IAIEngine {
 
     private var llamaBridge: LlamaBridge? = null
     private var modelInfo: ModelInfo? = null
-    private var isGenerating: Boolean = false
-    private var cancelled: Boolean = false
+    
+    // Thread-safe: AtomicBoolean para estados
+    private val isGenerating = AtomicBoolean(false)
+    private val cancelled = AtomicBoolean(false)
+    
+    // Mutex para serializar operaciones de generación
+    private val generationMutex = Mutex()
+    private val modelMutex = Mutex()
 
     fun initialize() {
         if (llamaBridge == null) {
@@ -68,28 +78,43 @@ object AIEngine : IAIEngine {
         maxTokens: Int,
         temperature: Float
     ): AppResult<String> {
-        return try {
-            if (!isModelLoaded()) {
-                return AppResult.Error(AppError.AIError("Modelo no cargado"))
+        // Usar Mutex para evitar generaciones concurrentes
+        return generationMutex.withLock {
+            return@withLock try {
+                if (!isModelLoaded()) {
+                    return@withLock AppResult.Error(AppError.AIError("Modelo no cargado"))
+                }
+                
+                // Verificar y marcar como generando
+                if (isGenerating.getAndSet(true)) {
+                    return@withLock AppResult.Error(AppError.AIError("Ya hay una generación en progreso"))
+                }
+                
+                cancelled.set(false)
+                
+                try {
+                    val result = llamaBridge?.runInference(prompt, maxTokens, temperature)
+                    
+                    if (cancelled.get()) {
+                        AppResult.Error(AppError.AIError("Cancelado"))
+                    } else {
+                        AppResult.Success(result ?: "")
+                    }
+                } finally {
+                    isGenerating.set(false)
+                }
+            } catch (e: Exception) {
+                isGenerating.set(false)
+                AppResult.Error(AppError.fromException(e))
             }
-            isGenerating = true
-            cancelled = false
-            val result = llamaBridge?.runInference(prompt, maxTokens, temperature)
-            isGenerating = false
-            if (cancelled) {
-                AppResult.Error(AppError.AIError("Cancelado"))
-            } else {
-                AppResult.Success(result ?: "")
-            }
-        } catch (e: Exception) {
-            isGenerating = false
-            AppResult.Error(AppError.fromException(e))
         }
     }
 
     override fun unloadModel() {
-        llamaBridge?.unloadModel()
-        modelInfo = null
+        modelMutex.withLock {
+            llamaBridge?.unloadModel()
+            modelInfo = null
+        }
     }
 
     override fun isModelLoaded(): Boolean = llamaBridge?.isModelLoaded() ?: false
@@ -97,10 +122,10 @@ object AIEngine : IAIEngine {
     override fun getModelInfo(): ModelInfo? = modelInfo
 
     override fun cancelGeneration() {
-        cancelled = true
+        cancelled.set(true)
     }
 
-    override fun isGenerating(): Boolean = isGenerating
+    override fun isGenerating(): Boolean = isGenerating.get()
     
     // Cleanup para lifecycle
     fun destroy() {

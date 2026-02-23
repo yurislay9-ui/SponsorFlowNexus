@@ -1,5 +1,6 @@
 /*
- * SponsorFlow Nexus v2.3 - Connection Monitor (Estabilidad 30 min)
+ * SponsorFlow Nexus v2.4 - Connection Monitor (Estabilidad 30 min)
+ * CORREGIDO: Thread-safe con AtomicLong, CopyOnWriteArrayList
  */
 package com.sponsorflow.nexus.offline
 
@@ -8,22 +9,24 @@ import com.sponsorflow.nexus.network.NetworkHelper
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import okhttp3.Request
+import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicLong
 
 object ConnectionMonitor {
     
     private val client = NetworkHelper.createClient()
-    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    private var scope: CoroutineScope? = null
     
     // Estado del servidor
     private val _serverStatus = MutableStateFlow<ServerStatus>(ServerStatus.Unknown)
     val serverStatus: StateFlow<ServerStatus> = _serverStatus.asStateFlow()
     
-    // Timestamps para calcular estabilidad
-    private val connectionHistory = mutableListOf<Long>()
-    private var firstStableTime: Long = 0
+    // CORREGIDO: Thread-safe con AtomicLong y CopyOnWriteArrayList
+    private val connectionHistory = CopyOnWriteArrayList<Long>()
+    private val firstStableTime = AtomicLong(0)
     private val isStable = AtomicBoolean(false)
+    private val monitorLock = Object()
     
     // Configuración
     private const val PING_INTERVAL_MS = 2 * 60 * 1000L // 2 minutos
@@ -34,11 +37,16 @@ object ConnectionMonitor {
     private var serverUrl: String = ""
     private var pingEndpoint: String = "/api/health"
     
-    // Iniciar monitoreo
-    fun startMonitoring(@Suppress("UNUSED_PARAMETER") context: Context, serverUrl: String) {
+    // Iniciar monitoreo - CORREGIDO: recreate scope si es necesario
+    fun startMonitoring(context: Context, serverUrl: String) {
         this.serverUrl = serverUrl
         
-        scope.launch {
+        // Cancelar scope anterior si existe
+        scope?.cancel()
+        
+        scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+        
+        scope?.launch {
             while (isActive) {
                 checkServerConnection()
                 delay(PING_INTERVAL_MS)
@@ -55,6 +63,7 @@ object ConnectionMonitor {
                 .get()
                 .build()
             
+            // Timeouts configurados en el cliente
             val response = withTimeoutOrNull(PING_TIMEOUT_MS) {
                 client.newCall(request).execute()
             }
@@ -74,38 +83,43 @@ object ConnectionMonitor {
     
     // Servidor en línea
     private fun onServerOnline(timestamp: Long) {
-        connectionHistory.add(timestamp)
-        
-        // Limpiar historial antiguo (más de 1 hora)
-        val oneHourAgo = timestamp - 60 * 60 * 1000
-        connectionHistory.removeAll { it < oneHourAgo }
-        
-        // Verificar estabilidad (conexiones consistentes)
-        if (firstStableTime == 0L) {
-            firstStableTime = timestamp
-        }
-        
-        val stableDuration = timestamp - firstStableTime
-        
-        if (stableDuration >= STABILITY_DURATION_MS) {
-            isStable.set(true)
-            _serverStatus.value = ServerStatus.Stable(
-                since = firstStableTime,
-                durationMinutes = stableDuration / 60000
-            )
-        } else {
-            _serverStatus.value = ServerStatus.Online(
-                stableFor = stableDuration / 60000,
-                needsMinutes = (STABILITY_DURATION_MS - stableDuration) / 60000
-            )
+        synchronized(monitorLock) {
+            connectionHistory.add(timestamp)
+            
+            // Limpiar historial antiguo (más de 1 hora)
+            val oneHourAgo = timestamp - 60 * 60 * 1000
+            connectionHistory.removeAll { it < oneHourAgo }
+            
+            // Verificar estabilidad (conexiones consistentes)
+            if (firstStableTime.get() == 0L) {
+                firstStableTime.set(timestamp)
+            }
+            
+            val stableDuration = timestamp - firstStableTime.get()
+            
+            if (stableDuration >= STABILITY_DURATION_MS) {
+                isStable.set(true)
+                _serverStatus.value = ServerStatus.Stable(
+                    since = firstStableTime.get(),
+                    durationMinutes = stableDuration / 60000
+                )
+            } else {
+                _serverStatus.value = ServerStatus.Online(
+                    stableFor = stableDuration / 60000,
+                    needsMinutes = (STABILITY_DURATION_MS - stableDuration) / 60000
+                )
+            }
         }
     }
     
     // Servidor fuera de línea
     private fun onServerOffline() {
-        firstStableTime = 0
-        isStable.set(false)
-        _serverStatus.value = ServerStatus.Offline
+        synchronized(monitorLock) {
+            firstStableTime.set(0)
+            isStable.set(false)
+            // No limpiamos connectionHistory aquí - se limpia en onServerOnline
+            _serverStatus.value = ServerStatus.Offline
+        }
     }
     
     // Verificar si está estable (listo para sincronizar)
@@ -119,14 +133,17 @@ object ConnectionMonitor {
     
     // Detener monitoreo
     fun stopMonitoring() {
-        scope.cancel()
+        scope?.cancel()
+        scope = null
     }
     
     // Resetear estabilidad (después de sincronización fallida)
     fun resetStability() {
-        firstStableTime = 0
-        isStable.set(false)
-        connectionHistory.clear()
+        synchronized(monitorLock) {
+            firstStableTime.set(0)
+            isStable.set(false)
+            connectionHistory.clear()
+        }
     }
 }
 

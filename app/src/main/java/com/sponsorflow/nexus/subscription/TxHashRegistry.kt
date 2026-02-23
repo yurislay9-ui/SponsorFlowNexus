@@ -1,5 +1,6 @@
 /*
- * SponsorFlow Nexus v2.3 - TxHash Registry (Anti Double Spend)
+ * SponsorFlow Nexus v2.4 - TxHash Registry (Anti Double Spend)
+ * CORREGIDO: Operación atómica useIfNew, fix cleanOldRecords
  */
 package com.sponsorflow.nexus.subscription
 
@@ -11,6 +12,7 @@ object TxHashRegistry {
     
     private const val PREFS_NAME = "tx_registry"
     private var prefs: android.content.SharedPreferences? = null
+    private val lock = Any()
     
     fun init(context: Context) {
         val masterKey = MasterKey.Builder(context)
@@ -48,21 +50,32 @@ object TxHashRegistry {
             ?.apply()
     }
     
-    // Verificar y marcar atómicamente
+    // CORREGIDO: Operación atómica con synchronized
     fun useIfNew(txHash: String): Boolean {
-        if (isUsed(txHash)) return false
-        markUsedWithTimestamp(txHash)
-        return true
+        synchronized(lock) {
+            val existing = isUsed(txHash)
+            if (existing) {
+                return false
+            }
+            markUsedWithTimestamp(txHash)
+            return true
+        }
     }
     
-    // Limpiar registros antiguos (más de 30 días)
+    // CORREGIDO: Fix cleanOldRecords - copiar keys antes de iterar
     fun cleanOldRecords() {
         val cutoff = System.currentTimeMillis() - (30 * 24 * 60 * 60 * 1000L)
+        
+        // Copiar keys antes de iterar para evitar ConcurrentModificationException
+        val timeKeys: List<String> = prefs?.all?.keys?.filter { it.startsWith("tx_time_") } ?: emptyList()
+        
+        if (timeKeys.isEmpty()) return
+        
         val editor = prefs?.edit()
-        prefs?.all?.keys?.filter { it.startsWith("tx_time_") }?.forEach { key ->
+        timeKeys.forEach { key ->
             val time = prefs?.getLong(key, 0) ?: 0
-            if (time < cutoff) {
-                val txKey = key.replace("tx_time_", "tx_")
+            if (time < cutoff && time > 0) {
+                val txKey = key.removePrefix("tx_time_")
                 editor?.remove(key)?.remove(txKey)
             }
         }

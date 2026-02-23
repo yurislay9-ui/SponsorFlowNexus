@@ -1,5 +1,6 @@
 /*
- * SponsorFlow Nexus v2.3 - GGUF Model Validator
+ * SponsorFlow Nexus v2.4 - GGUF Model Validator
+ * CORREGIDO: Magic number little-endian, tamaño mínimo aumentado
  */
 package com.sponsorflow.nexus.ai
 
@@ -9,27 +10,36 @@ import android.util.Log
 
 object ModelValidator {
     
-    // Magic number de archivos GGUF: "GGUF" en ASCII
-    private const val GGUF_MAGIC = 0x46554747 // "GGUF" little-endian
-    private const val MIN_MODEL_SIZE = 1024L // Mínimo 1KB
+    // Magic number de archivos GGUF: "GGUF" en little-endian (como se almacena en archivo)
+    // GGUF en ASCII = 0x47= G, 0x47 = G, 0x55 = U, 0x46 = F
+    // En little-endian (lectura directa): 0x47475546
+    // En big-endian (como Java lee por defecto): 0x46554747
+    private const val GGUF_MAGIC_LE = 0x47475546 // GGUF en little-endian
+    private const val MIN_MODEL_SIZE = 10 * 1024 * 1024L // Mínimo 10MB para modelo real
     
     // Verificar si archivo es GGUF válido
     fun isValidGGUF(file: File): Boolean {
         if (!file.exists()) return false
-        if (file.length() < MIN_MODEL_SIZE) return false
+        if (file.length() < MIN_MODEL_SIZE) {
+            Log.w("Nexus", "Archivo demasiado pequeño: ${file.length()} bytes")
+            return false
+        }
         
         return try {
             RandomAccessFile(file, "r").use { raf ->
-                // Leer magic number (4 bytes)
-                val magic = raf.readInt()
+                // Leer magic number (4 bytes) - Java readInt() usa big-endian
+                // Convertir de big-endian a little-endian para comparar
+                val magicBigEndian = raf.readInt()
+                val magic = Integer.reverseBytes(magicBigEndian)
                 
-                if (magic != GGUF_MAGIC) {
-                    Log.e("Nexus", "Magic number inválido: 0x${magic.toString(16)}")
+                if (magic != GGUF_MAGIC_LE) {
+                    Log.e("Nexus", "Magic number inválido: 0x${Integer.toHexString(magic)}, esperado: 0x${Integer.toHexString(GGUF_MAGIC_LE)}")
                     return false
                 }
                 
-                // Leer versión (4 bytes)
-                val version = raf.readInt()
+                // Leer versión (4 bytes) - también hay que convertir
+                val versionBigEndian = raf.readInt()
+                val version = Integer.reverseBytes(versionBigEndian)
                 Log.d("Nexus", "GGUF versión: $version")
                 
                 // Verificar versión soportada (3 o superior)

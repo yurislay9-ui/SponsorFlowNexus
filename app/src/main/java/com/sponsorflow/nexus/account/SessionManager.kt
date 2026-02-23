@@ -1,5 +1,6 @@
 /*
- * SponsorFlow Nexus v2.3 - Session Manager
+ * SponsorFlow Nexus v2.4 - Session Manager
+ * CORREGIDO: Preservar device_id en logout
  */
 package com.sponsorflow.nexus.account
 
@@ -22,48 +23,63 @@ class SessionManager(context: Context) {
         EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
     )
 
+    // Keys para prefs
+    companion object {
+        private const val KEY_USER_ID = "user_id"
+        private const val KEY_EMAIL = "email"
+        private const val KEY_DISPLAY_NAME = "display_name"
+        private const val KEY_ID_TOKEN = "id_token"
+        private const val KEY_DEVICE_ID = "device_id"
+    }
+
     fun saveSession(session: UserSession) {
         prefs.edit()
-            .putString("user_id", session.userId)
-            .putString("email", session.email)
-            .putString("display_name", session.displayName)
-            .putString("id_token", session.idToken)
+            .putString(KEY_USER_ID, session.userId)
+            .putString(KEY_EMAIL, session.email)
+            .putString(KEY_DISPLAY_NAME, session.displayName)
+            .putString(KEY_ID_TOKEN, session.idToken)
             .apply()
     }
 
     fun getSession(): UserSession? {
-        val userId = prefs.getString("user_id", null) ?: return null
+        val userId = prefs.getString(KEY_USER_ID, null) ?: return null
         return UserSession(
             userId = userId,
-            email = prefs.getString("email", "") ?: "",
-            displayName = prefs.getString("display_name", "") ?: "",
-            idToken = prefs.getString("id_token", "") ?: ""
+            email = prefs.getString(KEY_EMAIL, "") ?: "",
+            displayName = prefs.getString(KEY_DISPLAY_NAME, "") ?: "",
+            idToken = prefs.getString(KEY_ID_TOKEN, "") ?: ""
         )
     }
 
     fun clearSession() {
+        // CORREGIDO: Preservar device_id en logout para mantener identificación del dispositivo
+        val deviceId = prefs.getString(KEY_DEVICE_ID, null)
         prefs.edit().clear().apply()
+        // Restaurar device_id después de clear
+        if (deviceId != null) {
+            prefs.edit().putString(KEY_DEVICE_ID, deviceId).apply()
+        }
     }
 
-    fun isLoggedIn(): Boolean = prefs.getString("user_id", null) != null
+    fun isLoggedIn(): Boolean = prefs.getString(KEY_USER_ID, null) != null
 
     fun getDeviceId(): String {
-        var deviceId = prefs.getString("device_id", null)
+        var deviceId = prefs.getString(KEY_DEVICE_ID, null)
         if (deviceId == null) {
             deviceId = UUID.randomUUID().toString()
-            prefs.edit().putString("device_id", deviceId).apply()
+            prefs.edit().putString(KEY_DEVICE_ID, deviceId).apply()
         }
         return deviceId
     }
     
     // Obtener userId del token (para validación IDOR)
     fun getUserIdFromToken(): String? {
-        return prefs.getString("user_id", null)
+        return prefs.getString(KEY_USER_ID, null)
     }
     
     // Obtener token de sesión
     fun getToken(): String? {
-        return prefs.getString("id_token", null)
+        return prefs.getString(KEY_ID_TOKEN, null)
     }
     
     // Verificar si el usuario solicitado es el mismo del token

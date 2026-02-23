@@ -1,5 +1,6 @@
 /*
  * SponsorFlow Nexus v2.4 - Application Class
+ * CORREGIDO: @HiltWorker, scope con SupervisorJob, logSecurityEvent corregido
  */
 package com.sponsorflow.nexus
 
@@ -11,11 +12,14 @@ import androidx.work.Configuration
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import androidx.work.CoroutineWorker
+import androidx.work.WorkerParameters
 import com.sponsorflow.nexus.config.DynamicConfigManager
 import com.sponsorflow.nexus.security.IntegrityChecker
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -28,6 +32,9 @@ class NexusApplication : Application(), Configuration.Provider {
     
     private lateinit var encryptedPrefs: EncryptedSharedPreferences
     private lateinit var masterKey: MasterKey
+    
+    // CORREGIDO: Scope con SupervisorJob para poder cancelar
+    private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override val workManagerConfiguration: Configuration
         get() = Configuration.Builder()
@@ -80,15 +87,19 @@ class NexusApplication : Application(), Configuration.Provider {
         )
     }
 
+    // CORREGIDO: Usar scope con SupervisorJob
     private fun fetchRemoteConfig() {
-        CoroutineScope(Dispatchers.IO).launch {
+        applicationScope.launch {
             DynamicConfigManager(this@NexusApplication).fetchConfig()
         }
     }
     
+    // CORREGIDO: Usar clave fija, no crear infinitas claves
     private fun logSecurityEvent(event: String) {
+        // Sobrescribir en lugar de crear nuevas claves
         encryptedPrefs.edit()
-            .putString("last_security_event_${System.currentTimeMillis()}", event)
+            .putString("last_security_event", event)
+            .putLong("last_security_event_time", System.currentTimeMillis())
             .apply()
     }
     
@@ -96,10 +107,12 @@ class NexusApplication : Application(), Configuration.Provider {
     fun getMasterKey(): MasterKey = masterKey
 }
 
+// CORREGIDO: @HiltWorker para inyección correcta
+@HiltWorker
 class ConfigSyncWorker(
     appContext: android.content.Context,
-    workerParams: androidx.work.WorkerParameters
-) : androidx.work.CoroutineWorker(appContext, workerParams) {
+    workerParams: WorkerParameters
+) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
         return try {

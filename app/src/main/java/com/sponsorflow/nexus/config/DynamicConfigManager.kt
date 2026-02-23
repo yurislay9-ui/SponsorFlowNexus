@@ -1,5 +1,6 @@
 /*
- * SponsorFlow Nexus v2.3 - Dynamic Config Manager (Resilient)
+ * SponsorFlow Nexus v2.4 - Dynamic Config Manager
+ * CORREGIDO: Asignar config al campo de instancia, usar Dispatchers.IO
  */
 package com.sponsorflow.nexus.config
 
@@ -11,18 +12,22 @@ import okhttp3.Request
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.sponsorflow.nexus.network.NetworkHelper
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class DynamicConfigManager(context: Context) {
 
     private val prefs = context.getSharedPreferences("nexus_config", Context.MODE_PRIVATE)
     private val client = NetworkHelper.createClient()
     private val gson = Gson()
-    private var config: RemoteConfig? = null
+    
+    // Campo de instancia - CORREGIDO: se asigna en fetchConfig
+    @Volatile private var config: RemoteConfig? = null
 
     // Configuración por defecto hardcodeada (fallback final)
     private val defaultConfig = RemoteConfig(
         serverUrl = "",
-        minAppVersion = "2.3.0",
+        minAppVersion = "2.4.0", // CORREGIDO: 2.4.0 consistente
         maintenanceMode = false,
         google_client_id = "",
         app_signature = "",
@@ -34,35 +39,36 @@ class DynamicConfigManager(context: Context) {
     )
 
     suspend fun fetchConfig(): AppResult<RemoteConfig> {
-        return try {
-            val request = Request.Builder()
-                .url(getConfigUrl())
-                .build()
-            
-            val response = client.newCall(request).execute()
-            
-            if (response.isSuccessful) {
-                val rawJson = response.body?.string() ?: ""
+        return withContext(Dispatchers.IO) {
+            try {
+                val request = Request.Builder()
+                    .url(getConfigUrl())
+                    .build()
                 
-                // Intentar parsear JSON
-                val config = parseConfigSafe(rawJson)
+                val response = client.newCall(request).execute()
                 
-                // Guardar en cache
-                cacheConfig(config, rawJson)
-                
-                AppResult.Success(config)
-            } else {
-                // Error HTTP - usar cache o default
+                if (response.isSuccessful) {
+                    val rawJson = response.body?.string() ?: ""
+                    
+                    // CORREGIDO: Asignar al campo de instancia, no a variable local
+                    val parsedConfig = parseConfigSafe(rawJson)
+                    this@DynamicConfigManager.config = parsedConfig
+                    
+                    // Guardar en cache
+                    cacheConfig(parsedConfig, rawJson)
+                    
+                    AppResult.Success(parsedConfig)
+                } else {
+                    // Error HTTP - usar cache o default
+                    AppResult.Success(getCachedOrFallback())
+                }
+            } catch (e: JsonSyntaxException) {
+                Log.e("Nexus", "JSON malformado en config: ${e.message}")
+                AppResult.Success(getCachedOrFallback())
+            } catch (e: Exception) {
+                Log.e("Nexus", "Error cargando config: ${e.message}")
                 AppResult.Success(getCachedOrFallback())
             }
-        } catch (e: JsonSyntaxException) {
-            Log.e("Nexus", "JSON malformado en config: ${e.message}")
-            // JSON malformado - usar cache o default
-            AppResult.Success(getCachedOrFallback())
-        } catch (e: Exception) {
-            Log.e("Nexus", "Error cargando config: ${e.message}")
-            // Sin internet u otro error - usar cache o default
-            AppResult.Success(getCachedOrFallback())
         }
     }
 

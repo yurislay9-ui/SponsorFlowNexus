@@ -1,5 +1,6 @@
 /*
- * SponsorFlow Nexus v2.3 - Auth Guard (Protección de Sesión)
+ * SponsorFlow Nexus v2.4 - Auth Guard (Protección de Sesión)
+ * CORREGIDO: URL de API correcta, redirectToLogin, @Volatile, Dispatchers.IO
  */
 package com.sponsorflow.nexus.account
 
@@ -7,6 +8,9 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import com.sponsorflow.nexus.network.NetworkHelper
+import com.sponsorflow.nexus.ui.auth.LoginActivity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.Request
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
@@ -15,8 +19,15 @@ object AuthGuard {
     
     private val client = NetworkHelper.createClient()
     private val gson = Gson()
-    private var lastVerification: Long = 0
+    
+    // CORREGIDO: @Volatile para thread-safety
+    @Volatile private var lastVerification: Long = 0
     private const val VERIFICATION_INTERVAL = 5 * 60 * 1000L // 5 minutos
+    
+    // CORREGIDO: URL del servidor desde config, no del JSON
+    private fun getServerUrl(): String {
+        return com.sponsorflow.nexus.BuildConfig.SERVER_URL
+    }
     
     // Verificar token contra servidor
     suspend fun verifyToken(sessionManager: SessionManager): TokenValidationResult {
@@ -33,39 +44,42 @@ object AuthGuard {
             return TokenValidationResult.Valid
         }
         
-        return try {
-            val configUrl = com.sponsorflow.nexus.BuildConfig.CONFIG_URL
-            val request = Request.Builder()
-                .url("$configUrl/api/auth/verify")
-                .addHeader("Authorization", "Bearer $token")
-                .addHeader("X-User-ID", userId)
-                .build()
-            
-            val response = client.newCall(request).execute()
-            
-            if (response.isSuccessful) {
-                val body = response.body?.string() ?: ""
-                val verifyResponse = gson.fromJson(body, TokenVerifyResponse::class.java)
+        // CORREGIDO: withContext(Dispatchers.IO) para llamada de red
+        return withContext(Dispatchers.IO) {
+            try {
+                val serverUrl = getServerUrl()
+                val request = Request.Builder()
+                    .url("$serverUrl/api/auth/verify")
+                    .addHeader("Authorization", "Bearer $token")
+                    .addHeader("X-User-ID", userId)
+                    .build()
                 
-                if (verifyResponse.isValid) {
-                    lastVerification = now
-                    TokenValidationResult.Valid
+                val response = client.newCall(request).execute()
+                
+                if (response.isSuccessful) {
+                    val body = response.body?.string() ?: ""
+                    val verifyResponse = gson.fromJson(body, TokenVerifyResponse::class.java)
+                    
+                    if (verifyResponse.isValid) {
+                        lastVerification = now
+                        TokenValidationResult.Valid
+                    } else {
+                        sessionManager.clearSession()
+                        TokenValidationResult.Invalid(verifyResponse.error ?: "Token inválido")
+                    }
                 } else {
-                    sessionManager.clearSession()
-                    TokenValidationResult.Invalid(verifyResponse.error ?: "Token inválido")
+                    // Error de red - permitir acceso si hay sesión local
+                    if (response.code == 401 || response.code == 403) {
+                        sessionManager.clearSession()
+                        TokenValidationResult.Invalid("Sesión expirada")
+                    } else {
+                        TokenValidationResult.NetworkError
+                    }
                 }
-            } else {
+            } catch (e: Exception) {
                 // Error de red - permitir acceso si hay sesión local
-                if (response.code == 401 || response.code == 403) {
-                    sessionManager.clearSession()
-                    TokenValidationResult.Invalid("Sesión expirada")
-                } else {
-                    TokenValidationResult.NetworkError
-                }
+                TokenValidationResult.NetworkError
             }
-        } catch (e: Exception) {
-            // Error de red - permitir acceso si hay sesión local
-            TokenValidationResult.NetworkError
         }
     }
     
@@ -91,9 +105,12 @@ object AuthGuard {
         return true
     }
     
-    // Redirigir a login
+    // CORREGIDO: Redirigir a LoginActivity correctamente
     private fun redirectToLogin(activity: Activity) {
-        // Limpiar sesión y redirigir
+        val intent = Intent(activity, LoginActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        activity.startActivity(intent)
         activity.finish()
     }
     
