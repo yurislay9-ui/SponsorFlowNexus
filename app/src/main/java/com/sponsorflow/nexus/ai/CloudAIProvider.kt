@@ -43,26 +43,27 @@ class CloudAIProvider(private val config: CloudAIConfig) {
      */
     suspend fun generateResponse(prompt: String): AppResult<String> = withContext(Dispatchers.IO) {
         try {
-        val url = getApiUrl()
-        val body = buildRequestBody(prompt)
-        
-        val request = Request.Builder()
-            .url(url)
-            .addHeader("Authorization", "Bearer ${config.apiKey}")
-            .post(body.toRequestBody("application/json".toMediaType()))
-            .build()
+            val url = getApiUrl()
+            val body = buildRequestBody(prompt)
+            
+            val request = Request.Builder()
+                .url(url)
+                .addHeader("Authorization", "Bearer ${config.apiKey}")
+                .post(body.toRequestBody("application/json".toMediaType()))
+                .build()
 
-        val response = client.newCall(request).execute()
-        
-        if (response.isSuccessful) {
-            val json = response.body?.string() ?: ""
-            val result = parseResponse(json)
-            AppResult.Success(result)
-        } else {
-            AppResult.Error(AppError.NetworkError(response.code))
+            val response = client.newCall(request).execute()
+            
+            if (response.isSuccessful) {
+                val json = response.body?.string() ?: ""
+                val result = parseResponse(json)
+                AppResult.Success(result)
+            } else {
+                AppResult.Error(AppError.NetworkError(response.code))
+            }
+        } catch (e: Exception) {
+            AppResult.Error(AppError.fromException(e))
         }
-    } catch (e: Exception) {
-        AppResult.Error(AppError.fromException(e))
     }
 
     private fun getApiUrl(): String = when (config.provider) {
