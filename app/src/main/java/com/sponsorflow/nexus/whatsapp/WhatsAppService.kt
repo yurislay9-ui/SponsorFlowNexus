@@ -1,6 +1,6 @@
 /*
- * SponsorFlow Nexus - WhatsApp Service Principal
- * Anti-detección obligatorio via SubscriptionGate
+ * SponsorFlow Nexus v2.4 - WhatsApp Service Principal
+ * CORREGIDO: ConcurrentLinkedQueue thread-safe, WeakReference para instance
  */
 package com.sponsorflow.nexus.whatsapp
 
@@ -11,22 +11,30 @@ import android.view.accessibility.AccessibilityNodeInfo
 import com.sponsorflow.nexus.subscription.SubscriptionGate
 import com.sponsorflow.nexus.core.enums.SubscriptionTier
 import kotlinx.coroutines.*
+import java.lang.ref.WeakReference
+import java.util.concurrent.ConcurrentLinkedQueue
 
 class WhatsAppService : AccessibilityService() {
     
     companion object { 
         const val WA_PACKAGE = "com.whatsapp"
-        private var instance: WhatsAppService? = null
-        fun getInstance() = instance
+        // CORREGIDO: WeakReference para evitar memory leaks
+        private var instanceRef: WeakReference<WhatsAppService>? = null
+        fun getInstance() = instanceRef?.get()
     }
     
     private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
     private lateinit var subGate: SubscriptionGate
     private var tier: SubscriptionTier = SubscriptionTier.FREE
     private var lastEvent = 0L
-    private val pending = mutableListOf<Pair<String, String>>()
     
-    override fun onServiceConnected() { instance = this }
+    // CORREGIDO: ConcurrentLinkedQueue thread-safe
+    private val pending = ConcurrentLinkedQueue<Pair<String, String>>()
+    
+    override fun onServiceConnected() { 
+        instanceRef = WeakReference(this)
+    }
+    
     fun setSubscriptionGate(gate: SubscriptionGate) { subGate = gate }
     
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
@@ -45,7 +53,7 @@ class WhatsAppService : AccessibilityService() {
     private fun handleNotification(event: AccessibilityEvent) {
         val text = event.text?.joinToString(" ") ?: return
         val parts = text.split(":", limit = 2)
-        if (parts.size == 2) pending.add(parts[0].trim() to parts[1].trim())
+        if (parts.size == 2) pending.offer(parts[0].trim() to parts[1].trim())
     }
     
     private fun handleWindow() {
@@ -53,9 +61,12 @@ class WhatsAppService : AccessibilityService() {
         val root = rootInActiveWindow ?: return
         val input = findNode(root, "entry") ?: return
         val sendBtn = findNode(root, "send") ?: return
-        val (_, msg) = pending.removeAt(0)
         
-        scope.launch {
+        // CORREGIDO: Usar poll() thread-safe
+        val item = pending.poll() ?: return
+        val (_, msg) = item
+        
+        scope.launch(Dispatchers.Main) {
             // Anti-detección obligatorio via SubscriptionGate
             if (!subGate.applyAntiDetection(msg)) return@launch
             
@@ -93,5 +104,10 @@ class WhatsAppService : AccessibilityService() {
     
     fun setTier(t: SubscriptionTier) { tier = t }
     override fun onInterrupt() {}
-    override fun onDestroy() { super.onDestroy(); scope.cancel(); instance = null }
+    override fun onDestroy() { 
+        super.onDestroy()
+        scope.cancel()
+        instanceRef?.clear()
+        instanceRef = null
+    }
 }

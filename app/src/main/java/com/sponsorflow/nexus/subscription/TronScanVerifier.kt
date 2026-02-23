@@ -1,38 +1,50 @@
 /*
- * SponsorFlow Nexus v2.3 - TronScan Verifier (USDT TRC20)
+ * SponsorFlow Nexus v2.4 - TronScan Verifier (USDT TRC20)
+ * CORREGIDO: Timeouts, withContext(Dispatchers.IO), tolerancia bilateral
  */
 package com.sponsorflow.nexus.subscription
 
 import com.sponsorflow.nexus.core.result.AppError
 import com.sponsorflow.nexus.core.result.AppResult
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
+import java.util.concurrent.TimeUnit
 
 class TronScanVerifier {
 
-    private val client = OkHttpClient.Builder().build()
+    // CORREGIDO: Timeouts configurados
+    private val client = OkHttpClient.Builder()
+        .connectTimeout(30, TimeUnit.SECONDS)
+        .readTimeout(30, TimeUnit.SECONDS)
+        .build()
+    
     private val gson = Gson()
 
+    // CORREGIDO: withContext(Dispatchers.IO)
     suspend fun verifyPayment(
         txHash: String,
         expectedAmount: Double,
         recipientAddress: String
-    ): AppResult<PaymentVerification> = try {
-        val request = Request.Builder()
-            .url("$TRONSCAN_API/transaction-info?hash=$txHash")
-            .build()
-        val response = client.newCall(request).execute()
-        if (!response.isSuccessful) {
-            AppResult.Error(AppError.PaymentError("Transacción no encontrada"))
-        } else {
-            val txInfo = parseTransaction(response.body?.string() ?: "")
-            val isValid = validateTransaction(txInfo, expectedAmount, recipientAddress)
-            AppResult.Success(isValid)
+    ): AppResult<PaymentVerification> = withContext(Dispatchers.IO) {
+        try {
+            val request = Request.Builder()
+                .url("$TRONSCAN_API/transaction-info?hash=$txHash")
+                .build()
+            val response = client.newCall(request).execute()
+            if (!response.isSuccessful) {
+                AppResult.Error(AppError.PaymentError("Transacción no encontrada"))
+            } else {
+                val txInfo = parseTransaction(response.body?.string() ?: "")
+                val isValid = validateTransaction(txInfo, expectedAmount, recipientAddress)
+                AppResult.Success(isValid)
+            }
+        } catch (e: Exception) {
+            AppResult.Error(AppError.fromException(e))
         }
-    } catch (e: Exception) {
-        AppResult.Error(AppError.fromException(e))
     }
 
     private fun parseTransaction(json: String): TransactionInfo {
@@ -61,8 +73,8 @@ class TronScanVerifier {
         }
         
         val isCorrectRecipient = tx.to.equals(recipient, ignoreCase = true)
-        // Validar monto exacto (con tolerancia de 0.01 USDT)
-        val isCorrectAmount = tx.amount >= (expected - 0.01)
+        // CORREGIDO: Tolerancia bilateral (0.01 menos, 0.10 más)
+        val isCorrectAmount = tx.amount >= (expected - 0.01) && tx.amount <= (expected + 0.10)
         val isUSDT = tx.token == "USDT"
         val isConfirmed = tx.confirmations >= MIN_CONFIRMATIONS
         
@@ -80,7 +92,7 @@ class TronScanVerifier {
             confirmations = tx.confirmations,
             error = when {
                 !isCorrectRecipient -> "Wallet incorrecta"
-                !isCorrectAmount -> "Monto incorrecto: ${tx.amount} USDT"
+                !isCorrectAmount -> "Monto incorrecto: ${tx.amount} USDT (esperado: $expected)"
                 !isUSDT -> "Token incorrecto"
                 !isConfirmed -> "Pendiente confirmaciones: ${tx.confirmations}/$MIN_CONFIRMATIONS"
                 else -> null
