@@ -29,11 +29,22 @@ sealed class AppError {
     data class ResourceNotFound(val resource: String, val id: String? = null) : AppError()
     data class ResourceExhausted(val resource: String) : AppError()
     
+    // Errores de inventario
+    data class NotFound(val message: String) : AppError()
+    data class InsufficientStock(val message: String) : AppError()
+    
+    // Error desconocido
+    data object Unknown : AppError()
+    
     // Errores inesperados
     data class UnexpectedError(val cause: Throwable? = null) : AppError()
     
     // Errores de parsing
     data class ParseError(val message: String, val rawData: String? = null) : AppError()
+    
+    companion object {
+        fun fromException(e: Exception): AppError = UnexpectedError(e)
+    }
     
     fun toUserMessage(): String = when (this) {
         is NetworkError -> "Error de conexión. Verifica tu internet."
@@ -48,6 +59,9 @@ sealed class AppError {
         is SubscriptionError -> "Error de suscripción: $message"
         is ResourceNotFound -> "Recurso no encontrado."
         is ResourceExhausted -> "Recurso agotado."
+        is NotFound -> message
+        is InsufficientStock -> message
+        is Unknown -> "Error desconocido."
         is UnexpectedError -> "Error inesperado."
         is ParseError -> "Error al procesar datos."
     }
