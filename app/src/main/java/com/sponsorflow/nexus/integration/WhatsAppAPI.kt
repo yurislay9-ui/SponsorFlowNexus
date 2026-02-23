@@ -11,6 +11,9 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.MediaType.Companion.toMediaType
 import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.util.concurrent.TimeUnit
 
 data class WhatsAppConfig(
     val phoneNumberId: String,
@@ -20,11 +23,21 @@ data class WhatsAppConfig(
 
 class WhatsAppAPI(private val config: WhatsAppConfig) {
 
-    private val client = OkHttpClient.Builder().build()
+    // CORREGIDO: Timeouts configurados
+    private val client = OkHttpClient.Builder()
+        .connectTimeout(30, TimeUnit.SECONDS)
+        .readTimeout(30, TimeUnit.SECONDS)
+        .writeTimeout(30, TimeUnit.SECONDS)
+        .build()
+    
     private val gson = Gson()
     private val baseUrl = "https://graph.facebook.com/v18.0"
 
-    suspend fun sendMessage(to: String, message: String): AppResult<String> = try {
+    /**
+     * Envía mensaje de WhatsApp
+     * CORREGIDO: withContext(Dispatchers.IO) para llamada bloqueante
+     */
+    suspend fun sendMessage(to: String, message: String): AppResult<String> = withContext(Dispatchers.IO) {
         val url = "$baseUrl/${config.phoneNumberId}/messages"
         val body = gson.toJson(mapOf(
             "messaging_product" to "whatsapp",

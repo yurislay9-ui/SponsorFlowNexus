@@ -55,9 +55,22 @@ class PluginManager(private val context: Context) {
         }
     }
 
+    /**
+     * Ejecuta todos los plugins de un tipo dado
+     * CORREGIDO: Captura excepciones para evitar que un plugin rompa los demás
+     */
     fun executeByType(type: PluginType, input: Map<String, Any>): List<PluginResult> {
         return plugins.values
             .filter { it.info.type == type && isEnabled(it.info.id) }
-            .map { it.execute(input) }
+            .map { plugin ->
+                try {
+                    plugin.execute(input)
+                } catch (e: Exception) {
+                    PluginResult(
+                        success = false,
+                        error = "Plugin ${plugin.info.name} falló: ${e.message}"
+                    )
+                }
+            }
     }
 }

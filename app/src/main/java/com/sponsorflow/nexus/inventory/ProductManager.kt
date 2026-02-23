@@ -39,16 +39,64 @@ class ProductManager(private val productRepo: ProductRepository) {
         return productRepo.getByCategory(category)
     }
 
+    /**
+     * Actualiza stock de forma atómica usando operaciones del DAO
+     * CORREGIDO: Usa operaciones atómicas en lugar de read-modify-write
+     */
     suspend fun updateStock(productId: Long, newStock: Int): AppResult<Unit> {
-        return productRepo.getById(productId).flatMap { product ->
-            if (product != null) {
-                val updated = product.copy(stockQuantity = newStock)
-                productRepo.update(updated)
-            } else {
-                com.sponsorflow.nexus.core.result.AppResult.Error(
-                    com.sponsorflow.nexus.core.result.AppError.ValidationError("id", "Producto no encontrado")
-                )
+        val currentStock = productRepo.getStock(productId)
+        
+        return when {
+            currentStock == null -> {
+                AppResult.Error(AppError.ValidationError("id", "Producto no encontrado"))
             }
+            newStock < 0 -> {
+                AppResult.Error(AppError.ValidationError("stock", "Stock no puede ser negativo"))
+            }
+            newStock > currentStock -> {
+                // Aumentar stock - operación atómica
+                val increase = newStock - currentStock
+                productRepo.increaseStock(productId, increase)
+                AppResult.Success(Unit)
+            }
+            newStock < currentStock -> {
+                // Disminuir stock - operación atómica
+                val decrease = currentStock - newStock
+                val success = productRepo.decreaseStock(productId, decrease)
+                if (success) {
+                    AppResult.Success(Unit)
+                } else {
+                    AppResult.Error(AppError.ValidationError("stock", "Stock insuficiente"))
+                }
+            }
+            else -> {
+                // Sin cambios
+                AppResult.Success(Unit)
+            }
+        }
+    }
+    
+    /**
+     * Aumenta stock de forma atómica
+     */
+    suspend fun increaseStock(productId: Long, quantity: Int): AppResult<Unit> {
+        val success = productRepo.increaseStock(productId, quantity)
+        return if (success) {
+            AppResult.Success(Unit)
+        } else {
+            AppResult.Error(AppError.ValidationError("id", "Producto no encontrado"))
+        }
+    }
+    
+    /**
+     * Disminuye stock de forma atómica
+     */
+    suspend fun decreaseStock(productId: Long, quantity: Int): AppResult<Unit> {
+        val success = productRepo.decreaseStock(productId, quantity)
+        return if (success) {
+            AppResult.Success(Unit)
+        } else {
+            AppResult.Error(AppError.ValidationError("stock", "Stock insuficiente"))
         }
     }
 
