@@ -10,10 +10,16 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.File
 import java.io.FileOutputStream
+import java.util.concurrent.TimeUnit
 
 class ResourceDownloadManager(private val context: Context) {
 
-    private val client = OkHttpClient.Builder().build()
+    // CORREGIDO: Timeouts configurados explícitamente
+    private val client = OkHttpClient.Builder()
+        .connectTimeout(60, TimeUnit.SECONDS)
+        .readTimeout(300, TimeUnit.SECONDS)
+        .writeTimeout(60, TimeUnit.SECONDS)
+        .build()
 
     suspend fun downloadModel(
         url: String,

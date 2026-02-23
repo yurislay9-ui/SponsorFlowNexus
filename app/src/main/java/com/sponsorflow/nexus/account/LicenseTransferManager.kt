@@ -6,6 +6,8 @@ package com.sponsorflow.nexus.account
 import com.sponsorflow.nexus.network.NetworkHelper
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.Request
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -24,11 +26,15 @@ object LicenseTransferManager {
         data class Error(val message: String, val canRetry: Boolean = true) : TransferState()
     }
 
+    /**
+     * Solicita transferencia de licencia
+     * CORREGIDO: withContext(Dispatchers.IO) para llamada bloqueante
+     */
     suspend fun requestTransfer(
         licenseKey: String,
         email: String,
         sessionManager: SessionManager
-    ): TransferState {
+    ): TransferState = withContext(Dispatchers.IO) {
         val configUrl = com.sponsorflow.nexus.BuildConfig.CONFIG_URL
         val newDeviceId = sessionManager.getDeviceId()
 
@@ -39,7 +45,7 @@ object LicenseTransferManager {
             "action" to "request_transfer"
         ))
 
-        return try {
+        try {
             val request = Request.Builder()
                 .url("$configUrl/api/license/transfer/request")
                 .post(requestBody.toRequestBody("application/json".toMediaType()))

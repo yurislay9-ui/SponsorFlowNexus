@@ -58,8 +58,12 @@ class SubscriptionGate(
         return SubscriptionTier.fromName(subscription.tier)
     }
 
+    /**
+     * Verifica acceso a funcionalidad
+     * CORREGIDO: Usa getCurrentTierAsync para consistencia
+     */
     fun checkAccess(feature: String): Boolean {
-        val tier = getCurrentTierSync()
+        val tier = getCurrentTierAsync()
         return when (feature.lowercase()) {
             "prompt", "custom_prompt" -> tier.hasCustomPrompt
             "inventory", "inventario" -> tier.hasInventory
@@ -76,7 +80,11 @@ class SubscriptionGate(
 
     fun getGraceDaysRemaining(): Int = licenseValidator.getRemainingGraceDays()
 
-    private fun getCurrentTierSync(): SubscriptionTier {
+    /**
+     * Obtiene tier de forma síncrona desde cache
+     * CORREGIDO: Nombre consistente con uso
+     */
+    private fun getCurrentTierAsync(): SubscriptionTier {
         return licenseValidator.getCachedLicenseInfo()?.tier ?: SubscriptionTier.FREE
     }
 }

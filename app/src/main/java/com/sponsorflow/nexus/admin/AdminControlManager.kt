@@ -11,6 +11,8 @@ import android.os.BatteryManager
 import android.provider.Settings
 import android.util.Log
 import androidx.work.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.net.URL
 import java.util.concurrent.TimeUnit
@@ -74,8 +76,12 @@ class AdminControlManager(private val context: Context) {
         return bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
     }
     
-    suspend fun sendHeartbeat(): Boolean {
-        if (ADMIN_HEARTBEAT_URL.isBlank()) return false
+    /**
+     * Envía heartbeat al servidor de administración
+     * CORREGIDO: withContext(Dispatchers.IO) para llamada bloqueante
+     */
+    suspend fun sendHeartbeat(): Boolean = withContext(Dispatchers.IO) {
+        if (ADMIN_HEARTBEAT_URL.isBlank()) return@withContext false
         val status = getDeviceStatus()
         val json = JSONObject().apply {
             put("event_type", "admin_heartbeat")
@@ -87,12 +93,16 @@ class AdminControlManager(private val context: Context) {
             put("battery_level", status.batteryLevel)
             put("timestamp", System.currentTimeMillis())
         }
-        return try { postJson(ADMIN_HEARTBEAT_URL, json.toString()); Log.d(TAG, "Heartbeat sent"); true }
+        try { postJson(ADMIN_HEARTBEAT_URL, json.toString()); Log.d(TAG, "Heartbeat sent"); true }
         catch (e: Exception) { Log.e(TAG, "Heartbeat failed: ${e.message}"); false }
     }
     
-    suspend fun reportError(errorType: String, message: String, stackTrace: String? = null) {
-        if (ADMIN_ERROR_URL.isBlank()) return
+    /**
+     * Reporta error al servidor de administración
+     * CORREGIDO: withContext(Dispatchers.IO) para llamada bloqueante
+     */
+    suspend fun reportError(errorType: String, message: String, stackTrace: String? = null) = withContext(Dispatchers.IO) {
+        if (ADMIN_ERROR_URL.isBlank()) return@withContext
         val json = JSONObject().apply {
             put("event_type", "admin_error_report")
             put("device_id", getDeviceId(context))
