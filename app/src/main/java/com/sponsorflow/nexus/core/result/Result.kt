@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.3 - Result Type
+ * SponsorFlow Nexus v2.4 - Result Type
  * Skill: Mejores prácticas - Sealed class para estados
  */
 package com.sponsorflow.nexus.core.result
@@ -36,4 +36,10 @@ sealed class AppResult<out T> {
     fun isSuccess(): Boolean = this is Success
     fun isError(): Boolean = this is Error
     fun isLoading(): Boolean = this is Loading
+    
+    companion object {
+        fun <T> success(data: T): AppResult<T> = Success(data)
+        fun <T> error(error: AppError, message: String? = null): AppResult<T> = Error(error, message)
+        fun <T> loading(): AppResult<T> = Loading
+    }
 }

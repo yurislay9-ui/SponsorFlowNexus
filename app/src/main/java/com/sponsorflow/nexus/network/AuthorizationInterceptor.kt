@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.3 - Authorization Interceptor (Anti-IDOR)
+ * SponsorFlow Nexus v2.4 - Authorization Interceptor (Anti-IDOR)
  */
 package com.sponsorflow.nexus.network
 
@@ -62,6 +62,6 @@ class AuthorizationInterceptor(
     }
     
     private fun generateRequestId(): String {
-        return "${System.currentTimeMillis()}-${(1000..9999).random()}"
+        return "${System.currentTimeMillis()}-${java.util.concurrent.ThreadLocalRandom.current().nextInt(1000, 9999)}"
     }
 }

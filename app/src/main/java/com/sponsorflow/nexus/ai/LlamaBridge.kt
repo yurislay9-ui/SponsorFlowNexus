@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.3 - Llama.cpp JNI Bridge
+ * SponsorFlow Nexus v2.4 - Llama.cpp JNI Bridge
  */
 package com.sponsorflow.nexus.ai
 
@@ -52,10 +52,4 @@ class LlamaBridge {
     }
 
     fun isModelLoaded(): Boolean = isLoaded && modelHandle != 0L
-
-    companion object {
-        init {
-            System.loadLibrary("llamanexus")
-        }
-    }
 }

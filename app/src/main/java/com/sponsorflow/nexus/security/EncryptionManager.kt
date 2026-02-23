@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.3 - Encryption Manager (AES-256-GCM)
+ * SponsorFlow Nexus v2.4 - Encryption Manager (AES-256-GCM)
  */
 package com.sponsorflow.nexus.security
 
@@ -18,6 +18,7 @@ import javax.crypto.spec.GCMParameterSpec
 class EncryptionManager : IEncryptionService {
 
     private val keyStore = KeyStore.getInstance("AndroidKeyStore").apply { load(null) }
+    @Volatile
     private var secretKey: SecretKey? = null
 
     init {

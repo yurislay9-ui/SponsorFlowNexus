@@ -1,37 +1,54 @@
 /*
- * SponsorFlow Nexus v2.3 - App Error Types
+ * SponsorFlow Nexus v2.4 - App Error Types
  * Skill: Seguridad - Categorización de errores
  */
 package com.sponsorflow.nexus.core.result
 
 sealed class AppError {
-    data class NetworkError(val code: Int? = null, val message: String? = null) : AppError()
-    data class DatabaseError(val cause: Throwable? = null) : AppError()
-    data class LicenseError(val reason: String) : AppError()
-    data class AIError(val reason: String) : AppError()
-    data class PluginError(val pluginId: String, val reason: String) : AppError()
-    data class SecurityError(val reason: String) : AppError()
-    data class ValidationError(val field: String, val reason: String) : AppError()
-    data class PaymentError(val reason: String) : AppError()
-    data class UnknownError(val cause: Throwable? = null) : AppError()
-
+    // Errores de red
+    data class NetworkError(val message: String, val code: Int? = null) : AppError()
+    data class TimeoutError(val message: String) : AppError()
+    
+    // Errores de base de datos
+    data class DatabaseError(val cause: Throwable) : AppError()
+    
+    // Errores de autenticación y permisos
+    data class AuthError(val message: String) : AppError()
+    data class PermissionError(val message: String) : AppError()
+    
+    // Errores de seguridad
+    data class SecurityError(val message: String) : AppError()
+    data class ValidationError(val message: String, val field: String? = null) : AppError()
+    
+    // Errores de lógica de negocio
+    data class LicenseError(val message: String, val code: Int? = null) : AppError()
+    data class PaymentError(val message: String, val code: Int? = null) : AppError()
+    data class SubscriptionError(val message: String) : AppError()
+    
+    // Errores de recursos
+    data class ResourceNotFound(val resource: String, val id: String? = null) : AppError()
+    data class ResourceExhausted(val resource: String) : AppError()
+    
+    // Errores inesperados
+    data class UnexpectedError(val cause: Throwable? = null) : AppError()
+    
+    // Errores de parsing
+    data class ParseError(val message: String, val rawData: String? = null) : AppError()
+    
     fun toUserMessage(): String = when (this) {
-        is NetworkError -> "Error de conexión"
-        is DatabaseError -> "Error de datos"
-        is LicenseError -> "Error de licencia: $reason"
-        is AIError -> "Error de IA: $reason"
-        is PluginError -> "Error en plugin: $reason"
-        is SecurityError -> "Error de seguridad: $reason"
-        is ValidationError -> "Dato inválido: $field"
-        is PaymentError -> "Error de pago: $reason"
-        is UnknownError -> "Error inesperado"
-    }
-
-    companion object {
-        fun fromException(t: Throwable): AppError = when (t) {
-            is java.net.UnknownHostException -> NetworkError(message = "Sin conexión")
-            is java.net.SocketTimeoutException -> NetworkError(message = "Tiempo agotado")
-            else -> UnknownError(cause = t)
-        }
+        is NetworkError -> "Error de conexión. Verifica tu internet."
+        is TimeoutError -> "Tiempo de espera agotado. Intenta de nuevo."
+        is DatabaseError -> "Error de base de datos."
+        is AuthError -> "Error de autenticación."
+        is PermissionError -> "Permiso denegado."
+        is SecurityError -> "Error de seguridad."
+        is ValidationError -> message
+        is LicenseError -> "Error de licencia: $message"
+        is PaymentError -> "Error de pago: $message"
+        is SubscriptionError -> "Error de suscripción: $message"
+        is ResourceNotFound -> "Recurso no encontrado."
+        is ResourceExhausted -> "Recurso agotado."
+        is UnexpectedError -> "Error inesperado."
+        is ParseError -> "Error al procesar datos."
     }
 }

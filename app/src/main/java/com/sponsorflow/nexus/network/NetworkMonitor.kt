@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.3 - Network Monitor (WiFi/4G Handover)
+ * SponsorFlow Nexus v2.4 - Network Monitor (WiFi/4G Handover)
  */
 package com.sponsorflow.nexus.network
 
@@ -8,6 +8,7 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
+import java.util.concurrent.atomic.AtomicBoolean
 
 sealed class NetworkState {
     object Available : NetworkState()
@@ -20,8 +21,8 @@ class NetworkMonitor(private val context: Context) {
     private var connectivityManager: ConnectivityManager? = null
     private var callback: NetworkCallback? = null
     private var listener: ((NetworkState) -> Unit)? = null
-    private var isWifi = false
-    private var isCellular = false
+    private val isWifi = AtomicBoolean(false)
+    private val isCellular = AtomicBoolean(false)
     
     fun init(onStateChange: (NetworkState) -> Unit) {
         listener = onStateChange
@@ -63,8 +64,8 @@ class NetworkMonitor(private val context: Context) {
         
         override fun onAvailable(network: Network) {
             val type = getConnectionType()
-            isWifi = type == "wifi"
-            isCellular = type == "cellular"
+            isWifi.set(type == "wifi")
+            isCellular.set(type == "cellular")
             listener?.invoke(NetworkState.Available)
         }
         
@@ -76,16 +77,16 @@ class NetworkMonitor(private val context: Context) {
             network: Network,
             capabilities: NetworkCapabilities
         ) {
-            val wasWifi = isWifi
-            val wasCellular = isCellular
+            val wasWifi = isWifi.get()
+            val wasCellular = isCellular.get()
             
-            isWifi = capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
-            isCellular = capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
+            isWifi.set(capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI))
+            isCellular.set(capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR))
             
             // Detectar cambio de red
-            if (wasWifi && isCellular) {
+            if (wasWifi && isCellular.get()) {
                 listener?.invoke(NetworkState.Changed("wifi_to_cellular"))
-            } else if (wasCellular && isWifi) {
+            } else if (wasCellular && isWifi.get()) {
                 listener?.invoke(NetworkState.Changed("cellular_to_wifi"))
             }
         }
