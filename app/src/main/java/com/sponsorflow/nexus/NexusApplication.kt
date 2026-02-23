@@ -36,10 +36,15 @@ class NexusApplication : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
-        initSecurity()
-        initEncryptedStorage()
-        initWorkManager()
-        fetchRemoteConfig()
+        try {
+            initEncryptedStorage()  // Inicializar ANTES de security
+            initSecurity()
+            initWorkManager()
+            fetchRemoteConfig()
+        } catch (e: Exception) {
+            // Evitar crash si algo falla en inicialización
+            android.util.Log.e("NexusApplication", "Error inicializando: ${e.message}")
+        }
     }
 
     private fun initSecurity() {
