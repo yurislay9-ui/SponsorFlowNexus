@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Conversation Cache
+ * SponsorFlow Nexus v1.0 - Conversation Cache
  * CORREGIDO: ConcurrentHashMap, límite EMPRESARIO
  */
 package com.sponsorflow.nexus.cache

@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - AI Memory Manager
+ * SponsorFlow Nexus v1.0 - AI Memory Manager
  * CORREGIDO: ConcurrentHashMap, JSON serialization
  */
 package com.sponsorflow.nexus.cache

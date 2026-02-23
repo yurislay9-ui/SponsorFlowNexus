@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.3 - Template DAO
+ * SponsorFlow Nexus v1.0 - Template DAO
  */
 package com.sponsorflow.nexus.data.dao
 

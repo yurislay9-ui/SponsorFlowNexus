@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.3 - Repository Interface
+ * SponsorFlow Nexus v1.0 - Repository Interface
  * Skill: Mejores prácticas - Interface genérica CRUD
  */
 package com.sponsorflow.nexus.core.contracts.repository

@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - TxHash Registry (Anti Double Spend)
+ * SponsorFlow Nexus v1.0 - TxHash Registry (Anti Double Spend)
  * CORREGIDO: Operación atómica useIfNew, fix cleanOldRecords
  */
 package com.sponsorflow.nexus.subscription

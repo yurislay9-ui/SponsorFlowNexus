@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Plugin Manager
+ * SponsorFlow Nexus v1.0 - Plugin Manager
  * Plan: ENTERPRISE
  * CORREGIDO: Thread-safe con ConcurrentHashMap
  */

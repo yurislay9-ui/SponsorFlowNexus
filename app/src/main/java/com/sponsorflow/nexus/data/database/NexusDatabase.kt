@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Room Database
+ * SponsorFlow Nexus v1.0 - Room Database
  * Skill: Seguridad - Base de datos con Room
  */
 package com.sponsorflow.nexus.data.database

@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Security Module (Hilt)
+ * SponsorFlow Nexus v1.0 - Security Module (Hilt)
  * EncryptedSharedPreferences, Play Integrity, Certificate Pinning
  */
 package com.sponsorflow.nexus.di

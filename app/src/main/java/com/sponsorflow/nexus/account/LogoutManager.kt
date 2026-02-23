@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.3 - Logout Manager (Factory Reset)
+ * SponsorFlow Nexus v1.0 - Logout Manager (Factory Reset)
  */
 package com.sponsorflow.nexus.account
 

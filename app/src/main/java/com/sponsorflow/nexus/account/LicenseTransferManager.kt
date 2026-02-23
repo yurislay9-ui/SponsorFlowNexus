@@ -1,6 +1,6 @@
 /*
- * SponsorFlow Nexus v2.4 - License Transfer Manager
- * CORREGIDO: Version actualizada a v2.4, withContext en todas las funciones
+ * SponsorFlow Nexus v1.0 - License Transfer Manager
+ * CORREGIDO: Version actualizada a v1.0, withContext en todas las funciones
  */
 package com.sponsorflow.nexus.account
 

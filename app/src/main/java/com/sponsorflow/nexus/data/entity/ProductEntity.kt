@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Product Entity
+ * SponsorFlow Nexus v1.0 - Product Entity
  * Entidad robusta para e-commerce profesional
  */
 package com.sponsorflow.nexus.data.entity

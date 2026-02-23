@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Encryption Manager (AES-256-GCM)
+ * SponsorFlow Nexus v1.0 - Encryption Manager (AES-256-GCM)
  */
 package com.sponsorflow.nexus.security
 

@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Rust Bridge
+ * SponsorFlow Nexus v1.0 - Rust Bridge
  * Puente JNI para llamar funciones nativas de Rust
  */
 package com.sponsorflow.nexus.rust

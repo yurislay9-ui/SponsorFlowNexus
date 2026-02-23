@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Accessibility Service
+ * SponsorFlow Nexus v1.0 - Accessibility Service
  * CORREGIDO: MessageHandler implementado con funcionalidad completa
  */
 package com.sponsorflow.nexus.core

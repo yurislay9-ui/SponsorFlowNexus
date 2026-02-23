@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.3 - Subscription Tiers
+ * SponsorFlow Nexus v1.0 - Subscription Tiers
  * Skill: Mejores prácticas - Enum con propiedades
  */
 package com.sponsorflow.nexus.core.enums

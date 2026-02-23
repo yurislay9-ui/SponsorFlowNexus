@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Human Behavior Simulator
+ * SponsorFlow Nexus v1.0 - Human Behavior Simulator
  * CORREGIDO: Thread-safe con ThreadLocalRandom
  */
 package com.sponsorflow.nexus.antidetection

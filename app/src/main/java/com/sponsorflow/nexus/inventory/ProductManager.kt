@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Product Manager
+ * SponsorFlow Nexus v1.0 - Product Manager
  * CORREGIDO: Thread-safe, operaciones atómicas
  */
 package com.sponsorflow.nexus.inventory

@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.3 - Template Entity
+ * SponsorFlow Nexus v1.0 - Template Entity
  */
 package com.sponsorflow.nexus.data.entity
 

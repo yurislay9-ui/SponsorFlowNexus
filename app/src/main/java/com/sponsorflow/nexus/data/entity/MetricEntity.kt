@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.3 - Metric Entity
+ * SponsorFlow Nexus v1.0 - Metric Entity
  */
 package com.sponsorflow.nexus.data.entity
 

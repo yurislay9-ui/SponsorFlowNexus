@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - GGUF Model Validator
+ * SponsorFlow Nexus v1.0 - GGUF Model Validator
  * CORREGIDO: Magic number little-endian, tamaño mínimo aumentado
  */
 package com.sponsorflow.nexus.ai

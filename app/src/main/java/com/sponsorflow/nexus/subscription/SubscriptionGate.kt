@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Subscription Gate
+ * SponsorFlow Nexus v1.0 - Subscription Gate
  * Anti-detección obligatorio para WhatsApp en todos los planes
  */
 package com.sponsorflow.nexus.subscription

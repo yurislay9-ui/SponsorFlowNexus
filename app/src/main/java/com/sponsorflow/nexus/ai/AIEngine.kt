@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - AI Engine (Singleton)
+ * SponsorFlow Nexus v1.0 - AI Engine (Singleton)
  * CORREGIDO: Thread-safe con Mutex y AtomicBoolean
  */
 package com.sponsorflow.nexus.ai

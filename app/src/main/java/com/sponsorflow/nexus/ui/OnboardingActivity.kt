@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Onboarding Activity
+ * SponsorFlow Nexus v1.0 - Onboarding Activity
  */
 package com.sponsorflow.nexus.ui
 

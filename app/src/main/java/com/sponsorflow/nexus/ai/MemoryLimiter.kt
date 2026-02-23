@@ -1,7 +1,7 @@
 /*
- * SponsorFlow Nexus v2.4 - Memory Limiter
+ * SponsorFlow Nexus v1.0 - Memory Limiter
  * Plan: OBSERVADOR, DESARROLLO, EMPRESARIO
- * CORREGIDO: Version actualizada a v2.4
+ * CORREGIDO: Version actualizada a v1.0
  */
 package com.sponsorflow.nexus.ai
 

@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.3 - Foreground Service
+ * SponsorFlow Nexus v1.0 - Foreground Service
  */
 package com.sponsorflow.nexus.core
 

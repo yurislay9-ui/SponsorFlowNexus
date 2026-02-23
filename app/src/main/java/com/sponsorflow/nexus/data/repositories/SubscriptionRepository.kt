@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.3 - Subscription Repository
+ * SponsorFlow Nexus v1.0 - Subscription Repository
  */
 package com.sponsorflow.nexus.data.repositories
 

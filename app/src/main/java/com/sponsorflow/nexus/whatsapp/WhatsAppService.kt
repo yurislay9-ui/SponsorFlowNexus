@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - WhatsApp Service Principal
+ * SponsorFlow Nexus v1.0 - WhatsApp Service Principal
  * CORREGIDO: ConcurrentLinkedQueue thread-safe, WeakReference para instance
  */
 package com.sponsorflow.nexus.whatsapp

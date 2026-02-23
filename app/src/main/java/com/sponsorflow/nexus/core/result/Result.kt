@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Result Type
+ * SponsorFlow Nexus v1.0 - Result Type
  * Skill: Mejores prácticas - Sealed class para estados
  */
 package com.sponsorflow.nexus.core.result

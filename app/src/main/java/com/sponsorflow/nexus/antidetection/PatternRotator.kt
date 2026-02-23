@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Pattern Rotator
+ * SponsorFlow Nexus v1.0 - Pattern Rotator
  * CORREGIDO: Thread-safe con AtomicInteger
  */
 package com.sponsorflow.nexus.antidetection

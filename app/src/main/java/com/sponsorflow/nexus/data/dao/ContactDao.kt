@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.3 - Contact DAO
+ * SponsorFlow Nexus v1.0 - Contact DAO
  */
 package com.sponsorflow.nexus.data.dao
 

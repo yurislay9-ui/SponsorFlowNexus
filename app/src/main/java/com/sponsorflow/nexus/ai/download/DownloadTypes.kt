@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.3 - Download Types
+ * SponsorFlow Nexus v1.0 - Download Types
  */
 package com.sponsorflow.nexus.ai.download
 

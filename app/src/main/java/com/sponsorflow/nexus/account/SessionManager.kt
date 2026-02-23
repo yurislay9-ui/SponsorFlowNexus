@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Session Manager
+ * SponsorFlow Nexus v1.0 - Session Manager
  * CORREGIDO: Preservar device_id en logout
  */
 package com.sponsorflow.nexus.account

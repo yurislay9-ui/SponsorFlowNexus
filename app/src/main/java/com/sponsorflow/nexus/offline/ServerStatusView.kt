@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.3 - Server Status View (Debug UI)
+ * SponsorFlow Nexus v1.0 - Server Status View (Debug UI)
  */
 package com.sponsorflow.nexus.offline
 

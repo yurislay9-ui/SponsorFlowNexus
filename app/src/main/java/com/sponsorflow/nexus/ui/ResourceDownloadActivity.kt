@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.3 - Resource Download Activity
+ * SponsorFlow Nexus v1.0 - Resource Download Activity
  */
 package com.sponsorflow.nexus.ui
 

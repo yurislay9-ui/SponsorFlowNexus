@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.3 - Conversation DAO
+ * SponsorFlow Nexus v1.0 - Conversation DAO
  */
 package com.sponsorflow.nexus.data.dao
 

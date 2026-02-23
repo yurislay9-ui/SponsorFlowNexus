@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Auth Guard (Protección de Sesión)
+ * SponsorFlow Nexus v1.0 - Auth Guard (Protección de Sesión)
  * CORREGIDO: URL de API correcta, redirectToLogin, @Volatile, Dispatchers.IO
  */
 package com.sponsorflow.nexus.account

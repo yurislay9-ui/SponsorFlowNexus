@@ -1,6 +1,6 @@
 /*
- * SponsorFlow Nexus v2.4 - Network Helper
- * CORREGIDO: Version actualizada a v2.4, timeouts adecuados
+ * SponsorFlow Nexus v1.0 - Network Helper
+ * CORREGIDO: Version actualizada a v1.0, timeouts adecuados
  */
 package com.sponsorflow.nexus.network
 

@@ -1,7 +1,7 @@
 /*
- * SponsorFlow Nexus v2.4 - Multi-Language Manager
+ * SponsorFlow Nexus v1.0 - Multi-Language Manager
  * Plan: PRO y ENTERPRISE
- * CORREGIDO: Version actualizada a v2.4
+ * CORREGIDO: Version actualizada a v1.0
  */
 package com.sponsorflow.nexus.language
 

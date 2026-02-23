@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.3 - File Validator
+ * SponsorFlow Nexus v1.0 - File Validator
  */
 package com.sponsorflow.nexus.ai.download
 

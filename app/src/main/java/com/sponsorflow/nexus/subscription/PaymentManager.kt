@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Payment Manager (USDT TRC20)
+ * SponsorFlow Nexus v1.0 - Payment Manager (USDT TRC20)
  * CORREGIDO: Validación de wallet, txHash en confirmPayment, fix pollPayment
  */
 package com.sponsorflow.nexus.subscription

@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.3 - Conversation Repository
+ * SponsorFlow Nexus v1.0 - Conversation Repository
  */
 package com.sponsorflow.nexus.data.repositories
 

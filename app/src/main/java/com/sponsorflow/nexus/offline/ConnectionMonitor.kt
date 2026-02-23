@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Connection Monitor (Estabilidad 30 min)
+ * SponsorFlow Nexus v1.0 - Connection Monitor (Estabilidad 30 min)
  * CORREGIDO: Thread-safe con AtomicLong, CopyOnWriteArrayList
  */
 package com.sponsorflow.nexus.offline

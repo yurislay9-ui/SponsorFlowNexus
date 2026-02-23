@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Dashboard Fragment
+ * SponsorFlow Nexus v1.0 - Dashboard Fragment
  */
 package com.sponsorflow.nexus.ui.dashboard
 

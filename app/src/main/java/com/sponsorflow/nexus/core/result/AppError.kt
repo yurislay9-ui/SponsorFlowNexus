@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - App Error Types
+ * SponsorFlow Nexus v1.0 - App Error Types
  * Skill: Seguridad - Categorización de errores
  */
 package com.sponsorflow.nexus.core.result

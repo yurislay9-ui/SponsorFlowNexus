@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Offline Queue Manager
+ * SponsorFlow Nexus v1.0 - Offline Queue Manager
  * CORREGIDO: tryDirectSend implementado, init con flag de inicialización
  */
 package com.sponsorflow.nexus.offline

@@ -1,6 +1,6 @@
 /*
- * SponsorFlow Nexus v2.4 - Storage Helper
- * CORREGIDO: Version actualizada a v2.4
+ * SponsorFlow Nexus v1.0 - Storage Helper
+ * CORREGIDO: Version actualizada a v1.0
  */
 package com.sponsorflow.nexus.ai.download
 

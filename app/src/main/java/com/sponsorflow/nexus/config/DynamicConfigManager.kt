@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Dynamic Config Manager
+ * SponsorFlow Nexus v1.0 - Dynamic Config Manager
  * CORREGIDO: Asignar config al campo de instancia, usar Dispatchers.IO, integrado con Hilt
  */
 package com.sponsorflow.nexus.config

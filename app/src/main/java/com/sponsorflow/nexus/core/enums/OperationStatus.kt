@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.3 - Operation Status
+ * SponsorFlow Nexus v1.0 - Operation Status
  * Skill: Mejores prácticas - Estados definidos
  */
 package com.sponsorflow.nexus.core.enums

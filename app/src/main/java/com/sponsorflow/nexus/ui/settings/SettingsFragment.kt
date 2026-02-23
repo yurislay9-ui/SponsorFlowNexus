@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.3 - Settings Fragment
+ * SponsorFlow Nexus v1.0 - Settings Fragment
  */
 package com.sponsorflow.nexus.ui.settings
 

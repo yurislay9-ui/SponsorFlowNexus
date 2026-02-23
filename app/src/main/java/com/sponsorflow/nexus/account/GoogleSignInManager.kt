@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.3 - Google Sign-In Manager
+ * SponsorFlow Nexus v1.0 - Google Sign-In Manager
  */
 package com.sponsorflow.nexus.account
 

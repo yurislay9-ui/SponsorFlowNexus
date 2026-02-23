@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Database Module (Hilt)
+ * SponsorFlow Nexus v1.0 - Database Module (Hilt)
  * CORREGIDO: Migraciones en lugar de fallbackToDestructiveMigration
  */
 package com.sponsorflow.nexus.di

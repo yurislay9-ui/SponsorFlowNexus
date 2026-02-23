@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Play Integrity Service
+ * SponsorFlow Nexus v1.0 - Play Integrity Service
  * CORREGIDO: Cloud Project Number, fallback seguro, verificación server-side recomendada
  */
 package com.sponsorflow.nexus.security

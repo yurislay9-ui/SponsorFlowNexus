@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Network Module (Hilt)
+ * SponsorFlow Nexus v1.0 - Network Module (Hilt)
  * CORREGIDO: Múltiples Retrofit con diferentes base URLs
  */
 package com.sponsorflow.nexus.di

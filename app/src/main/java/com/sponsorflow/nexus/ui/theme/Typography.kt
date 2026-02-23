@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Compose Typography
+ * SponsorFlow Nexus v1.0 - Compose Typography
  * Material 3 Type Scale
  */
 package com.sponsorflow.nexus.ui.theme

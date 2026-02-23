@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Nonce Generator (Anti Replay)
+ * SponsorFlow Nexus v1.0 - Nonce Generator (Anti Replay)
  * CORREGIDO: Thread-safe con ConcurrentHashMap
  */
 package com.sponsorflow.nexus.account

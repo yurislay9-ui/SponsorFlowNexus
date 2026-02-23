@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Offline Database
+ * SponsorFlow Nexus v1.0 - Offline Database
  */
 package com.sponsorflow.nexus.offline
 

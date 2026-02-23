@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.3 - License Validator Interface
+ * SponsorFlow Nexus v1.0 - License Validator Interface
  * Skill: Seguridad - Validación de licencias
  */
 package com.sponsorflow.nexus.core.contracts.security

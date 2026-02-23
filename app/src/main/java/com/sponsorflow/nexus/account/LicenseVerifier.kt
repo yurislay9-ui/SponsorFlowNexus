@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - License Verifier
+ * SponsorFlow Nexus v1.0 - License Verifier
  * CORREGIDO: Versión desde BuildConfig, Mutex para cachedLicense, Dispatchers.IO
  */
 package com.sponsorflow.nexus.account

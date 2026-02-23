@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.3 - Encryption Service Interface
+ * SponsorFlow Nexus v1.0 - Encryption Service Interface
  * Skill: Seguridad - Cifrado AES-256-GCM
  */
 package com.sponsorflow.nexus.core.contracts.security

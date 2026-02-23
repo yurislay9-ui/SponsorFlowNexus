@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.3 - Plugin Contract Interface
+ * SponsorFlow Nexus v1.0 - Plugin Contract Interface
  * Skill: Mejores prácticas - Sistema de plugins extensible
  */
 package com.sponsorflow.nexus.core.contracts.plugin

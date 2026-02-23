@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Compose Theme
+ * SponsorFlow Nexus v1.0 - Compose Theme
  * Material 3 Design System
  */
 package com.sponsorflow.nexus.ui.theme

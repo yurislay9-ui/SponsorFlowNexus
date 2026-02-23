@@ -1,7 +1,7 @@
 /*
- * SponsorFlow Nexus v2.4 - Plugin Types
+ * SponsorFlow Nexus v1.0 - Plugin Types
  * Plan: ENTERPRISE
- * CORREGIDO: Version actualizada a v2.4
+ * CORREGIDO: Version actualizada a v1.0
  */
 package com.sponsorflow.nexus.plugin
 

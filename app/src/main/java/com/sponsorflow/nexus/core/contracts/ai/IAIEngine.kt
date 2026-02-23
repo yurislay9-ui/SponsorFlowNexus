@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.3 - AI Engine Interface
+ * SponsorFlow Nexus v1.0 - AI Engine Interface
  * Skill: Mejores prácticas - Motor de IA abstracto
  */
 package com.sponsorflow.nexus.core.contracts.ai

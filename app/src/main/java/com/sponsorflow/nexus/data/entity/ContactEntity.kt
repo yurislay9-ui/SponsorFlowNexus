@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.3 - Contact Entity
+ * SponsorFlow Nexus v1.0 - Contact Entity
  * Skill: Mejores prácticas - Room entity con índices
  */
 package com.sponsorflow.nexus.data.entity

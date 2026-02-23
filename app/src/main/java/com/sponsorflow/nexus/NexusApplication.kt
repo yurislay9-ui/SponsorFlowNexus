@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Application Class
+ * SponsorFlow Nexus v1.0 - Application Class
  * CORREGIDO: @HiltWorker, scope con SupervisorJob, logSecurityEvent corregido
  */
 package com.sponsorflow.nexus

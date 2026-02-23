@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Click Lock (Anti Rapid Fire)
+ * SponsorFlow Nexus v1.0 - Click Lock (Anti Rapid Fire)
  * CORREGIDO: ConcurrentHashMap para thread-safety
  */
 package com.sponsorflow.nexus.core.util

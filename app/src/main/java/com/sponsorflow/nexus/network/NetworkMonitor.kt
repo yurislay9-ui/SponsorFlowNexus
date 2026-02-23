@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Network Monitor (WiFi/4G Handover)
+ * SponsorFlow Nexus v1.0 - Network Monitor (WiFi/4G Handover)
  */
 package com.sponsorflow.nexus.network
 

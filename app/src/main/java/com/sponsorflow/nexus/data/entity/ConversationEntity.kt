@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.3 - Conversation Entity
+ * SponsorFlow Nexus v1.0 - Conversation Entity
  */
 package com.sponsorflow.nexus.data.entity
 

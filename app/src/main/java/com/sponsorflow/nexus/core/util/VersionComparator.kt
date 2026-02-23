@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.3 - Semantic Version Comparator
+ * SponsorFlow Nexus v1.0 - Semantic Version Comparator
  */
 package com.sponsorflow.nexus.core.util
 

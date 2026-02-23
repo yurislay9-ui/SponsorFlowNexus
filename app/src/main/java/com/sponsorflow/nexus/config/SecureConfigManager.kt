@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.3 - Secure Config Manager
+ * SponsorFlow Nexus v1.0 - Secure Config Manager
  */
 package com.sponsorflow.nexus.config
 

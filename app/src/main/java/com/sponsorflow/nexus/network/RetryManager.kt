@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Retry Manager
+ * SponsorFlow Nexus v1.0 - Retry Manager
  * CORREGIDO: Exponential backoff entre reintentos
  */
 package com.sponsorflow.nexus.network

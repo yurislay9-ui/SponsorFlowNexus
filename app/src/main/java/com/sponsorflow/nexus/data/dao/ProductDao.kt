@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Product DAO
+ * SponsorFlow Nexus v1.0 - Product DAO
  * Con operaciones atómicas de inventario
  */
 package com.sponsorflow.nexus.data.dao

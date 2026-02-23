@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Subscription Screen
+ * SponsorFlow Nexus v1.0 - Subscription Screen
  */
 package com.sponsorflow.nexus.ui.subscription
 

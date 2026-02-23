@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Boot Receiver
+ * SponsorFlow Nexus v1.0 - Boot Receiver
  * CORREGIDO: Protecciones adicionales contra abuso
  */
 package com.sponsorflow.nexus.core

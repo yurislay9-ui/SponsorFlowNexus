@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Authorization Interceptor (Anti-IDOR)
+ * SponsorFlow Nexus v1.0 - Authorization Interceptor (Anti-IDOR)
  */
 package com.sponsorflow.nexus.network
 

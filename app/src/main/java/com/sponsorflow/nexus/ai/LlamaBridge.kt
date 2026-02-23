@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Llama.cpp JNI Bridge
+ * SponsorFlow Nexus v1.0 - Llama.cpp JNI Bridge
  */
 package com.sponsorflow.nexus.ai
 

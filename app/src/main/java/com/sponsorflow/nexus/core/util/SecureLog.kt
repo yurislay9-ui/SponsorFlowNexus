@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.3 - Secure Logging
+ * SponsorFlow Nexus v1.0 - Secure Logging
  */
 package com.sponsorflow.nexus.core.util
 

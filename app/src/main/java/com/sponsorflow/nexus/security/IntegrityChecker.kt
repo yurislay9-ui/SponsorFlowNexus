@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Integrity Checker
+ * SponsorFlow Nexus v1.0 - Integrity Checker
  * CORREGIDO: checkInstaller, passedAll incluye emulator, signature desde BuildConfig
  */
 package com.sponsorflow.nexus.security

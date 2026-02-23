@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - TronScan Verifier (USDT TRC20)
+ * SponsorFlow Nexus v1.0 - TronScan Verifier (USDT TRC20)
  * CORREGIDO: Timeouts, withContext(Dispatchers.IO), tolerancia bilateral
  */
 package com.sponsorflow.nexus.subscription

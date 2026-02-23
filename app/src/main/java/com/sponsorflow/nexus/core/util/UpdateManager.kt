@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Update Manager
+ * SponsorFlow Nexus v1.0 - Update Manager
  * CORREGIDO: withContext(Dispatchers.IO) para llamadas de red
  */
 package com.sponsorflow.nexus.core.util

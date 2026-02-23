@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.3 - License Response (Anti-Replay)
+ * SponsorFlow Nexus v1.0 - License Response (Anti-Replay)
  */
 package com.sponsorflow.nexus.account
 

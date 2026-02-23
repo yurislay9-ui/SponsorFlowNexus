@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Resource Download Manager
+ * SponsorFlow Nexus v1.0 - Resource Download Manager
  */
 package com.sponsorflow.nexus.ai
 

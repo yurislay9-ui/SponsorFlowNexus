@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v2.4 - Sync Worker (WorkManager)
+ * SponsorFlow Nexus v1.0 - Sync Worker (WorkManager)
  * CORREGIDO: suspend trySendItem, headers implementados, EXPONENTIAL backoff
  */
 package com.sponsorflow.nexus.offline
