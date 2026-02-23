@@ -16,7 +16,9 @@ class ConversationRepository(private val dao: ConversationDao) : IRepository<Con
         AppResult.Error(AppError.DatabaseError(e))
     }
 
+    // CORREGIDO: Implementación real usando el DAO
     override suspend fun update(entity: ConversationEntity): AppResult<Unit> = try {
+        dao.update(entity)
         AppResult.Success(Unit)
     } catch (e: Exception) {
         AppResult.Error(AppError.DatabaseError(e))
@@ -29,14 +31,16 @@ class ConversationRepository(private val dao: ConversationDao) : IRepository<Con
         AppResult.Error(AppError.DatabaseError(e))
     }
 
+    // CORREGIDO: Implementación real usando el DAO
     override suspend fun getById(id: Long): AppResult<ConversationEntity?> = try {
-        AppResult.Success(null)
+        AppResult.Success(dao.getById(id))
     } catch (e: Exception) {
         AppResult.Error(AppError.DatabaseError(e))
     }
 
+    // CORREGIDO: Implementación real usando el DAO
     override suspend fun getAll(): AppResult<List<ConversationEntity>> = try {
-        AppResult.Success(emptyList())
+        AppResult.Success(dao.getAll())
     } catch (e: Exception) {
         AppResult.Error(AppError.DatabaseError(e))
     }

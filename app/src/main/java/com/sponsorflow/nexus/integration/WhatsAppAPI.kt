@@ -64,32 +64,34 @@ class WhatsAppAPI(private val config: WhatsAppConfig) {
         AppResult.Error(AppError.fromException(e))
     }
 
-    suspend fun sendTemplate(to: String, templateName: String, lang: String = "es"): AppResult<String> = try {
-        val url = "$baseUrl/${config.phoneNumberId}/messages"
-        val body = gson.toJson(mapOf(
-            "messaging_product" to "whatsapp",
-            "to" to to,
-            "type" to "template",
-            "template" to mapOf(
-                "name" to templateName,
-                "language" to mapOf("code" to lang)
-            )
-        ))
-        
-        val request = Request.Builder()
-            .url(url)
-            .addHeader("Authorization", "Bearer ${config.accessToken}")
-            .post(body.toRequestBody("application/json".toMediaType()))
-            .build()
+    suspend fun sendTemplate(to: String, templateName: String, lang: String = "es"): AppResult<String> = withContext(Dispatchers.IO) {
+        try {
+            val url = "$baseUrl/${config.phoneNumberId}/messages"
+            val body = gson.toJson(mapOf(
+                "messaging_product" to "whatsapp",
+                "to" to to,
+                "type" to "template",
+                "template" to mapOf(
+                    "name" to templateName,
+                    "language" to mapOf("code" to lang)
+                )
+            ))
+            
+            val request = Request.Builder()
+                .url(url)
+                .addHeader("Authorization", "Bearer ${config.accessToken}")
+                .post(body.toRequestBody("application/json".toMediaType()))
+                .build()
 
-        val response = client.newCall(request).execute()
-        
-        if (response.isSuccessful) {
-            AppResult.Success("Template enviado")
-        } else {
-            AppResult.Error(AppError.NetworkError(response.code))
+            val response = client.newCall(request).execute()
+            
+            if (response.isSuccessful) {
+                AppResult.Success("Template enviado")
+            } else {
+                AppResult.Error(AppError.NetworkError(response.code))
+            }
+        } catch (e: Exception) {
+            AppResult.Error(AppError.fromException(e))
         }
-    } catch (e: Exception) {
-        AppResult.Error(AppError.fromException(e))
     }
 }

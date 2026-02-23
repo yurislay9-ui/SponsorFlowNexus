@@ -46,8 +46,13 @@ interface OfflineQueueDao {
     @Query("DELETE FROM offline_queue WHERE type = :type")
     suspend fun deleteByType(type: String)
     
+    // CORREGIDO: Sin valor por defecto - Room no soporta default values
     @Query("SELECT * FROM offline_queue WHERE attempts >= :maxAttempts")
-    suspend fun getFailedItems(maxAttempts: Int = 5): List<OfflineQueueEntity>
+    suspend fun getFailedItems(maxAttempts: Int): List<OfflineQueueEntity>
+    
+    // Método sin parámetro para casos simples
+    @Query("SELECT * FROM offline_queue WHERE attempts >= 5")
+    suspend fun getFailedItems(): List<OfflineQueueEntity>
     
     @Query("UPDATE offline_queue SET attempts = attempts + 1, lastAttempt = :timestamp, lastError = :error WHERE id = :id")
     suspend fun incrementAttempts(id: Long, timestamp: Long, error: String?)

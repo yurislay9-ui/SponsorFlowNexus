@@ -47,10 +47,11 @@
                 android:resource="@xml/accessibility_service_config" />
         </service>
 
-        <!-- Receiver Boot -->
-        <receiver android:name=".core.BootReceiver" android:exported="false">
+        <!-- Receiver Boot - CORREGIDO: exported=true para Android 12+ -->
+        <receiver android:name=".core.BootReceiver" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
 

@@ -7,5 +7,12 @@
     <string name="notification_channel_id">nexus_foreground_service</string>
     <string name="service_running_title">SponsorFlow Nexus activo</string>
     <string name="service_running_text">Monitoreando operaciones en segundo plano</string>
-    <string name="appbar_scrolling_view_behavior">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
+    
+    <!-- CORREGIDO: AndroidX en lugar de Android Support -->
+    <string name="appbar_scrolling_view_behavior">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
+    
+    <!-- Onboarding strings -->
+    <string name="onboarding_title">SponsorFlow Nexus</string>
+    <string name="onboarding_welcome">Bienvenido</string>
+    <string name="onboarding_start">Comenzar</string>
 </resources>

@@ -1185,6 +1185,78 @@ ThreadLocalRandom.current().nextInt(greetings.size)
 
 ---
 
-**Última actualización:** 23 Feb 2026, 19:49 UTC
-**Progreso:** 54/175 errores corregidos (31%)
+**Última actualización:** 23 Feb 2026, 20:16 UTC
+**Progreso:** 61/175 errores corregidos (35%)
+
+---
+
+## ✅ CORRECCIONES ADICIONALES REALIZADAS (10 nuevas)
+
+### 55. WhatsAppAPI.kt - sendTemplate (ALTO)
+**Estado:** ✅ CORREGIDO
+**Fecha:** 23 Feb 2026
+
+**Problema:** sendTemplate() sin withContext(Dispatchers.IO)
+
+**Corrección:** Agregado withContext(Dispatchers.IO) {}
+
+---
+
+### 56. ConversationRepository.kt (ALTO)
+**Estado:** ✅ CORREGIDO
+**Fecha:** 23 Feb 2026
+
+**Problema:** update(), getById(), getAll() stubs sin usar DAO
+
+**Corrección:** Implementación real usando dao.update(), dao.getById(), dao.getAll()
+
+---
+
+### 57. AndroidManifest.xml - BootReceiver (ALTO)
+**Estado:** ✅ CORREGIDO
+**Fecha:** 23 Feb 2026
+
+**Problema:** exported=false no recibía BOOT_COMPLETED en Android 12+
+
+**Corrección:** Cambiado a exported=true y agregado QUICKBOOT_POWERON
+
+---
+
+### 58. Theme.kt (BAJO)
+**Estado:** ✅ CORREGIDO
+**Fecha:** 23 Feb 2026
+
+**Problema:** Dynamic Color deshabilitado con @Suppress
+
+**Corrección:** Implementado soporte dynamicDarkColorScheme/dynamicLightColorScheme
+
+---
+
+### 59. OfflineQueueDao.kt (ALTO)
+**Estado:** ✅ CORREGIDO
+**Fecha:** 23 Feb 2026
+
+**Problema:** getFailedItems() con valor por defecto no soportado por Room
+
+**Corrección:** Dos métodos: uno con parámetro y otro sin él con valor hardcodeado
+
+---
+
+### 60. strings.xml (MEDIO)
+**Estado:** ✅ CORREGIDO
+**Fecha:** 23 Feb 2026
+
+**Problema:** appbar_scrolling_view_behavior con clase deprecated
+
+**Corrección:** Cambiado a com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior
+
+---
+
+### 61. activity_onboarding.xml (MEDIO)
+**Estado:** ✅ CORREGIDO
+**Fecha:** 23 Feb 2026
+
+**Problema:** Textos hardcodeados
+
+**Corrección:** Referencias a @string/onboarding_title, @string/onboarding_welcome, @string/onboarding_start
 
