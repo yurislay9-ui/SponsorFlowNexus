@@ -1,5 +1,6 @@
 /*
- * SponsorFlow Nexus v2.3 - Update Manager
+ * SponsorFlow Nexus v2.4 - Update Manager
+ * CORREGIDO: withContext(Dispatchers.IO) para llamadas de red
  */
 package com.sponsorflow.nexus.core.util
 
@@ -11,6 +12,8 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
 data class UpdateInfo(
@@ -31,34 +34,36 @@ class UpdateManager(private val context: Context) {
     private val gson = Gson()
     
     // Verificar actualización disponible
+    // CORREGIDO: withContext(Dispatchers.IO)
     suspend fun checkUpdate(
         releaseUrl: String,
         currentVersion: String
-    ): AppResult<UpdateInfo?> = try {
-        
-        val request = Request.Builder()
-            .url(releaseUrl)
-            .build()
-        
-        val response = client.newCall(request).execute()
-        
-        when (response.code) {
-            404 -> {
-                Log.w("Nexus", "Release no encontrado: $releaseUrl")
-                AppResult.Success(null) // No hay actualización disponible
+    ): AppResult<UpdateInfo?> = withContext(Dispatchers.IO) {
+        try {
+            val request = Request.Builder()
+                .url(releaseUrl)
+                .build()
+            
+            val response = client.newCall(request).execute()
+            
+            when (response.code) {
+                404 -> {
+                    Log.w("Nexus", "Release no encontrado: $releaseUrl")
+                    AppResult.Success(null) // No hay actualización disponible
+                }
+                in 200..299 -> {
+                    val json = response.body?.string() ?: ""
+                    parseGitHubRelease(json, currentVersion)
+                }
+                else -> {
+                    AppResult.Error(AppError.NetworkError(response.code))
+                }
             }
-            in 200..299 -> {
-                val json = response.body?.string() ?: ""
-                parseGitHubRelease(json, currentVersion)
-            }
-            else -> {
-                AppResult.Error(AppError.NetworkError(response.code))
-            }
+            
+        } catch (e: Exception) {
+            Log.e("Nexus", "Error verificando actualización: ${e.message}")
+            AppResult.Error(AppError.fromException(e))
         }
-        
-    } catch (e: Exception) {
-        Log.e("Nexus", "Error verificando actualización: ${e.message}")
-        AppResult.Error(AppError.fromException(e))
     }
     
     // Parsear respuesta de GitHub API

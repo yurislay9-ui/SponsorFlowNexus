@@ -260,6 +260,7 @@ private val monitorLock = Object()
 | 10 | 23 Feb 2026 | IntegrityService.kt | CRÍTICO | ✅ |
 | 11 | 23 Feb 2026 | LicenseVerifier.kt | CRÍTICO | ✅ |
 | 12 | 23 Feb 2026 | PaymentManager.kt | CRÍTICO | ✅ |
+| 13 | 23 Feb 2026 | NexusApplication.kt | CRÍTICO | ✅ |
 
 ---
 

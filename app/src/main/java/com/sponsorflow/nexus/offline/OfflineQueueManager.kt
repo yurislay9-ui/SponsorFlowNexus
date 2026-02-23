@@ -1,21 +1,34 @@
 /*
- * SponsorFlow Nexus v2.3 - Offline Queue Manager
+ * SponsorFlow Nexus v2.4 - Offline Queue Manager
+ * CORREGIDO: tryDirectSend implementado, init con flag de inicialización
  */
 package com.sponsorflow.nexus.offline
 
 import android.content.Context
 import com.google.gson.Gson
+import com.sponsorflow.nexus.network.NetworkHelper
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 
 object OfflineQueueManager {
     
     private val gson = Gson()
+    private val client = NetworkHelper.createClient()
     private lateinit var dao: OfflineQueueDao
     private var serverUrl: String = ""
     
-    // Inicializar
+    // CORREGIDO: Flag para evitar múltiples inicializaciones
+    @Volatile private var isInitialized = false
+    
+    // Inicializar - idempotente
     fun init(context: Context, serverUrl: String) {
+        if (isInitialized) return
+        
         this.serverUrl = serverUrl
         dao = OfflineDatabase.getInstance(context).offlineQueueDao()
         
@@ -24,6 +37,8 @@ object OfflineQueueManager {
         
         // Programar sincronización
         SyncWorker.schedule(context)
+        
+        isInitialized = true
     }
     
     // Enviar petición (con cola offline)
@@ -38,10 +53,12 @@ object OfflineQueueManager {
         val payloadJson = gson.toJson(payload)
         val headersJson = headers?.let { gson.toJson(it) }
         
+        val fullEndpoint = if (endpoint.startsWith("http")) endpoint else "$serverUrl$endpoint"
+        
         val item = OfflineQueueEntity(
             type = type,
             payload = payloadJson,
-            endpoint = if (endpoint.startsWith("http")) endpoint else "$serverUrl$endpoint",
+            endpoint = fullEndpoint,
             method = method,
             headers = headersJson,
             priority = priority
@@ -60,10 +77,37 @@ object OfflineQueueManager {
         return QueueResult.QueuedLocally
     }
     
-    // Intento de envío directo
-    private suspend fun tryDirectSend(@Suppress("UNUSED_PARAMETER") item: OfflineQueueEntity): Boolean {
-        // Lógica de envío directo
-        return false // Por defecto, encolar
+    // CORREGIDO: Implementar lógica de envío directo
+    private suspend fun tryDirectSend(item: OfflineQueueEntity): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val requestBody = item.payload.toRequestBody("application/json".toMediaType())
+                
+                val requestBuilder = Request.Builder()
+                    .url(item.endpoint)
+                    .method(item.method, requestBody)
+                
+                // Agregar headers si existen
+                item.headers?.let { headersJson ->
+                    try {
+                        val headersMap = gson.fromJson(headersJson, Map::class.java)
+                        headersMap.forEach { (key, value) ->
+                            requestBuilder.addHeader(key.toString(), value.toString())
+                        }
+                    } catch (e: Exception) {
+                        // Ignorar errores de parseo de headers
+                    }
+                }
+                
+                val response = client.newCall(requestBuilder.build()).execute()
+                
+                response.isSuccessful.also {
+                    response.close()
+                }
+            } catch (e: Exception) {
+                false
+            }
+        }
     }
     
     // Obtener conteo de items en cola

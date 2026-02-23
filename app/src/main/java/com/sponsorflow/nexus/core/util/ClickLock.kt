@@ -1,5 +1,6 @@
 /*
- * SponsorFlow Nexus v2.3 - Click Lock (Anti Rapid Fire)
+ * SponsorFlow Nexus v2.4 - Click Lock (Anti Rapid Fire)
+ * CORREGIDO: ConcurrentHashMap para thread-safety
  */
 package com.sponsorflow.nexus.core.util
 
@@ -7,17 +8,19 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.concurrent.ConcurrentHashMap
 
 object ClickLock {
     
-    private val locks = mutableMapOf<String, Boolean>()
-    private val jobs = mutableMapOf<String, Job>()
+    // CORREGIDO: ConcurrentHashMap para thread-safety
+    private val locks = ConcurrentHashMap<String, Boolean>()
+    private val jobs = ConcurrentHashMap<String, Job>()
     
     // Intentar adquirir lock (retorna false si ya está bloqueado)
     fun acquire(key: String = "default"): Boolean {
-        if (locks[key] == true) return false
-        locks[key] = true
-        return true
+        // Usar putIfAbsent para operación atómica
+        val previous = locks.putIfAbsent(key, true)
+        return previous == null || previous == false
     }
     
     // Liberar lock manualmente
