@@ -1,8 +1,10 @@
 /*
- * SponsorFlow Nexus v2.3 - Pattern Rotator
+ * SponsorFlow Nexus v2.4 - Pattern Rotator
+ * CORREGIDO: Thread-safe con AtomicInteger
  */
 package com.sponsorflow.nexus.antidetection
 
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.random.Random
 
 object PatternRotator {
@@ -22,31 +24,32 @@ object PatternRotator {
         "Comprendo", "Vale", "Perfecto, ya lo tengo"
     )
 
-    private var lastGreetingIndex = -1
-    private var lastClosingIndex = -1
-    private var lastAckIndex = -1
+    // CORREGIDO: Thread-safe con AtomicInteger
+    private val lastGreetingIndex = AtomicInteger(-1)
+    private val lastClosingIndex = AtomicInteger(-1)
+    private val lastAckIndex = AtomicInteger(-1)
 
     fun getRandomGreeting(): String {
         if (greetings.size <= 1) return greetings.getOrElse(0) { "" }
         var index: Int
-        do { index = Random.nextInt(greetings.size) } while (index == lastGreetingIndex)
-        lastGreetingIndex = index
+        do { index = Random.nextInt(greetings.size) } while (index == lastGreetingIndex.get())
+        lastGreetingIndex.set(index)
         return greetings[index]
     }
 
     fun getRandomClosing(): String {
         if (closings.size <= 1) return closings.getOrElse(0) { "" }
         var index: Int
-        do { index = Random.nextInt(closings.size) } while (index == lastClosingIndex)
-        lastClosingIndex = index
+        do { index = Random.nextInt(closings.size) } while (index == lastClosingIndex.get())
+        lastClosingIndex.set(index)
         return closings[index]
     }
 
     fun getRandomAcknowledgment(): String {
         if (acknowledgments.size <= 1) return acknowledgments.getOrElse(0) { "" }
         var index: Int
-        do { index = Random.nextInt(acknowledgments.size) } while (index == lastAckIndex)
-        lastAckIndex = index
+        do { index = Random.nextInt(acknowledgments.size) } while (index == lastAckIndex.get())
+        lastAckIndex.set(index)
         return acknowledgments[index]
     }
 

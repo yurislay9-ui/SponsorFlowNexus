@@ -632,5 +632,39 @@ fun isAvailable(): Boolean {
 | 23 | 23 Feb 2026 | nav_graph.xml | MEDIO | ✅ |
 | 24 | 23 Feb 2026 | RustBridge.kt | ALTO | ✅ |
 
-**Última actualización:** 23 Feb 2026, 15:36 UTC
-**Progreso:** 24/175 errores corregidos (14%)
+### 25. DynamicConfigManager.kt (ALTO)
+**Estado:** ✅ CORREGIDO
+**Fecha:** 23 Feb 2026
+
+**Problema original:**
+- No estaba integrado con Hilt
+- Creación manual con `new DynamicConfigManager(context)`
+
+**Corrección aplicada:**
+```kotlin
+@Singleton
+class DynamicConfigManager @Inject constructor(
+    @ApplicationContext private val context: Context
+)
+```
+
+---
+
+### 26. themes.xml (BAJO)
+**Estado:** ✅ CORREGIDO
+**Fecha:** 23 Feb 2026
+
+**Problema original:**
+- android:radius inválido en estilo NexusCard
+
+**Corrección aplicada:**
+```xml
+<style name="NexusCard" parent="Widget.MaterialComponents.CardView">
+    <item name="cardCornerRadius">16dp</item>
+</style>
+```
+
+---
+
+**Última actualización:** 23 Feb 2026, 15:43 UTC
+**Progreso:** 26/175 errores corregidos (15%)
