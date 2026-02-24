@@ -12,6 +12,16 @@ interface ConversationDao {
     @Insert
     suspend fun insert(message: ConversationEntity): Long
 
+    // CORREGIDO: Agregar métodos faltantes requeridos por ConversationRepository
+    @Update
+    suspend fun update(message: ConversationEntity)
+
+    @Query("SELECT * FROM conversations WHERE id = :id")
+    suspend fun getById(id: Long): ConversationEntity?
+
+    @Query("SELECT * FROM conversations ORDER BY timestamp DESC")
+    suspend fun getAll(): List<ConversationEntity>
+
     @Query("DELETE FROM conversations WHERE id = :id")
     suspend fun deleteById(id: Long)
 

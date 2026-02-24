@@ -175,10 +175,10 @@ class ConversationCache(
     }
 
     // Limpiar cache (solo para pagos)
+    // CORREGIDO: Eliminar referencia a 'messages' que no existe
     fun clearCache() {
         if (tier == SubscriptionTier.FREE) return
         prefs.edit().clear().apply()
-        messages.clear()
         memories.clear()
     }
 }

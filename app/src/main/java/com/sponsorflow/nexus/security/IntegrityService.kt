@@ -16,6 +16,8 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.builtins.MapSerializer
+import kotlinx.serialization.builtins.serializer
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -108,7 +110,9 @@ class IntegrityService @Inject constructor(
         return withContext(Dispatchers.IO) {
             try {
                 val serverUrl = com.sponsorflow.nexus.BuildConfig.SERVER_URL
+                // CORREGIDO: Usar MapSerializer explícito para serializar Map
                 val requestBody = json.encodeToString(
+                    MapSerializer(String.serializer(), String.serializer()),
                     mapOf("token" to token, "nonce" to nonce)
                 ).toRequestBody("application/json".toMediaType())
                 

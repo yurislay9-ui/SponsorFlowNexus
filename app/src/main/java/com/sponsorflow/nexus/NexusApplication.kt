@@ -17,6 +17,9 @@ import androidx.work.WorkerParameters
 import com.sponsorflow.nexus.config.DynamicConfigManager
 import com.sponsorflow.nexus.security.IntegrityChecker
 import dagger.hilt.android.HiltAndroidApp
+import androidx.hilt.work.HiltWorker
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -107,11 +110,11 @@ class NexusApplication : Application(), Configuration.Provider {
     fun getMasterKey(): MasterKey = masterKey
 }
 
-// CORREGIDO: @HiltWorker para inyección correcta
+// CORREGIDO: @HiltWorker con @AssistedInject para inyección correcta
 @HiltWorker
-class ConfigSyncWorker(
-    appContext: android.content.Context,
-    workerParams: WorkerParameters
+class ConfigSyncWorker @AssistedInject constructor(
+    @Assisted appContext: android.content.Context,
+    @Assisted workerParams: WorkerParameters
 ) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {

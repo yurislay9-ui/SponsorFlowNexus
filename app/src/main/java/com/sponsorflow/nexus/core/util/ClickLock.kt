@@ -1,6 +1,6 @@
 /*
  * SponsorFlow Nexus v1.0 - Click Lock (Anti Rapid Fire)
- * CORREGIDO: ConcurrentHashMap para thread-safety
+ * CORREGIDO: ConcurrentHashMap con AtomicBoolean para thread-safety correcto
  */
 package com.sponsorflow.nexus.core.util
 
@@ -9,23 +9,23 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicBoolean
 
 object ClickLock {
     
-    // CORREGIDO: ConcurrentHashMap para thread-safety
-    private val locks = ConcurrentHashMap<String, Boolean>()
+    // CORREGIDO: ConcurrentHashMap con AtomicBoolean para operaciones atómicas correctas
+    private val locks = ConcurrentHashMap<String, AtomicBoolean>()
     private val jobs = ConcurrentHashMap<String, Job>()
     
-    // Intentar adquirir lock (retorna false si ya está bloqueado)
+    // CORREGIDO: Usar computeIfAbsent + compareAndSet para operación atómica correcta
     fun acquire(key: String = "default"): Boolean {
-        // Usar putIfAbsent para operación atómica
-        val previous = locks.putIfAbsent(key, true)
-        return previous == null || previous == false
+        val lock = locks.computeIfAbsent(key) { AtomicBoolean(false) }
+        return lock.compareAndSet(false, true)
     }
     
-    // Liberar lock manualmente
+    // CORREGIDO: Liberar lock manualmente usando AtomicBoolean
     fun release(key: String = "default") {
-        locks[key] = false
+        locks[key]?.set(false)
         jobs[key]?.cancel()
         jobs.remove(key)
     }
@@ -45,9 +45,9 @@ object ClickLock {
         return true
     }
     
-    // Verificar si está bloqueado
+    // CORREGIDO: Verificar si está bloqueado usando AtomicBoolean
     fun isLocked(key: String = "default"): Boolean {
-        return locks[key] == true
+        return locks[key]?.get() == true
     }
     
     // Ejecutar acción con protección

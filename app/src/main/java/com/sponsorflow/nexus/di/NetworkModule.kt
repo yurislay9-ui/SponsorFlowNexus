@@ -35,15 +35,9 @@ object NetworkModule {
         }
     }
 
-    @Provides
-    @Singleton
-    fun provideCertificatePinner(): CertificatePinner {
-        // Certificate Pinning para TRON API
-        return CertificatePinner.Builder()
-            .add("api.trongrid.io", "sha256/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=")
-            .build()
-    }
-
+    // CORREGIDO: CertificatePinner eliminado - ver SecurityModule.kt
+    // SecurityModule proporciona CertificatePinner con implementación completa
+    
     @Provides
     @Singleton
     fun provideOkHttpClient(

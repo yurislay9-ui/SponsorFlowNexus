@@ -8,8 +8,8 @@ import com.sponsorflow.nexus.core.contracts.ai.IAIEngine
 import com.sponsorflow.nexus.core.contracts.ai.ModelInfo
 import com.sponsorflow.nexus.core.result.AppError
 import com.sponsorflow.nexus.core.result.AppResult
-import kotlinx.coroutines.Mutex
-import kotlinx.coroutines.withLock
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.io.File
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -22,9 +22,10 @@ object AIEngine : IAIEngine {
     private val isGenerating = AtomicBoolean(false)
     private val cancelled = AtomicBoolean(false)
     
-    // Mutex para serializar operaciones de generación
+    // Mutex para serializar operaciones de generación (suspend context)
     private val generationMutex = Mutex()
-    private val modelMutex = Mutex()
+    // Lock para operaciones síncronas (no-suspend context)
+    private val modelLock = Any()
 
     fun initialize() {
         if (llamaBridge == null) {
@@ -110,8 +111,9 @@ object AIEngine : IAIEngine {
         }
     }
 
+    // CORREGIDO: Usar synchronized para función no-suspend
     override fun unloadModel() {
-        modelMutex.withLock {
+        synchronized(modelLock) {
             llamaBridge?.unloadModel()
             modelInfo = null
         }

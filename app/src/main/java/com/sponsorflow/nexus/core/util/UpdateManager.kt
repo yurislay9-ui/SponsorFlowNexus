@@ -56,7 +56,7 @@ class UpdateManager(private val context: Context) {
                     parseGitHubRelease(json, currentVersion)
                 }
                 else -> {
-                    AppResult.Error(AppError.NetworkError(response.code))
+                    AppResult.Error(AppError.NetworkError("HTTP Error", response.code))
                 }
             }
             

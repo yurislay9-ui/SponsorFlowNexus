@@ -52,25 +52,20 @@ object NonceGenerator {
         usedNonces[nonce] = System.currentTimeMillis()
     }
     
-    // Verificar y consumir nonce atómicamente - CORREGIDO: operación atómica
+    // CORREGIDO: Verificar y consumir nonce atómicamente - NO permitir reuso de nonces expirados
+    // Esto previene replay attacks
     fun consume(nonce: String): Boolean {
         if (nonce.isBlank()) return false
+        
+        // Limpiar nonces antiguos primero
+        cleanupOldNonces()
         
         // Operación atómica: putIfAbsent retorna null si no existía
         val previous = usedNonces.putIfAbsent(nonce, System.currentTimeMillis())
         
-        // Si previous != null, ya existía, no es válido
-        if (previous != null) {
-            // Verificar si expiró
-            val age = System.currentTimeMillis() - previous
-            if (age > MAX_AGE_MS) {
-                // Expiró, permitir reuse
-                usedNonces[nonce] = System.currentTimeMillis()
-                return true
-            }
-            return false // Ya usado y no expirado
-        }
-        return true // Nuevo nonce, válido
+        // Si previous != null, ya existía - rechazar SIEMPRE para prevenir replay attacks
+        // CORREGIDO: No permitir reuso incluso si expiró
+        return previous == null
     }
     
     // Limpiar todos los nonces

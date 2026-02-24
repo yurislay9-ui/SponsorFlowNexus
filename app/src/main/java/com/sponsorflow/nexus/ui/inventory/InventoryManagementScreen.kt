@@ -1,5 +1,6 @@
 /*
  * SponsorFlow Nexus - Inventory Management Screen
+ * CORREGIDO: Usar hiltViewModel() y collectAsState()
  */
 package com.sponsorflow.nexus.ui.inventory
 
@@ -14,14 +15,19 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InventoryManagementScreen(
-    viewModel: InventoryViewModel = viewModel(),
+    // CORREGIDO: Usar hiltViewModel() para inyección de dependencias
+    viewModel: InventoryViewModel = hiltViewModel(),
     onBack: () -> Unit = {}
 ) {
+    // CORREGIDO: Recolectar StateFlows con collectAsState()
+    val searchQuery by viewModel.searchQuery.collectAsState()
+    val showAddDialog by viewModel.showAddDialog.collectAsState()
+    
     val stats = viewModel.getStats()
     
     Scaffold(
@@ -57,9 +63,9 @@ fun InventoryManagementScreen(
                 StatCard("Agotado", stats.outOfStock.toString(), Color(0xFFF44336))
             }
             
-            // Search
+            // Search - CORREGIDO: usar variable local searchQuery
             OutlinedTextField(
-                value = viewModel.searchQuery,
+                value = searchQuery,
                 onValueChange = { viewModel.onSearchChange(it) },
                 label = { Text("Buscar producto...") },
                 leadingIcon = { Icon(Icons.Default.Search, null) },
@@ -83,8 +89,8 @@ fun InventoryManagementScreen(
         }
     }
     
-    // Add Dialog
-    if (viewModel.showAddDialog) {
+    // Add Dialog - CORREGIDO: usar variable local showAddDialog
+    if (showAddDialog) {
         AddProductDialog(
             onDismiss = { viewModel.closeAddDialog() },
             onAdd = { viewModel.addProduct(it) }

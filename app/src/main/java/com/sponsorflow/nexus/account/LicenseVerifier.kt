@@ -11,9 +11,9 @@ import com.sponsorflow.nexus.core.enums.SubscriptionTier
 import com.sponsorflow.nexus.core.result.AppError
 import com.sponsorflow.nexus.core.result.AppResult
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Mutex
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -84,13 +84,12 @@ class LicenseVerifier(
         }
     }
 
+    // CORREGIDO: Leer cachedLicense dentro del mutex para evitar race condition
     override suspend fun refresh(): AppResult<LicenseInfo> {
-        return try {
-            val key = cachedLicense?.key ?: return AppResult.Error(AppError.LicenseError("No hay licencia"))
-            validate(key)
-        } catch (e: Exception) {
-            AppResult.Error(AppError.fromException(e))
-        }
+        val key = cacheMutex.withLock {
+            cachedLicense?.key
+        } ?: return AppResult.Error(AppError.LicenseError("No hay licencia"))
+        return validate(key)
     }
 
     override fun isGracePeriodActive(): Boolean {
@@ -117,10 +116,11 @@ class LicenseVerifier(
     // CORREGIDO: Acceso thread-safe
     override fun getCachedLicenseInfo(): LicenseInfo? = cachedLicense
     
-    override fun clearCache() {
-        // CORREGIDO: Usar mutex
-        //Nota: no necesitamos mutex para una simple asignación atómica
-        cachedLicense = null
+    // CORREGIDO: Usar mutex para evitar race condition con validate()
+    override suspend fun clearCache() {
+        cacheMutex.withLock {
+            cachedLicense = null
+        }
     }
 
     private fun parseLicense(json: String): LicenseInfo {

@@ -1,6 +1,6 @@
 /*
  * SponsorFlow Nexus - Inventory ViewModel
- * CORREGIDO: Persistencia con ProductDao y Flow
+ * CORREGIDO: Persistencia con ProductDao y Flow, Hilt injection
  */
 package com.sponsorflow.nexus.ui.inventory
 
@@ -9,12 +9,16 @@ import androidx.lifecycle.viewModelScope
 import com.sponsorflow.nexus.data.dao.ProductDao
 import com.sponsorflow.nexus.data.entity.ProductEntity
 import com.sponsorflow.nexus.data.entity.StockStatus
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class InventoryViewModel(
+// CORREGIDO: Usar @HiltViewModel para inyección de dependencias
+@HiltViewModel
+class InventoryViewModel @Inject constructor(
     private val productDao: ProductDao
 ) : ViewModel() {
     

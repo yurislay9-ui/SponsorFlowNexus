@@ -35,9 +35,10 @@
             android:foregroundServiceType="dataSync" android:exported="false" />
 
         <!-- Accessibility Service para WhatsApp -->
+        <!-- CORREGIDO: exported=true requerido para que el sistema pueda vincularse -->
         <service
             android:name=".core.NexusAccessibilityService"
-            android:exported="false"
+            android:exported="true"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />

@@ -117,13 +117,17 @@ class MessageHandler(
 
     /**
      * Enviar respuesta mediante accesibilidad
+     * CORREGIDO: Usar ACTION_SET_TEXT con Bundle en lugar de manipular text directamente
      */
     fun sendReply(message: String): Boolean {
         return try {
             val inputField = findInputField() ?: return false
             
-            inputField.text?.clear()
-            inputField.text?.append(message)
+            // CORREGIDO: AccessibilityNodeInfo.text es CharSequence, no Editable
+            // Usar ACTION_SET_TEXT con Bundle para establecer texto
+            val args = android.os.Bundle()
+            args.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, message)
+            inputField.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, args)
             
             val sendButton = findSendButton()
             if (sendButton != null) {

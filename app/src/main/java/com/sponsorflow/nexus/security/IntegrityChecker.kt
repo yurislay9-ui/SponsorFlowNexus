@@ -9,7 +9,11 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.content.pm.PackageInfoCompat
 
-class IntegrityChecker(private val expectedSignature: String = "") {
+// CORREGIDO: Agregar Context como parámetro del constructor
+class IntegrityChecker(
+    private val context: Context,
+    private val expectedSignature: String = ""
+) {
 
     // Obtener firma esperada desde BuildConfig o config
     private fun getExpectedSignature(): String {
@@ -75,16 +79,20 @@ class IntegrityChecker(private val expectedSignature: String = "") {
                 checkDangerousApps()
     }
     
+    // CORREGIDO: Build.getString() no existe, usar reflexión para SystemProperties
     private fun checkRootProperties(): Boolean {
         return try {
-            val buildProps = listOf(
-                Build.getString("ro.debuggable"),
-                Build.getString("ro.secure"),
-                Build.getString("ro.adb.secure")
-            )
-            // Si debuggable = 1, probable root
-            buildProps.any { it == "1" }
+            // Usar reflexión para acceder a android.os.SystemProperties
+            val systemPropertiesClass = Class.forName("android.os.SystemProperties")
+            val getMethod = systemPropertiesClass.getMethod("get", String::class.java)
+            
+            val debuggable = getMethod.invoke(null, "ro.debuggable") as? String ?: "0"
+            val secure = getMethod.invoke(null, "ro.secure") as? String ?: "1"
+            
+            // Si debuggable = 1 y secure = 0, probablemente es root/emulator
+            debuggable == "1" && secure == "0"
         } catch (e: Exception) {
+            // Si no podemos acceder, asumir que no hay root
             false
         }
     }
