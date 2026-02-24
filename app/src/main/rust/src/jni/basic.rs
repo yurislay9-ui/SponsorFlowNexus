@@ -1,4 +1,5 @@
 //! JNI Basic Functions - Prueba y utilidades
+//! CORREGIDO: Manejo de errores sin unwrap() para evitar panics en JNI
 
 use jni::JNIEnv;
 use jni::objects::{JClass, JString};
@@ -14,19 +15,33 @@ pub extern "system" fn Java_com_sponsorflow_nexus_rust_RustBridge_addNumbers(
 }
 
 /// Obtiene versión de Rust
+/// CORREGIDO: Manejar error sin unwrap()
 #[no_mangle]
 pub extern "system" fn Java_com_sponsorflow_nexus_rust_RustBridge_getRustVersion(
     mut env: JNIEnv, _class: JClass) -> jstring {
-    env.new_string(VERSION).unwrap().into_raw()
+    match env.new_string(VERSION) {
+        Ok(s) => s.into_raw(),
+        Err(_) => std::ptr::null_mut(),
+    }
 }
 
 /// Saludo desde Rust
+/// CORREGIDO: Manejar error sin unwrap()
 #[no_mangle]
 pub extern "system" fn Java_com_sponsorflow_nexus_rust_RustBridge_greet(
     mut env: JNIEnv, _class: JClass, name: JString) -> jstring {
-    let name_str: String = env.get_string(&name).unwrap().into();
+    
+    let name_str: String = match env.get_string(&name) {
+        Ok(s) => s.into(),
+        Err(_) => return std::ptr::null_mut(),
+    };
+    
     let greeting = format!("¡Hola desde Rust, {}! 🦀", name_str);
-    env.new_string(&greeting).unwrap().into_raw()
+    
+    match env.new_string(&greeting) {
+        Ok(s) => s.into_raw(),
+        Err(_) => std::ptr::null_mut(),
+    }
 }
 
 /// Health check

@@ -1,5 +1,6 @@
 /*
  * SponsorFlow Nexus v1.0 - Settings Fragment
+ * CORREGIDO: Usar SwitchCompat en lugar de Switch deprecated
  */
 package com.sponsorflow.nexus.ui.settings
 
@@ -7,14 +8,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Switch
+import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
 import com.sponsorflow.nexus.R
 
 class SettingsFragment : Fragment() {
 
-    private lateinit var autoReplySwitch: Switch
-    private lateinit var notificationSwitch: Switch
+    // CORREGIDO: Usar SwitchCompat en lugar de android.widget.Switch
+    private lateinit var autoReplySwitch: SwitchCompat
+    private lateinit var notificationSwitch: SwitchCompat
 
     override fun onCreateView(
         inflater: LayoutInflater,

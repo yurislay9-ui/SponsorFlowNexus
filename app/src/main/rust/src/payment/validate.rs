@@ -34,15 +34,26 @@ pub fn validate_trc20(tx_hex: &str, expected_amount: u64) -> TxValidation {
 }
 
 /// Extrae el monto de una transacción TRC20
+/// CORREGIDO: Buscar selector en cualquier posición, no solo al inicio
 fn extract_amount(data: &[u8]) -> Option<u64> {
     // Buscar patrón de transferencia TRC20
-    // Transfer(address,address,uint256) selector: 0xa9059cbb
+    // Transfer(address,uint256) selector: 0xa9059cbb
     let selector = [0xa9, 0x05, 0x9c, 0xbb];
-    if data.len() < 68 { return None; }
-    if data[0..4] != selector { return None; }
     
-    // El monto está en los últimos 32 bytes
-    let amount_bytes: [u8; 8] = data[60..68].try_into().ok()?;
+    if data.len() < 68 { return None; }
+    
+    // CORREGIDO: Buscar el selector en cualquier posición de los datos
+    // En transacciones TRON, el calldata puede no estar al inicio
+    let selector_pos = data.windows(4).position(|w| w == selector)?;
+    
+    // El monto empieza 36 bytes después del selector (4 selector + 32 address)
+    let amount_start = selector_pos + 36;
+    let amount_end = amount_start + 32;
+    
+    if data.len() < amount_end { return None; }
+    
+    // Leer los últimos 8 bytes del uint256 (asumiendo que el monto cabe en u64)
+    let amount_bytes: [u8; 8] = data[amount_end - 8..amount_end].try_into().ok()?;
     Some(u64::from_be_bytes(amount_bytes))
 }
 

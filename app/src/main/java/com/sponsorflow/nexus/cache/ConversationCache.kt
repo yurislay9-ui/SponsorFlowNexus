@@ -124,8 +124,10 @@ class ConversationCache(
         
         entries.add("$message|$response|${System.currentTimeMillis()}")
         
-        // Sin límite para ENTERPRISE
-        prefs.edit().putString(key, entries.joinToString("||")).apply()
+        // CORREGIDO: Aplicar límite MAX_ENTERPRISE_MESSAGES para evitar TransactionTooLargeException
+        // El límite de Binder es ~1MB, así que limitamos a 1000 entradas
+        val trimmed = entries.takeLast(MAX_ENTERPRISE_MESSAGES)
+        prefs.edit().putString(key, trimmed.joinToString("||")).apply()
         
         // Memoria persistente
         updateMemory(phone, message)

@@ -1,4 +1,5 @@
 //! JNI Payment Functions
+//! CORREGIDO: Manejo de errores sin unwrap() para evitar panics en JNI
 
 use jni::JNIEnv;
 use jni::objects::{JClass, JString};
@@ -18,12 +19,22 @@ pub extern "system" fn Java_com_sponsorflow_nexus_rust_RustBridge_validateTronAd
 }
 
 /// Genera QR de pago TRON
+/// CORREGIDO: Manejar error sin unwrap()
 #[no_mangle]
 pub extern "system" fn Java_com_sponsorflow_nexus_rust_RustBridge_generatePaymentQr(
     mut env: JNIEnv, _class: JClass, wallet: JString, amount: jlong) -> jstring {
-    let wallet_str: String = env.get_string(&wallet).unwrap().into();
+    
+    let wallet_str: String = match env.get_string(&wallet) {
+        Ok(s) => s.into(),
+        Err(_) => return std::ptr::null_mut(),
+    };
+    
     let qr = generate_qr(&wallet_str, amount as u64);
-    env.new_string(&qr).unwrap().into_raw()
+    
+    match env.new_string(&qr) {
+        Ok(s) => s.into_raw(),
+        Err(_) => std::ptr::null_mut(),
+    }
 }
 
 /// Valida transacción TRC20

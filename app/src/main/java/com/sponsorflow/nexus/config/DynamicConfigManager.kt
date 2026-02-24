@@ -179,12 +179,14 @@ data class AdminWebhooksConfig(
     val error_url: String = ""
 )
 
+// CORREGIDO: Renombrar para evitar conflicto con com.sponsorflow.nexus.admin.AdminCommand
 data class AdminCommandsConfig(
-    val global: List<AdminCommand> = emptyList(),
-    val devices: Map<String, List<AdminCommand>> = emptyMap()
+    val global: List<RemoteAdminCommand> = emptyList(),
+    val devices: Map<String, List<RemoteAdminCommand>> = emptyMap()
 )
 
-data class AdminCommand(
+// CORREGIDO: Clase renombrada para evitar shadowing con AdminCommand de AdminTypes.kt
+data class RemoteAdminCommand(
     val type: String = "",
     val payload: String? = null
 )

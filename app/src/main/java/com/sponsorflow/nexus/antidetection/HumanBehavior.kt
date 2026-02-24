@@ -30,8 +30,8 @@ object HumanBehavior {
     }
 
     fun addTypo(text: String): String {
-        // Seguridad: texto vacío o muy corto
-        if (text.length < 2) return text
+        // CORREGIDO: Mínimo 3 caracteres para evitar IllegalArgumentException en nextInt(1, 1)
+        if (text.length < 3) return text
         if (ThreadLocalRandom.current().nextFloat() > 0.1f) return text
         val pos = ThreadLocalRandom.current().nextInt(1, text.length - 1)
         val chars = text.toMutableList()
