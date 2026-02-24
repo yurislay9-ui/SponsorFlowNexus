@@ -21,6 +21,7 @@ import androidx.hilt.work.HiltWorker
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
@@ -36,8 +37,13 @@ class NexusApplication : Application(), Configuration.Provider {
     private lateinit var encryptedPrefs: EncryptedSharedPreferences
     private lateinit var masterKey: MasterKey
     
-    // CORREGIDO: Scope con SupervisorJob para poder cancelar
-    private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    // CORREGIDO: CoroutineExceptionHandler para manejar excepciones no capturadas
+    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        android.util.Log.e("NexusApplication", "Uncaught coroutine exception", throwable)
+    }
+    
+    // CORREGIDO: Scope con SupervisorJob + CoroutineExceptionHandler
+    private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.IO + exceptionHandler)
 
     override val workManagerConfiguration: Configuration
         get() = Configuration.Builder()
