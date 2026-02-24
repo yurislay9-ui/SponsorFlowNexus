@@ -1,18 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- CORREGIDO: MEDIUM-002 - Strings centralizados para i18n -->
 <resources>
+    <!-- App -->
     <string name="app_name">SponsorFlow Nexus</string>
-    <string name="service_name">Nexus AI Service</string>
-    <string name="notification_channel_name">Nexus Service</string>
-    <string name="notification_channel_description">Canal para el servicio en primer plano de SponsorFlow Nexus</string>
-    <string name="notification_channel_id">nexus_foreground_service</string>
-    <string name="service_running_title">SponsorFlow Nexus activo</string>
-    <string name="service_running_text">Monitoreando operaciones en segundo plano</string>
+    <string name="welcome_message">Bienvenido a SponsorFlow Nexus</string>
     
-    <!-- CORREGIDO: AndroidX en lugar de Android Support -->
-    <string name="appbar_scrolling_view_behavior">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
+    <!-- Navigation -->
+    <string name="nav_home">Inicio</string>
+    <string name="nav_settings">Configuración</string>
+    <string name="nav_inventory">Inventario</string>
+    <string name="nav_subscription">Suscripción</string>
     
-    <!-- Onboarding strings -->
-    <string name="onboarding_title">SponsorFlow Nexus</string>
-    <string name="onboarding_welcome">Bienvenido</string>
-    <string name="onboarding_start">Comenzar</string>
+    <!-- Common -->
+    <string name="loading">Cargando…</string>
+    <string name="error_generic">Ha ocurrido un error</string>
+    <string name="retry">Reintentar</string>
+    <string name="save">Guardar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="delete">Eliminar</string>
+    <string name="edit">Editar</string>
+    <string name="confirm">Confirmar</string>
+    
+    <!-- Settings -->
+    <string name="settings_auto_reply">Respuesta automática</string>
+    <string name="settings_notifications">Notificaciones</string>
+    <string name="settings_theme">Tema</string>
+    <string name="settings_language">Idioma</string>
+    
+    <!-- License -->
+    <string name="license_status">Estado de licencia</string>
+    <string name="license_active">Licencia activa</string>
+    <string name="license_expired">Licencia expirada</string>
+    <string name="license_invalid">Licencia inválida</string>
+    
+    <!-- Subscription -->
+    <string name="subscription_free">Gratis</string>
+    <string name="subscription_basic">Básico</string>
+    <string name="subscription_pro">Pro</string>
+    <string name="subscription_enterprise">Enterprise</string>
+    
+    <!-- Payment -->
+    <string name="payment_amount">Monto</string>
+    <string name="payment_status">Estado del pago</string>
+    <string name="payment_pending">Pendiente</string>
+    <string name="payment_confirmed">Confirmado</string>
+    <string name="payment_failed">Fallido</string>
+    
+    <!-- AI -->
+    <string name="ai_typing">Escribiendo…</string>
+    <string name="ai_error">Error en IA</string>
+    <string name="ai_model_loading">Cargando modelo…</string>
+    
+    <!-- Errors -->
+    <string name="error_network">Error de conexión</string>
+    <string name="error_database">Error de base de datos</string>
+    <string name="error_validation">Error de validación</string>
+    <string name="error_security">Error de seguridad</string>
+    
+    <!-- Success -->
+    <string name="success_saved">Guardado correctamente</string>
+    <string name="success_deleted">Eliminado correctamente</string>
+    <string name="success_updated">Actualizado correctamente</string>
 </resources>
