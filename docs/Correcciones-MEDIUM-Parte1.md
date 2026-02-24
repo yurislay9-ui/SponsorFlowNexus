@@ -342,9 +342,9 @@ private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.IO +
 | MEDIUM-004 | ConversationCache.kt | Memory | ✅ Ya usa ApplicationContext |
 | MEDIUM-005 | NetworkModule.kt | Network | ✅ Ya tiene timeouts configurados |
 | MEDIUM-006 | network/ | Network | ✅ CORREGIDO (NetworkUtils.kt) |
-| MEDIUM-007 | NexusAccessibilityService.kt | Arquitectura | ⚠️ Requiere refactor |
-| MEDIUM-008 | Múltiples | Errores | ⚠️ Cambios múltiples |
-| MEDIUM-009 | Múltiples | Performance | ⚠️ Cambios múltiples |
+| MEDIUM-007 | NexusAccessibilityService.kt | Arquitectura | ⚠️ Ya corregido en CRITICAL-002 |
+| MEDIUM-008 | Múltiples | Errores | ⚠️ Requiere revisión archivo por archivo |
+| MEDIUM-009 | Múltiples | Performance | ⚠️ Requiere revisión archivo por archivo |
 | MEDIUM-010 | LlamaBridge.kt | Null Safety | ✅ CORREGIDO |
 | MEDIUM-011 | Múltiples | Clean Code | ✅ CORREGIDO (AppConstants.kt) |
 | MEDIUM-012 | Múltiples | Documentación | ⚠️ Cambios múltiples |
