@@ -341,7 +341,7 @@ private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.IO +
 | MEDIUM-003 | Múltiples | Logging | ⚠️ Requiere agregar Timber |
 | MEDIUM-004 | ConversationCache.kt | Memory | ✅ Ya usa ApplicationContext |
 | MEDIUM-005 | NetworkModule.kt | Network | ⚠️ Verificar timeouts |
-| MEDIUM-006 | network/ | Network | ⚠️ Requiere nuevo archivo |
+| MEDIUM-006 | network/ | Network | ✅ CORREGIDO (NetworkUtils.kt) |
 | MEDIUM-007 | NexusAccessibilityService.kt | Arquitectura | ⚠️ Requiere refactor |
 | MEDIUM-008 | Múltiples | Errores | ⚠️ Cambios múltiples |
 | MEDIUM-009 | Múltiples | Performance | ⚠️ Cambios múltiples |
