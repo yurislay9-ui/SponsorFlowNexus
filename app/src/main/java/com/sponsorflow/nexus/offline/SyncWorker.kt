@@ -108,6 +108,12 @@ class SyncWorker(
                 } else {
                     SendResult.Failure("HTTP ${response.code}")
                 }
+            } catch (e: IOException) {
+                SendResult.Failure(e.message ?: "Error de red")
+            } catch (e: HttpException) {
+                SendResult.Failure(e.message ?: "Error HTTP")
+            } catch (e: JSONException) {
+                SendResult.Failure(e.message ?: "Error JSON")
             } catch (e: Exception) {
                 SendResult.Failure(e.message ?: "Error desconocido")
             }

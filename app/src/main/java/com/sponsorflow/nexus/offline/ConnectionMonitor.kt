@@ -76,6 +76,14 @@ object ConnectionMonitor {
             } else {
                 onServerOffline()
             }
+        } catch (e: IOException) {
+            onServerOffline()
+        } catch (e: HttpException) {
+            onServerOffline()
+        } catch (e: JSONException) {
+            onServerOffline()
+        } catch (e: SecurityException) {
+            onServerOffline()
         } catch (e: Exception) {
             onServerOffline()
         }

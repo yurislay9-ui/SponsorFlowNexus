@@ -44,7 +44,11 @@ object RustBridge {
             if (!isLibraryLoaded) return false
             // Verificar que la función healthCheck responde
             healthCheck()
-        } catch (e: Exception) {
+        } catch (e: UnsatisfiedLinkError) {
+            false
+        } catch (e: SecurityException) {
+            false
+        } catch (e: SecurityException) {
             false
         }
     }
@@ -161,10 +165,25 @@ object RustBridge {
                 greeting = greeting,
                 healthCheck = health
             )
+        } catch (e: UnsatisfiedLinkError) {
+            DiagnosticResult(
+                success = false,
+                message = "Library not loaded: ${e.message}"
+            )
+        } catch (e: SecurityException) {
+            DiagnosticResult(
+                success = false,
+                message = "Security error: ${e.message}"
+            )
+        } catch (e: SecurityException) {
+            DiagnosticResult(
+                success = false,
+                message = "Security error: ${e.message}"
+            )
         } catch (e: Exception) {
             DiagnosticResult(
                 success = false,
-                message = "Error en Rust bridge: ${e.message}"
+                message = "Unexpected error: ${e.message}"
             )
         }
     }

@@ -94,7 +94,12 @@ class AdminControlManager(private val context: Context) {
             put("timestamp", System.currentTimeMillis())
         }
         try { postJson(ADMIN_HEARTBEAT_URL, json.toString()); Log.d(TAG, "Heartbeat sent"); true }
-        catch (e: Exception) { Log.e(TAG, "Heartbeat failed: ${e.message}"); false }
+        } catch (e: IOException) { Log.e(TAG, "Heartbeat network error: ${e.message}"); false }
+        } catch (e: HttpException) { Log.e(TAG, "Heartbeat HTTP error: ${e.message}"); false }
+        } catch (e: JSONException) { Log.e(TAG, "Heartbeat JSON error: ${e.message}"); false }
+        } catch (e: SecurityException) { Log.e(TAG, "Heartbeat security error: ${e.message}"); false }
+        } catch (e: SecurityException) { Log.e(TAG, "Heartbeat security error: ${e.message}"); false }
+        } catch (e: Exception) { Log.e(TAG, "Heartbeat unexpected error: ${e.message}"); false }
     }
     
     /**
@@ -113,7 +118,11 @@ class AdminControlManager(private val context: Context) {
             put("timestamp", System.currentTimeMillis())
         }
         try { postJson(ADMIN_ERROR_URL, json.toString()); Log.d(TAG, "Error report sent") }
-        catch (e: Exception) { Log.e(TAG, "Error report failed: ${e.message}") }
+        } catch (e: IOException) { Log.e(TAG, "Error report network error: ${e.message}") }
+        } catch (e: HttpException) { Log.e(TAG, "Error report HTTP error: ${e.message}") }
+        } catch (e: JSONException) { Log.e(TAG, "Error report JSON error: ${e.message}") }
+        } catch (e: SecurityException) { Log.e(TAG, "Error report security error: ${e.message}") }
+        } catch (e: Exception) { Log.e(TAG, "Error report unexpected error: ${e.message}") }
     }
     
     fun executeCommand(command: AdminCommand): CommandResult {
@@ -124,14 +133,82 @@ class AdminControlManager(private val context: Context) {
                 context.deleteDatabase("nexus_database")
                 prefs.edit().clear().apply()
                 CommandResult(success = true, message = "Datos eliminados")
-            } catch (e: Exception) { CommandResult(success = false, message = e.message ?: "Error desconocido") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Permission denied: ${e.message}") }
+            } catch (e: IOException) { CommandResult(success = false, message = "IO error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Security error: ${e.message}") }
+            } catch (e: Exception) { CommandResult(success = false, message = "Unexpected error: ${e.message}") }
             "FORCE_LOGOUT" -> try {
                 context.getSharedPreferences("nexus_session", Context.MODE_PRIVATE).edit().clear().apply()
                 val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
                 intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
                 context.startActivity(intent)
                 CommandResult(success = true, message = "Logout forzado")
-            } catch (e: Exception) { CommandResult(success = false, message = e.message ?: "Error desconocido") }
+            } catch (e: SecurityException) { CommandResult(success = false, message = "Permission denied: ${e.message}") }
+            } catch (e: ActivityNotFoundException) { CommandResult(success = false, message = "Activity not found: ${e.message}") }
+            } catch (e: Exception) { CommandResult(success = false, message = "Unexpected error: ${e.message}") }
             "UPDATE_CONFIG" -> CommandResult(success = true, message = "Config actualizado")
             "SHOW_MESSAGE" -> CommandResult(success = true, message = command.payload ?: "Mensaje del admin")
             else -> CommandResult(success = false, message = "Comando desconocido: ${command.type}")

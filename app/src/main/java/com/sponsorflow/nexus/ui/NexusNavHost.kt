@@ -1,5 +1,17 @@
-/*
+/**
  * SponsorFlow Nexus v1.0 - Navigation Host
+ * 
+ * Componente encargado de la gestión de navegación en la aplicación.
+ * Implementa un sistema de rutas seguro y robusto que permite la
+ * navegación entre diferentes pantallas y funcionalidades del sistema.
+ * 
+ * Este componente es fundamental para la arquitectura de la aplicación,
+ * proporcionando una capa de abstracción para la navegación que mejora
+ * la mantenibilidad y la seguridad del sistema.
+ * 
+ * @author SponsorFlow Nexus Team
+ * @version 1.0
+ * @since 1.0
  */
 package com.sponsorflow.nexus.ui
 
@@ -64,6 +76,22 @@ import com.sponsorflow.nexus.ui.inventory.InventoryManagementScreen
 import com.sponsorflow.nexus.ui.settings.IntegrationsScreen
 import com.sponsorflow.nexus.ui.subscription.SubscriptionScreen
 
+/**
+ * Componente principal de navegación de la aplicación.
+ * 
+ * Este es el host de navegación central que gestiona todas las rutas
+ * de la aplicación y permite la navegación entre diferentes pantallas
+ * y funcionalidades del sistema.
+ * 
+ * @param navController Controlador de navegación proporcionado por Navigation Compose
+ * @param startDestination Ruta de destino inicial, por defecto "home"
+ * 
+ * @see HomeScreen
+ * @see InventoryManagementScreen
+ * @see IntegrationsScreen
+ * @see AssistantChatScreen
+ * @see NavHostController
+ */
 @Composable
 fun NexusNavHost(
     navController: NavHostController,
@@ -97,6 +125,22 @@ fun NexusNavHost(
     }
 }
 
+/**
+ * Pantalla principal de la aplicación.
+ * 
+ * Esta es la pantalla de inicio que muestra el estado del asistente,
+ * acciones rápidas y estadísticas generales del sistema. Proporciona
+ * una interfaz centralizada para acceder a las diferentes funcionalidades
+ * de la aplicación.
+ * 
+ * @param onNavigateToInventory Callback para navegar a la pantalla de inventario
+ * @param onNavigateToSettings Callback para navegar a la pantalla de configuración
+ * 
+ * @see InventoryManagementScreen
+ * @see IntegrationsScreen
+ * @see QuickActionButton
+ * @see StatCard
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -416,6 +460,24 @@ fun HomeScreen(
     }
 }
 
+/**
+ * Botón de acción rápida para la pantalla principal.
+ * 
+ * Este componente representa un botón de acción rápida que permite
+ * acceder de forma inmediata a funcionalidades específicas de la
+ * aplicación. Cada botón tiene un icono, una etiqueta y un color
+ * distintivo que lo identifica visualmente.
+ * 
+ * @param icon Icono que representa la acción
+ * @param label Etiqueta de texto que describe la acción
+ * @param color Color distintivo del botón
+ * @param onClick Callback que se ejecuta al hacer clic
+ * @param modifier Modificador de Compose para personalizar el layout
+ * 
+ * @see HomeScreen
+ * @see StatCard
+ * @see ImageVector
+ */
 @Composable
 fun QuickActionButton(
     icon: ImageVector,
@@ -458,6 +520,24 @@ fun QuickActionButton(
     }
 }
 
+/**
+ * Tarjeta de estadísticas para la pantalla principal.
+ * 
+ * Este componente muestra una estadística específica del sistema
+ * en formato de tarjeta con un icono, valor numérico y título
+ * descriptivo. Se utiliza para presentar métricas clave de forma
+ * visualmente atractiva y fácil de entender.
+ * 
+ * @param title Título descriptivo de la estadística
+ * @param value Valor numérico de la estadística
+ * @param icon Icono que representa la estadística
+ * @param color Color distintivo de la tarjeta
+ * @param modifier Modificador de Compose para personalizar el layout
+ * 
+ * @see HomeScreen
+ * @see QuickActionButton
+ * @see ImageVector
+ */
 @Composable
 fun StatCard(
     title: String,

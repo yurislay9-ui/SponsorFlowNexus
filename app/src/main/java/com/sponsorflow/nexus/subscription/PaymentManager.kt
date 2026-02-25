@@ -63,6 +63,10 @@ class PaymentManager(
             createdAt = System.currentTimeMillis()
         )
         AppResult.Success(intent)
+    } catch (e: IllegalArgumentException) {
+        AppResult.Error(AppError.ValidationError(e.message ?: "Invalid parameters"))
+    } catch (e: IllegalStateException) {
+        AppResult.Error(AppError.PaymentError(e.message ?: "Payment state error"))
     } catch (e: Exception) {
         AppResult.Error(AppError.fromException(e))
     }

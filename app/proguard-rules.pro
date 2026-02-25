@@ -1,74 +1,209 @@
-# SponsorFlow Nexus v2.4 - ProGuard Rules
-# Skill: Seguridad - Mantener clases críticas
+# SponsorFlow Nexus v1.0 - ProGuard Rules
+# Reglas de ofuscación para mantener funcionalidad crítica
 
-# Room
--keep class com.sponsorflow.nexus.data.entity.** { *; }
--keep class com.sponsorflow.nexus.data.dao.** { *; }
--keep @androidx.room.Entity class * { *; }
--keep @androidx.room.Dao interface * { *; }
+# ------------------------------
+# Configuración General
+# ------------------------------
 
-# llama.cpp JNI
--keep class com.sponsorflow.nexus.ai.LlamaBridge { *; }
--keepclasseswithmembernames class * { native <methods>; }
+# Mantener atributos de firma y anotaciones
+-keepattributes Signature
+-keepattributes *Annotation*
+-keepattributes EnclosingMethod
 
-# Plugins
--keep interface com.sponsorflow.nexus.plugin.IPluginContract { *; }
--keep class com.sponsorflow.nexus.plugin.PluginContext { *; }
--keep class com.sponsorflow.nexus.plugin.PluginOutput { *; }
--keep class com.sponsorflow.nexus.plugin.PluginManager { *; }
+# Mantener nombres de clases y métodos para debugging
+-keepattributes SourceFile,LineNumberTable
+
+# ------------------------------
+# Gson (Serialización JSON)
+# ------------------------------
+
+# Reglas para Gson - mantener clases de datos
+-keep class com.sponsorflow.nexus.data.** { *; }
+-keep class com.sponsorflow.nexus.model.** { *; }
+-keep class com.sponsorflow.nexus.network.** { *; }
+-keep class com.sponsorflow.nexus.subscription.** { *; }
+-keep class com.sponsorflow.nexus.inventory.** { *; }
+-keep class com.sponsorflow.nexus.sentiment.** { *; }
 -keep class com.sponsorflow.nexus.plugin.** { *; }
 
-# Admin Control
--keep class com.sponsorflow.nexus.admin.** { *; }
+# Reglas específicas para Gson
+-keep class com.google.gson.** { *; }
+-keep class com.google.gson.stream.** { *; }
+-keep class com.google.gson.annotations.** { *; }
 
-# Integration
--keep class com.sponsorflow.nexus.integration.** { *; }
+# Mantener constructores sin argumentos para clases de datos
+-keepclassmembers class * {
+    public <init>();
+}
 
-# Gson
--keepattributes Signature
--keep @com.google.gson.annotations.SerializedName class * { *; }
+# Mantener métodos getter y setter
+-keepclassmembers class * {
+    public <fields>;
+    public <methods>;
+}
 
-# SQLCipher
--dontwarn net.sqlcipher.**
--keep class net.sqlcipher.** { *; }
+# ------------------------------
+# Gson (Serialización JSON)
+# ------------------------------
 
-# OkHttp
--dontwarn okhttp3.**
+# Reglas para Gson - mantener clases de datos
+-keep class com.sponsorflow.nexus.data.** { *; }
+-keep class com.sponsorflow.nexus.model.** { *; }
+-keep class com.sponsorflow.nexus.network.** { *; }
+-keep class com.sponsorflow.nexus.subscription.** { *; }
+-keep class com.sponsorflow.nexus.inventory.** { *; }
+-keep class com.sponsorflow.nexus.sentiment.** { *; }
+-keep class com.sponsorflow.nexus.plugin.** { *; }
+
+# Reglas específicas para Gson
+-keep class com.google.gson.** { *; }
+-keep class com.google.gson.stream.** { *; }
+-keep class com.google.gson.annotations.** { *; }
+
+# Mantener constructores sin argumentos para clases de datos
+-keepclassmembers class * {
+    public <init>();
+}
+
+# Mantener métodos getter y setter
+-keepclassmembers class * {
+    public <fields>;
+    public <methods>;
+}
+
+# ------------------------------
+# Room Database
+# ------------------------------
+
+# Mantener clases de Room
+-keep class * extends androidx.room.RoomDatabase { *; }
+-keep @androidx.room.Entity class *
+-keep class * extends androidx.room.Entity { *; }
+
+# Mantener DAOs
+-keep interface * extends androidx.room.Dao { *; }
+
+# Excluir warnings de Room
+-dontwarn androidx.room.paging.**
+-dontwarn androidx.room.CoroutinesRoom
+
+# ------------------------------
+# Android Components
+# ------------------------------
+
+# Mantener Application class
+-keep class com.sponsorflow.nexus.SponsorFlowNexusApplication { *; }
+
+# Mantener Activities
+-keep class * extends android.app.Activity { *; }
+-keep class * extends androidx.appcompat.app.AppCompatActivity { *; }
+
+# Mantener Services
+-keep class * extends android.app.Service { *; }
+-keep class * extends androidx.core.app.JobIntentService { *; }
+
+# Mantener BroadcastReceivers
+-keep class * extends android.content.BroadcastReceiver { *; }
+
+# Mantener ContentProviders
+-keep class * extends android.content.ContentProvider { *; }
+
+# ------------------------------
+# WorkManager
+# ------------------------------
+
+# Mantener WorkManager classes
+-keep class * extends androidx.work.Worker { *; }
+-keep class * extends androidx.work.ListenableWorker { *; }
+
+# ------------------------------
+# Compose UI
+# ------------------------------
+
+# Mantener clases de Compose
+-keep class androidx.compose.** { *; }
+-keep class com.sponsorflow.nexus.ui.** { *; }
+
+# ------------------------------
+# Networking (OkHttp, Retrofit)
+# ------------------------------
+
+# Mantener clases de networking
+-keep class com.sponsorflow.nexus.network.** { *; }
+-keep class com.squareup.okhttp3.** { *; }
+-keep class retrofit2.** { *; }
 -keep class okhttp3.** { *; }
 
-# Kotlin Coroutines
--keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
+# ------------------------------
+# Security & Encryption
+# ------------------------------
 
-# Retrofit (si se usa)
+# Mantener clases de seguridad
+-keep class com.sponsorflow.nexus.security.** { *; }
+-keep class androidx.security.crypto.** { *; }
+-keep class android.security.** { *; }
+-keep class java.security.** { *; }
+-keep class javax.crypto.** { *; }
+
+# ------------------------------
+# Firebase (Analytics, Crashlytics)
+# ------------------------------
+
+# Mantener Firebase classes
+-keep class com.google.firebase.** { *; }
+-keep class com.google.android.gms.** { *; }
+
+# ------------------------------
+# Reflection & Dynamic Loading
+# ------------------------------
+
+# Mantener clases usadas por reflexión
+-keep class com.sponsorflow.nexus.plugin.** { *; }
+-keep class com.sponsorflow.nexus.ai.** { *; }
+-keep class com.sponsorflow.nexus.antidetection.** { *; }
+
+# ------------------------------
+# Third-party Libraries
+# ------------------------------
+
+# Mantener librerías externas críticas
+-keep class org.json.** { *; }
+-keep class com.google.gson.** { *; }
+-keep class com.squareup.okhttp3.** { *; }
 -keep class retrofit2.** { *; }
--keep interface retrofit2.** { *; }
--keepclassmembernames class * {
-    @retrofit2.http.* <methods>;
+-keep class androidx.lifecycle.** { *; }
+-keep class androidx.room.** { *; }
+-keep class androidx.work.** { *; }
+-keep class androidx.compose.** { *; }
+
+# ------------------------------
+# Debug & Development
+# ------------------------------
+
+# En modo debug, mantener más información
+-if class ** {
+    @androidx.annotation.Keep <methods>;
+}
+-keep,allowobfuscation @interface androidx.annotation.Keep
+
+-keep,allowobfuscation class * {
+    @androidx.annotation.Keep *;
 }
 
-# Data Classes para Gson
--keep class com.sponsorflow.nexus.**.model.** { *; }
--keep class com.sponsorflow.nexus.**.entity.** { *; }
--keep class com.sponsorflow.nexus.**.dto.** { *; }
+# ------------------------------
+# Optimizations
+# ------------------------------
 
-# Offline Queue
--keep class com.sponsorflow.nexus.offline.** { *; }
+# Desactivar optimizaciones que puedan romper funcionalidad
+-dontoptimize
+-dontpreverify
+-dontshrink
 
-# Account & Auth
--keep class com.sponsorflow.nexus.account.** { *; }
+# ------------------------------
+# Logging
+# ------------------------------
 
-# Config
--keep class com.sponsorflow.nexus.config.** { *; }
-
-# Inventory
--keep class com.sponsorflow.nexus.inventory.** { *; }
-
-# WorkManager
--keep class * extends androidx.work.Worker
--keep class * extends androidx.work.CoroutineWorker
-
-# Mantener todas las data classes
--keep class **$$serializer { *; }
--keepclassmembers class * {
-    *** Companion;
-}
+# Mantener logging para debugging
+-keep class com.sponsorflow.nexus.NexusLogger { *; }
+-keep class android.util.Log { *; }
+-keep class timber.log.Timber { *; }

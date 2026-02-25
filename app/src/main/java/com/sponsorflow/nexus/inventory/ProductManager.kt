@@ -25,9 +25,15 @@ class ProductManager @Inject constructor(
         return withContext(Dispatchers.IO) {
             try {
                 AppResult.Success(productRepo.getAll())
-            } catch (e: Exception) {
-                AppResult.Error(e.message?.let { AppError.Database(it) } ?: AppError.Unknown)
-            }
+        } catch (e: IllegalArgumentException) {
+            AppResult.Error(AppError.ValidationError(e.message ?: "Invalid parameters"))
+        } catch (e: IllegalStateException) {
+            AppResult.Error(AppError.Database(e.message ?: "Database state error"))
+        } catch (e: SecurityException) {
+            AppResult.Error(AppError.SecurityError(e.message ?: "Security error"))
+        } catch (e: Exception) {
+            AppResult.Error(e.message?.let { AppError.Database(it) } ?: AppError.Unknown)
+        }
         }
     }
 
@@ -35,6 +41,18 @@ class ProductManager @Inject constructor(
         return withContext(Dispatchers.IO) {
             try {
                 AppResult.Success(productRepo.getById(id))
+            } catch (e: IllegalArgumentException) {
+                AppResult.Error(AppError.ValidationError(e.message ?: "Invalid parameters"))
+            } catch (e: IllegalStateException) {
+                AppResult.Error(AppError.Database(e.message ?: "Database state error"))
+            } catch (e: IllegalArgumentException) {
+                AppResult.Error(AppError.ValidationError(e.message ?: "Invalid parameters"))
+            } catch (e: IllegalStateException) {
+                AppResult.Error(AppError.Database(e.message ?: "Database state error"))
+            } catch (e: IllegalArgumentException) {
+                AppResult.Error(AppError.ValidationError(e.message ?: "Invalid parameters"))
+            } catch (e: IllegalStateException) {
+                AppResult.Error(AppError.Database(e.message ?: "Database state error"))
             } catch (e: Exception) {
                 AppResult.Error(e.message?.let { AppError.Database(it) } ?: AppError.Unknown)
             }
@@ -55,6 +73,22 @@ class ProductManager @Inject constructor(
                     }
                     productRepo.update(product.copy(stock = product.stock - quantity))
                     AppResult.Success(Unit)
+                } catch (e: IllegalArgumentException) {
+                    AppResult.Error(AppError.ValidationError(e.message ?: "Invalid parameters"))
+                } catch (e: IllegalStateException) {
+                    AppResult.Error(AppError.Database(e.message ?: "Database state error"))
+                } catch (e: IllegalArgumentException) {
+                    AppResult.Error(AppError.ValidationError(e.message ?: "Invalid parameters"))
+                } catch (e: IllegalStateException) {
+                    AppResult.Error(AppError.Database(e.message ?: "Database state error"))
+                } catch (e: IllegalArgumentException) {
+                    AppResult.Error(AppError.ValidationError(e.message ?: "Invalid parameters"))
+                } catch (e: IllegalStateException) {
+                    AppResult.Error(AppError.Database(e.message ?: "Database state error"))
+                } catch (e: IllegalArgumentException) {
+                    AppResult.Error(AppError.ValidationError(e.message ?: "Invalid parameters"))
+                } catch (e: IllegalStateException) {
+                    AppResult.Error(AppError.Database(e.message ?: "Database state error"))
                 } catch (e: Exception) {
                     AppResult.Error(e.message?.let { AppError.Database(it) } ?: AppError.Unknown)
                 }

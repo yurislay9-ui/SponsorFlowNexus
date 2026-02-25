@@ -70,8 +70,19 @@ class UserWebhookManager(private val context: Context) {
             val response = postJson(url, json)
             Log.d(TAG, "Webhook sent: ${event.eventType} -> $response")
             Result.success(true)
+        } catch (e: IOException) {
+            Log.e(TAG, "Webhook network error: ${e.message}")
+            Result.failure(e)
+        } catch (e: HttpException) {
+            Log.e(TAG, "Webhook HTTP error: ${e.message}")
+            Result.failure(e)
+        } catch (e: JSONException) {
+            Log.e(TAG, "Webhook JSON error: ${e.message}")
+            Result.failure(e)
+        } catch (e: SecurityException) {
+            Log.e(TAG, "Webhook security error: ${e.message}")
         } catch (e: Exception) {
-            Log.e(TAG, "Webhook failed: ${e.message}")
+            Log.e(TAG, "Webhook unexpected error: ${e.message}")
             Result.failure(e)
         }
     }

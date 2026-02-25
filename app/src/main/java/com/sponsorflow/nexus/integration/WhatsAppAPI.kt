@@ -61,6 +61,14 @@ class WhatsAppAPI(private val config: WhatsAppConfig) {
             } else {
                 AppResult.Error(AppError.NetworkError(response.code))
             }
+        } catch (e: IOException) {
+            AppResult.Error(AppError.NetworkError(e.message ?: "Network error"))
+        } catch (e: HttpException) {
+            AppResult.Error(AppError.NetworkError(e.message ?: "HTTP error"))
+        } catch (e: JSONException) {
+            AppResult.Error(AppError.ParseError(e.message ?: "JSON parse error"))
+        } catch (e: SecurityException) {
+            AppResult.Error(AppError.SecurityError(e.message ?: "Security error"))
         } catch (e: Exception) {
             AppResult.Error(AppError.fromException(e))
         }

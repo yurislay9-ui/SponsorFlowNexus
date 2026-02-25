@@ -57,9 +57,14 @@ class NexusApplication : Application(), Configuration.Provider {
             initSecurity()
             initWorkManager()
             fetchRemoteConfig()
+        } catch (e: IllegalStateException) {
+            android.util.Log.e("NexusApplication", "Initialization state error: ${e.message}")
+        } catch (e: SecurityException) {
+            android.util.Log.e("NexusApplication", "Security initialization error: ${e.message}")
+        } catch (e: SecurityException) {
+            android.util.Log.e("NexusApplication", "Security initialization error: ${e.message}")
         } catch (e: Exception) {
-            // Evitar crash si algo falla en inicialización
-            android.util.Log.e("NexusApplication", "Error inicializando: ${e.message}")
+            android.util.Log.e("NexusApplication", "General initialization error: ${e.message}")
         }
     }
 

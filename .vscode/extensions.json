@@ -1,5 +1,6 @@
 {
     "recommendations": [
-        "google.colab"
+        "google.colab",
+        "saoudrizwan.claude-dev"
     ]
 }

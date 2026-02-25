@@ -52,8 +52,10 @@ class IntegrityChecker(
             val hash = sigs.firstOrNull()?.let { hashSHA256(it.toByteArray()) } ?: ""
             hash == expected
         }
-    } catch (e: Exception) {
-        false
+        } catch (e: SecurityException) {
+            false
+        } catch (e: Exception) {
+            false
     }
 
     // CORREGIDO: Solo aceptar Google Play como instalador válido
@@ -91,6 +93,9 @@ class IntegrityChecker(
             
             // Si debuggable = 1 y secure = 0, probablemente es root/emulator
             debuggable == "1" && secure == "0"
+        } catch (e: SecurityException) {
+            // Si no podemos acceder, asumir que no hay root
+            false
         } catch (e: Exception) {
             // Si no podemos acceder, asumir que no hay root
             false
@@ -109,7 +114,11 @@ class IntegrityChecker(
                 context.packageManager.getPackageInfo(app, 0)
                 true
             }
+        } catch (e: SecurityException) {
+            false
         } catch (e: PackageManager.NameNotFoundException) {
+            false
+        } catch (e: Exception) {
             false
         }
     }

@@ -63,16 +63,24 @@ class SubscriptionGate(
      * CORREGIDO: Usa getCurrentTierAsync para consistencia
      */
     fun checkAccess(feature: String): Boolean {
-        val tier = getCurrentTierAsync()
-        return when (feature.lowercase()) {
-            "prompt", "custom_prompt" -> tier.hasCustomPrompt
-            "inventory", "inventario" -> tier.hasInventory
-            "memory", "memoria" -> tier.hasMemory
-            "plugins" -> tier.hasPlugins
-            "plugin_sdk", "sdk" -> tier.hasPluginSDK
-            "categories", "categorias" -> tier.hasCategories
-            "whatsapp", "auto_reply" -> true // Anti-detección obligatorio, todos tienen acceso
-            else -> false
+        try {
+            val tier = getCurrentTierAsync()
+            return when (feature.lowercase()) {
+                "prompt", "custom_prompt" -> tier.hasCustomPrompt
+                "inventory", "inventario" -> tier.hasInventory
+                "memory", "memoria" -> tier.hasMemory
+                "plugins" -> tier.hasPlugins
+                "plugin_sdk", "sdk" -> tier.hasPluginSDK
+                "categories", "categorias" -> tier.hasCategories
+                "whatsapp", "auto_reply" -> true // Anti-detección obligatorio, todos tienen acceso
+                else -> false
+            }
+        } catch (e: IllegalArgumentException) {
+            return false
+        } catch (e: IllegalStateException) {
+            return false
+        } catch (e: Exception) {
+            return false
         }
     }
 

@@ -46,6 +46,8 @@ class IntegrityService @Inject constructor(
             return try {
                 com.sponsorflow.nexus.BuildConfig.CLOUD_PROJECT_NUMBER.takeIf { it > 0 } 
                     ?: 123456789L // Fallback - debe configurarse en producción
+            } catch (e: SecurityException) {
+                123456789L
             } catch (e: Exception) {
                 123456789L
             }

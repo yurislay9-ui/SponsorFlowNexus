@@ -30,8 +30,16 @@ class NexusCrashHandler(
                     stackTrace = throwable.stackTraceToString()
                 )
             }
+        } catch (e: IOException) {
+            Log.e("NexusCrashHandler", "Network error reporting crash", e)
+        } catch (e: HttpException) {
+            Log.e("NexusCrashHandler", "HTTP error reporting crash", e)
+        } catch (e: JSONException) {
+            Log.e("NexusCrashHandler", "JSON error reporting crash", e)
+        } catch (e: SecurityException) {
+            Log.e("NexusCrashHandler", "Security error reporting crash", e)
         } catch (e: Exception) {
-            Log.e("NexusCrashHandler", "Failed to report crash", e)
+            Log.e("NexusCrashHandler", "Unexpected error reporting crash", e)
         }
         defaultHandler?.uncaughtException(thread, throwable)
     }

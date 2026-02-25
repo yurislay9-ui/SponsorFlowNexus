@@ -71,6 +71,8 @@ class DynamicConfigManager @Inject constructor(
             } catch (e: JsonSyntaxException) {
                 Log.e("Nexus", "JSON malformado en config: ${e.message}")
                 AppResult.Success(getCachedOrFallback())
+            } catch (e: SecurityException) {
+                Log.e("Nexus", "Security error loading config: ${e.message}")
             } catch (e: Exception) {
                 Log.e("Nexus", "Error cargando config: ${e.message}")
                 AppResult.Success(getCachedOrFallback())

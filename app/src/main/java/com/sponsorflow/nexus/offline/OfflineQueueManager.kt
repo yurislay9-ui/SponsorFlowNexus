@@ -94,7 +94,7 @@ object OfflineQueueManager {
                         headersMap.forEach { (key, value) ->
                             requestBuilder.addHeader(key.toString(), value.toString())
                         }
-                    } catch (e: Exception) {
+                    } catch (e: JSONException) {
                         // Ignorar errores de parseo de headers
                     }
                 }
@@ -104,6 +104,12 @@ object OfflineQueueManager {
                 response.isSuccessful.also {
                     response.close()
                 }
+            } catch (e: IOException) {
+                false
+            } catch (e: HttpException) {
+                false
+            } catch (e: JSONException) {
+                false
             } catch (e: Exception) {
                 false
             }

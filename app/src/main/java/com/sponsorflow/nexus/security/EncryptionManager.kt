@@ -31,6 +31,8 @@ class EncryptionManager : IEncryptionService {
         val encrypted = cipher.doFinal(data)
         val iv = cipher.iv
         AppResult.Success(iv + encrypted)
+    } catch (e: SecurityException) {
+        AppResult.Error(AppError.SecurityError(e.message ?: "Security error"))
     } catch (e: Exception) {
         AppResult.Error(AppError.SecurityError(e.message ?: "Encryption failed"))
     }
@@ -41,6 +43,8 @@ class EncryptionManager : IEncryptionService {
         val cipher = Cipher.getInstance(TRANSFORMATION)
         cipher.init(Cipher.DECRYPT_MODE, secretKey ?: getOrCreateKey(), GCMParameterSpec(TAG_SIZE, iv))
         AppResult.Success(cipher.doFinal(encrypted))
+    } catch (e: SecurityException) {
+        AppResult.Error(AppError.SecurityError(e.message ?: "Security error"))
     } catch (e: Exception) {
         AppResult.Error(AppError.SecurityError(e.message ?: "Decryption failed"))
     }
@@ -60,6 +64,8 @@ class EncryptionManager : IEncryptionService {
     override fun encryptString(text: String): AppResult<String> = try {
         val result = encrypt(text.toByteArray())
         result.map { Base64.getEncoder().encodeToString(it) }
+    } catch (e: SecurityException) {
+        AppResult.Error(AppError.SecurityError(e.message ?: "Security error"))
     } catch (e: Exception) {
         AppResult.Error(AppError.SecurityError(e.message ?: "Encrypt string failed"))
     }
@@ -67,6 +73,8 @@ class EncryptionManager : IEncryptionService {
     override fun decryptString(encryptedText: String): AppResult<String> = try {
         val data = Base64.getDecoder().decode(encryptedText)
         decrypt(data).map { String(it) }
+    } catch (e: SecurityException) {
+        AppResult.Error(AppError.SecurityError(e.message ?: "Security error"))
     } catch (e: Exception) {
         AppResult.Error(AppError.SecurityError(e.message ?: "Decrypt string failed"))
     }

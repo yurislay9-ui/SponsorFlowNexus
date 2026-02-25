@@ -69,6 +69,10 @@ object AIEngine : IAIEngine {
             } else {
                 AppResult.Error(AppError.AIError("Error al cargar modelo"))
             }
+        } catch (e: IllegalArgumentException) {
+            AppResult.Error(AppError.ValidationError(e.message ?: "Invalid parameters"))
+        } catch (e: IllegalStateException) {
+            AppResult.Error(AppError.AIError(e.message ?: "AI state error"))
         } catch (e: Exception) {
             AppResult.Error(AppError.fromException(e))
         }
@@ -104,6 +108,12 @@ object AIEngine : IAIEngine {
                 } finally {
                     isGenerating.set(false)
                 }
+            } catch (e: IllegalArgumentException) {
+                isGenerating.set(false)
+                AppResult.Error(AppError.ValidationError(e.message ?: "Invalid parameters"))
+            } catch (e: IllegalStateException) {
+                isGenerating.set(false)
+                AppResult.Error(AppError.AIError(e.message ?: "AI state error"))
             } catch (e: Exception) {
                 isGenerating.set(false)
                 AppResult.Error(AppError.fromException(e))

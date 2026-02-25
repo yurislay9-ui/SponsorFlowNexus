@@ -52,8 +52,14 @@ class PluginManager(private val context: Context) {
         if (!isEnabled(id)) return PluginResult(false, error = "Plugin deshabilitado")
         return try {
             plugin.execute(input)
+        } catch (e: IllegalArgumentException) {
+            PluginResult(false, error = "Invalid input parameters: ${e.message}")
+        } catch (e: IllegalStateException) {
+            PluginResult(false, error = "Plugin state error: ${e.message}")
+        } catch (e: SecurityException) {
+            PluginResult(false, error = "Security error: ${e.message}")
         } catch (e: Exception) {
-            PluginResult(false, error = e.message ?: "Error desconocido")
+            PluginResult(false, error = "Unexpected error: ${e.message}")
         }
     }
 
