@@ -55,12 +55,12 @@ SponsorFlow Nexus es una aplicación Android que funciona como asistente automat
 
 ## 💎 Planes de Suscripción
 
-| Plan | Precio | Memoria | Inventario | Plugins | SDK |
-|------|--------|---------|------------|---------|-----|
-| GRATIS | $0 | Sin memoria | ❌ | ❌ | ❌ |
-| OBSERVADOR | $9/mes | 5 conversaciones | ✅ | Básicos | ❌ |
-| DESARROLLO | $19/mes | 20 conversaciones | Ilimitado | Avanzados | ❌ |
-| EMPRESARIO | $29/mes | Ilimitada | Ilimitado | Todos | ✅ |
+| Plan | Precio | SMS | Memoria | Teléfonos | Canales | Inventario | TTS | Voz | Analytics | Plugins | SDK |
+|------|--------|-----|---------|-----------|---------|------------|-----|-----|-----------|---------|-----|
+| gratis | $0 | 50 | 3 | 1 | 1 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| BASICO | $9/mes | 150 | 5 | 1 | 1 | ✅ | ❌ | ❌ | ✅ | Básicos | ❌ |
+| AVANZADO | $19/mes | 300 | 10 | 1 | 1 | ✅ | ✅ | ❌ | ✅ | Avanzados | ❌ |
+| VIP | $29/mes | ∞ | ∞ | 3 | 5 | ✅ | ✅ | ✅ | ✅ | Todos | ✅ |
 
 ---
 

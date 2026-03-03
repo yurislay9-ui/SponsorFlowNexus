@@ -35,7 +35,7 @@ fun IntegrationsScreen(
         IntegrationsViewModel(UserWebhookManager(context.applicationContext))
     }
     val scope = rememberCoroutineScope()
-    val isEmpresario = userTier == SubscriptionTier.EMPRESARIO
+    val isEmpresario = userTier == SubscriptionTier.VIP
 
     Scaffold(
         topBar = {

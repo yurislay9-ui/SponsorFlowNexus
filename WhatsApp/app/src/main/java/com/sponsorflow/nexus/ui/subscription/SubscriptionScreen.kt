@@ -47,42 +47,65 @@ fun SubscriptionScreen(
             price = "$0",
             color = Color.Gray,
             features = listOf(
-                "Respuestas básicas",
-                "Sin memoria de conversación",
-                "Sin inventario"
+                "50 SMS diarios",
+                "3 primeros chats de memoria",
+                "1 número a vincular",
+                "Respuestas básicas"
             )
         ),
         PlanInfo(
-            name = "OBSERVADOR",
+            name = "BASICO",
             price = "$9/mes",
             color = Color(0xFF2196F3),
             features = listOf(
-                "Memoria 5 conversaciones",
+                "150 SMS diarios",
+                "5 chats de memoria por conversación",
+                "1 número a vincular",
                 "Inventario de productos",
                 "Prompts personalizados",
-                "Plugins básicos"
+                "Plugins básicos",
+                "📊 Analytics & ROI"
             )
         ),
         PlanInfo(
-            name = "DESARROLLO",
+            name = "AVANZADO",
             price = "$19/mes",
             color = Color(0xFF9C27B0),
             features = listOf(
-                "Memoria 20 conversaciones",
+                "300 SMS diarios",
+                "10 chats de memoria por conversación",
+                "1 número a vincular",
                 "Inventario ilimitado",
                 "Todas las categorías",
-                "Plugins avanzados"
+                "Plugins avanzados",
+                "🎤 TTS (Texto a Voz)",
+                "📊 Analytics Avanzado",
+                "🧑‍💼 Escalamiento humano",
+                "🌍 Traducción (3 idiomas)",
+                "🎓 Entrena tu IA",
+                "   Productos, FAQ, Respuestas",
+                "   Keywords y reglas personalizadas"
             ),
             recommended = true
         ),
         PlanInfo(
-            name = "EMPRESARIO",
+            name = "VIP",
             price = "$29/mes",
             color = Color(0xFFFF9800),
             features = listOf(
+                "SMS ilimitados",
                 "Memoria ilimitada",
+                "3 números a vincular",
+                "🎤 OuteTTS (voz natural)",
+                "🗣️ Clonación de voz (12 seg)",
+                "📊 Analytics Completo",
+                "🧑‍💼 Escalamiento humano",
+                "🌍 Traducción (12 idiomas)",
+                "🛒 E-commerce integrado",
+                "💬 Multi-plataforma",
+                "🎓 Entrena tu IA (avanzado)",
+                "   Todo + personalización total",
                 "SDK de plugins",
-                "Soporte prioritario",
                 "API completa"
             )
         )

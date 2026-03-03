@@ -1,6 +1,6 @@
 /*
  * SponsorFlow Nexus v1.0 - Conversation Cache
- * CORREGIDO: ConcurrentHashMap, límite EMPRESARIO
+ * CORREGIDO: ConcurrentHashMap, límite VIP
  */
 package com.sponsorflow.nexus.cache
 
@@ -33,8 +33,8 @@ class ConversationCache(
     // CORREGIDO: ConcurrentHashMap thread-safe
     private val memories = ConcurrentHashMap<String, ConversationMemory>()
     
-    // Límite para EMPRESARIO
-    private val MAX_ENTERPRISE_MESSAGES = 1000
+    // Límite para VIP
+    private val MAX_VIP_MESSAGES = 1000
 
     // Guardar mensaje según plan
     fun saveMessage(phone: String, message: String, response: String) {
@@ -43,15 +43,15 @@ class ConversationCache(
                 // Solo contar para límite diario - NO guardar contenido
                 incrementDailyCount()
             }
-            SubscriptionTier.OBSERVADOR -> {
+            SubscriptionTier.BASICO -> {
                 // Cache básico: últimos 10 mensajes
                 saveBasicCache(phone, message, response)
             }
-            SubscriptionTier.DESARROLLO -> {
+            SubscriptionTier.AVANZADO -> {
                 // Cache medio: últimos 50 mensajes + memoria
                 saveProCache(phone, message, response)
             }
-            SubscriptionTier.EMPRESARIO -> {
+            SubscriptionTier.VIP -> {
                 // Cache completo: ilimitado + memoria persistente
                 saveEnterpriseCache(phone, message, response)
             }
@@ -66,17 +66,17 @@ class ConversationCache(
 
     // Verificar límite diario (FREE)
     fun isLimitReached(): Boolean {
-        if (tier != SubscriptionTier.FREE) return false
+        if (tier == SubscriptionTier.VIP) return false // VIP tiene ilimitado
         val today = getTodayKey()
         val count = prefs.getInt(today, 0)
-        return count >= 50
+        return count >= tier.smsLimit
     }
 
     fun getRemainingMessages(): Int {
-        if (tier != SubscriptionTier.FREE) return -1
+        if (tier == SubscriptionTier.VIP) return -1 // VIP tiene ilimitado
         val today = getTodayKey()
         val count = prefs.getInt(today, 0)
-        return maxOf(0, 50 - count)
+        return maxOf(0, tier.smsLimit - count)
     }
 
     // Métodos privados
@@ -124,9 +124,9 @@ class ConversationCache(
         
         entries.add("$message|$response|${System.currentTimeMillis()}")
         
-        // CORREGIDO: Aplicar límite MAX_ENTERPRISE_MESSAGES para evitar TransactionTooLargeException
+        // CORREGIDO: Aplicar límite MAX_VIP_MESSAGES para evitar TransactionTooLargeException
         // El límite de Binder es ~1MB, así que limitamos a 1000 entradas
-        val trimmed = entries.takeLast(MAX_ENTERPRISE_MESSAGES)
+        val trimmed = entries.takeLast(MAX_VIP_MESSAGES)
         prefs.edit().putString(key, trimmed.joinToString("||")).apply()
         
         // Memoria persistente

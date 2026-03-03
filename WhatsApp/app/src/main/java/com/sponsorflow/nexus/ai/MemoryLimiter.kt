@@ -1,6 +1,6 @@
 /*
  * SponsorFlow Nexus v1.0 - Memory Limiter
- * Plan: OBSERVADOR, DESARROLLO, EMPRESARIO
+ * Plan: BASICO, AVANZADO, VIP
  * CORREGIDO: Version actualizada a v1.0
  */
 package com.sponsorflow.nexus.ai
@@ -12,9 +12,9 @@ object MemoryLimiter {
     
     // MB mínimos requeridos por plan
     private val planMemoryRequirements = mapOf(
-        "OBSERVADOR" to 512L,
-        "DESARROLLO" to 1024L,
-        "EMPRESARIO" to 2048L
+        "BASICO" to 512L,
+        "AVANZADO" to 1024L,
+        "VIP" to 2048L
     )
     
     fun getAvailableMemoryMB(context: Context): Long {

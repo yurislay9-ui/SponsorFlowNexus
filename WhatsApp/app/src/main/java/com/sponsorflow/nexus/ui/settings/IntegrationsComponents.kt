@@ -28,7 +28,7 @@ fun PlanLockedBanner() {
             Icon(Icons.Default.Lock, "Bloqueado", tint = MaterialTheme.colorScheme.error)
             Spacer(Modifier.width(12.dp))
             Text(
-                "Activa el plan EMPRESARIO para conectar tu tienda online",
+                "Activa el plan VIP para conectar tu tienda online",
                 color = MaterialTheme.colorScheme.onErrorContainer
             )
         }

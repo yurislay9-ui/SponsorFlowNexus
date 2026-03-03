@@ -38,23 +38,23 @@ class AIMemoryManager(
 
     // Construir contexto para la IA
     fun buildContext(phone: String, newMessage: String): String {
-        if (tier == SubscriptionTier.OBSERVADOR) {
+        if (tier == SubscriptionTier.BASICO) {
             return newMessage
         }
 
         val ctx = contextMap[phone] ?: loadContext(phone)
         
         return when (tier) {
-            SubscriptionTier.OBSERVADOR -> buildBasicContext(ctx, newMessage)
-            SubscriptionTier.DESARROLLO -> buildProContext(ctx, newMessage)
-            SubscriptionTier.EMPRESARIO -> buildEnterpriseContext(ctx, newMessage)
+            SubscriptionTier.BASICO -> buildBasicContext(ctx, newMessage)
+            SubscriptionTier.AVANZADO -> buildProContext(ctx, newMessage)
+            SubscriptionTier.VIP -> buildEnterpriseContext(ctx, newMessage)
             else -> newMessage
         }
     }
 
     // Actualizar memoria después de respuesta
     fun updateMemory(phone: String, message: String, response: String) {
-        if (tier == SubscriptionTier.OBSERVADOR) return
+        if (tier == SubscriptionTier.BASICO) return
 
         val current = contextMap[phone]
         
@@ -71,13 +71,13 @@ class AIMemoryManager(
 
     // Obtener historial para mostrar al usuario
     fun getHistory(phone: String): List<Pair<String, String>> {
-        if (tier == SubscriptionTier.OBSERVADOR) return emptyList()
+        if (tier == SubscriptionTier.BASICO) return emptyList()
         return contextMap[phone]?.conversationHistory ?: loadHistory(phone)
     }
 
     // Métodos privados
     private fun buildBasicContext(ctx: AIContext?, message: String): String {
-        val history = ctx?.conversationHistory?.takeLast(3) ?: emptyList()
+        val history = ctx?.conversationHistory?.takeLast(tier.memoryChatsLimit) ?: emptyList()
         if (history.isEmpty()) return message
         
         val contextStr = history.joinToString("\n") { (q, a) -> 
@@ -87,7 +87,7 @@ class AIMemoryManager(
     }
 
     private fun buildProContext(ctx: AIContext?, message: String): String {
-        val history = ctx?.conversationHistory?.takeLast(10) ?: emptyList()
+        val history = ctx?.conversationHistory?.takeLast(tier.memoryChatsLimit) ?: emptyList()
         val products = ctx?.lastProductsDiscussed ?: emptyList()
         
         val contextStr = history.joinToString("\n") { (q, a) -> 
@@ -125,13 +125,9 @@ class AIMemoryManager(
         val current = history?.toMutableList()?.let { CopyOnWriteArrayList(it) } ?: CopyOnWriteArrayList()
         current.add(newEntry)
         
-        // Limitar según plan
-        return when (tier) {
-            SubscriptionTier.OBSERVADOR -> current.takeLast(10)
-            SubscriptionTier.DESARROLLO -> current.takeLast(50)
-            SubscriptionTier.EMPRESARIO -> current
-            else -> current.takeLast(10)
-        }
+        // Limitar según plan usando memoryChatsLimit
+        val limit = if (tier == SubscriptionTier.VIP) current.size else tier.memoryChatsLimit
+        return current.takeLast(limit)
     }
 
     private fun extractProducts(message: String, response: String): List<String> {

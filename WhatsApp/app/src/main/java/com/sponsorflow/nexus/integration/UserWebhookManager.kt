@@ -1,6 +1,6 @@
 /*
  * SponsorFlow Nexus - User Webhook Manager
- * Permite a usuarios EMPRESARIO conectar con Zapier/N8N
+ * Permite a usuarios VIP conectar con Zapier/N8N
  */
 package com.sponsorflow.nexus.integration
 

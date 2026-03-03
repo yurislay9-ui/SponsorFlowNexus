@@ -35,10 +35,33 @@
   "heartbeat_interval_hours": 1,
 
   "ai_model": {
-    "download_url": "URL_DEL_MODELO_EN_GITHUB_O_HUGGINGFACE",
+    "download_url": "https://huggingface.co/bartowski/Qwen2.5-0.5B-Instruct-GGUF/resolve/main/Qwen2.5-0.5B-Instruct-Q4_K_S.gguf",
     "version": "1.0.0",
-    "filename": "modelo.gguf",
-    "size_mb": 0
+    "filename": "Qwen2.5-0.5B-Instruct-Q4_K_S.gguf",
+    "size_mb": 390
+  },
+
+  "tts_models": {
+    "avanzado": {
+      "type": "device",
+      "name": "Android TTS",
+      "description": "Usa el TTS integrado del dispositivo"
+    },
+    "vip": {
+      "type": "remote",
+      "download_url": "https://huggingface.co/OuteAI/OuteTTS-0.2-500M-GGUF/resolve/main/OuteTTS-0.2-500M-Q4_K_S.gguf",
+      "version": "0.2",
+      "filename": "OuteTTS-0.2-500M-Q4_K_S.gguf",
+      "size_mb": 350,
+      "voice_clone_max_seconds": 12,
+      "supported_languages": ["en", "es", "zh", "ja", "ko", "fr", "de"],
+      "anti_detection": {
+        "max_audio_seconds": 12,
+        "pause_between_messages": true,
+        "random_pitch": true,
+        "random_speed": true
+      }
+    }
   },
 
   "github_updates": {
@@ -49,5 +72,64 @@
   "whatsapp_config": {
     "minVersion": "2.24.1",
     "updateRequired": false
+  },
+
+  "translation": {
+    "enabled": true,
+    "provider": "libretranslate",
+    "api_url": "https://libretranslate.com",
+    "api_key": "TU_API_KEY_LIBRETRANSLATE",
+    "default_language": "es",
+    "auto_detect": true,
+    "supported_languages": [
+      {"code": "es", "name": "Español", "flag": "🇪🇸"},
+      {"code": "en", "name": "Inglés", "flag": "🇺🇸"},
+      {"code": "pt", "name": "Portugués", "flag": "🇧🇷"},
+      {"code": "fr", "name": "Francés", "flag": "🇫🇷"},
+      {"code": "it", "name": "Italiano", "flag": "🇮🇹"},
+      {"code": "de", "name": "Alemán", "flag": "🇩🇪"},
+      {"code": "zh", "name": "Chino", "flag": "🇨🇳"},
+      {"code": "ja", "name": "Japonés", "flag": "🇯🇵"},
+      {"code": "ko", "name": "Coreano", "flag": "🇰🇷"},
+      {"code": "ru", "name": "Ruso", "flag": "🇷🇺"},
+      {"code": "ar", "name": "Árabe", "flag": "🇸🇦"},
+      {"code": "hi", "name": "Hindi", "flag": "🇮🇳"}
+    ],
+    "plan_limits": {
+      "avanzado": 3,
+      "vip": 12
+    }
+  },
+
+  "multi_channel": {
+    "enabled": true,
+    "max_channels": 5,
+    "channels": {
+      "whatsapp": {
+        "package": "com.whatsapp",
+        "enabled": true,
+        "requires": ["notification_access", "accessibility"]
+      },
+      "messenger": {
+        "package": "com.facebook.orca",
+        "enabled": true,
+        "requires": ["notification_access", "accessibility"]
+      },
+      "instagram": {
+        "package": "com.instagram.android",
+        "enabled": true,
+        "requires": ["notification_access", "accessibility"]
+      },
+      "telegram": {
+        "package": "org.telegram.messenger",
+        "enabled": true,
+        "requires": ["notification_access", "accessibility"]
+      },
+      "discord": {
+        "package": "com.discord",
+        "enabled": true,
+        "requires": ["notification_access", "accessibility"]
+      }
+    }
   }
 }

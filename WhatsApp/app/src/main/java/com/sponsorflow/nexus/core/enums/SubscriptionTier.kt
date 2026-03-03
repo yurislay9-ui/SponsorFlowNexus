@@ -9,31 +9,65 @@ enum class SubscriptionTier(
     val hasInventory: Boolean,
     val hasMemory: Boolean,
     val memoryLimit: Int,
+    val memoryChatsLimit: Int,
+    val smsLimit: Int,
+    val phoneNumbersLimit: Int,
     val hasPlugins: Boolean,
     val hasPluginSDK: Boolean,
     val hasCategories: Boolean,
+    val hasTTS: Boolean,
+    val hasVoiceCloning: Boolean,
+    val voiceCloneMaxSeconds: Int,
+    val hasAnalytics: Boolean,
+    val hasHumanHandoff: Boolean,
+    val hasTranslation: Boolean,
+    val translationLanguages: Int,
+    val hasEcommerce: Boolean,
+    val hasMultiChannel: Boolean,
+    val maxChannels: Int,
+    val hasAITraining: Boolean,
     val price: Double,
     val displayName: String
 ) {
     FREE(
         hasCustomPrompt = false, hasInventory = false, hasMemory = false,
-        memoryLimit = 0, hasPlugins = false, hasPluginSDK = false, hasCategories = false,
+        memoryLimit = 0, memoryChatsLimit = 3, smsLimit = 50, phoneNumbersLimit = 1,
+        hasPlugins = false, hasPluginSDK = false, hasCategories = false,
+        hasTTS = false, hasVoiceCloning = false, voiceCloneMaxSeconds = 0,
+        hasAnalytics = false, hasHumanHandoff = false, hasTranslation = false, translationLanguages = 0,
+        hasEcommerce = false, hasMultiChannel = false, maxChannels = 1,
+        hasAITraining = false,
         price = 0.0, displayName = "Gratis"
     ),
-    OBSERVADOR(
+    BASICO(
         hasCustomPrompt = true, hasInventory = true, hasMemory = true,
-        memoryLimit = 5, hasPlugins = true, hasPluginSDK = false, hasCategories = false,
-        price = 9.0, displayName = "Observador"
+        memoryLimit = 5, memoryChatsLimit = 5, smsLimit = 150, phoneNumbersLimit = 1,
+        hasPlugins = true, hasPluginSDK = false, hasCategories = false,
+        hasTTS = false, hasVoiceCloning = false, voiceCloneMaxSeconds = 0,
+        hasAnalytics = true, hasHumanHandoff = false, hasTranslation = false, translationLanguages = 0,
+        hasEcommerce = false, hasMultiChannel = false, maxChannels = 1,
+        hasAITraining = false,
+        price = 9.0, displayName = "Básico"
     ),
-    DESARROLLO(
+    AVANZADO(
         hasCustomPrompt = true, hasInventory = true, hasMemory = true,
-        memoryLimit = 20, hasPlugins = true, hasPluginSDK = false, hasCategories = true,
-        price = 19.0, displayName = "Desarrollo"
+        memoryLimit = 10, memoryChatsLimit = 10, smsLimit = 300, phoneNumbersLimit = 1,
+        hasPlugins = true, hasPluginSDK = false, hasCategories = true,
+        hasTTS = true, hasVoiceCloning = false, voiceCloneMaxSeconds = 0,
+        hasAnalytics = true, hasHumanHandoff = true, hasTranslation = true, translationLanguages = 3,
+        hasEcommerce = false, hasMultiChannel = false, maxChannels = 1,
+        hasAITraining = true,
+        price = 19.0, displayName = "Avanzado"
     ),
-    EMPRESARIO(
+    VIP(
         hasCustomPrompt = true, hasInventory = true, hasMemory = true,
-        memoryLimit = Int.MAX_VALUE, hasPlugins = true, hasPluginSDK = true, hasCategories = true,
-        price = 29.0, displayName = "Empresario"
+        memoryLimit = Int.MAX_VALUE, memoryChatsLimit = Int.MAX_VALUE, smsLimit = Int.MAX_VALUE, phoneNumbersLimit = 3,
+        hasPlugins = true, hasPluginSDK = true, hasCategories = true,
+        hasTTS = true, hasVoiceCloning = true, voiceCloneMaxSeconds = 12,
+        hasAnalytics = true, hasHumanHandoff = true, hasTranslation = true, translationLanguages = 12,
+        hasEcommerce = true, hasMultiChannel = true, maxChannels = 5,
+        hasAITraining = true,
+        price = 29.0, displayName = "VIP"
     );
 
     fun isAtLeast(other: SubscriptionTier): Boolean = ordinal >= other.ordinal
