@@ -1,131 +1,199 @@
 /*
- * SponsorFlow Nexus v1.0 - Payment Manager (USDT TRC20)
- * CORREGIDO: Validación de wallet, txHash en confirmPayment, fix pollPayment
+ * Payment Manager - Controlled by n8n via GitHub config
+ * GitHub is the brain, n8n controls payments via Ngrok
  */
 package com.sponsorflow.nexus.subscription
 
-import com.sponsorflow.nexus.core.enums.SubscriptionTier
-import com.sponsorflow.nexus.core.result.AppError
-import com.sponsorflow.nexus.core.result.AppResult
-import com.sponsorflow.nexus.data.entity.SubscriptionEntity
-import com.sponsorflow.nexus.data.repositories.SubscriptionRepository
-import com.sponsorflow.nexus.rust.RustBridge
-import kotlinx.coroutines.delay
-import java.util.UUID
+import android.content.Context
+import com.sponsorflow.nexus.config.NexusConfigManager
+import kotlinx.coroutines.*
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.MediaType.Companion.toMediaType
+import com.google.gson.Gson
+import java.util.concurrent.TimeUnit
 
-class PaymentManager(
-    private val tronScanVerifier: TronScanVerifier,
-    private val subscriptionRepo: SubscriptionRepository,
-    private val walletAddress: String
-) {
+class PaymentManager(private val context: Context) {
 
-    init {
-        // CORREGIDO: Validar wallet al inicializar
-        require(validateWalletAddress(walletAddress)) {
-            "Dirección de wallet TRON inválida"
+    private val configManager = NexusConfigManager(context)
+    private val client = OkHttpClient.Builder().connectTimeout(30, TimeUnit.SECONDS).build()
+    private val gson = Gson()
+    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+
+    // Get n8n URL from GitHub config - NEVER hardcoded
+    private fun getN8nBaseUrl(): String = configManager.getString("n8n_base_url", "")
+
+    private fun isN8nEnabled(): Boolean = configManager.getBoolean("n8n_enabled", false)
+
+    // ==================== PAYMENT WORKFLOWS ====================
+
+    /**
+     * Verify payment via n8n webhook (controlled by user)
+     */
+    fun verifyPayment(
+        transactionId: String,
+        amount: Double,
+        currency: String,
+        onResult: (PaymentResult) -> Unit
+    ) {
+        if (!isN8nEnabled()) {
+            onResult(PaymentResult(false, "Payment system not configured"))
+            return
         }
-    }
 
-    // Validador de dirección TRON
-    private fun validateWalletAddress(address: String): Boolean {
-        if (address.isBlank()) return false
-        // Longitud típica de dirección TRON (Base58)
-        if (address.length < 34 || address.length > 44) return false
-        // startsWith T para direcciones TRON
-        if (!address.startsWith("T")) return false
-        
-        // Si está disponible RustBridge, usar validación nativa
-        return try {
-            if (RustBridge.isAvailable()) {
-                RustBridge.validateTronAddress(address)
-            } else {
-                // Validación básica como fallback
-                address.matches(Regex("^T[a-zA-Z0-9]{33}$"))
-            }
-        } catch (e: Exception) {
-            // Fallback a validación básica
-            address.matches(Regex("^T[a-zA-Z0-9]{33}$"))
-        }
-    }
+        scope.launch {
+            try {
+                val n8nUrl = "${getN8nBaseUrl()}/webhook/payment"
+                
+                val body = gson.toJson(mapOf(
+                    "action" to "verify",
+                    "transaction_id" to transactionId,
+                    "amount" to amount,
+                    "currency" to currency,
+                    "timestamp" to System.currentTimeMillis()
+                ))
 
-    suspend fun initPayment(tier: SubscriptionTier): AppResult<PaymentIntent> = try {
-        val amount = tier.price
-        
-        // Validar tier
-        require(amount > 0) { "Precio inválido para el tier" }
-        
-        val intent = PaymentIntent(
-            id = UUID.randomUUID().toString(),
-            walletAddress = walletAddress,
-            amount = amount,
-            tier = tier,
-            qrData = generateQRData(amount),
-            createdAt = System.currentTimeMillis()
-        )
-        AppResult.Success(intent)
-    } catch (e: IllegalArgumentException) {
-        AppResult.Error(AppError.ValidationError(e.message ?: "Invalid parameters"))
-    } catch (e: IllegalStateException) {
-        AppResult.Error(AppError.PaymentError(e.message ?: "Payment state error"))
-    } catch (e: Exception) {
-        AppResult.Error(AppError.fromException(e))
-    }
+                val request = Request.Builder()
+                    .url(n8nUrl)
+                    .post(body.toRequestBody("application/json".toMediaType()))
+                    .build()
 
-    suspend fun pollPayment(intent: PaymentIntent): AppResult<PaymentVerification> {
-        val timeout = 30 * 60 * 1000L // 30 minutos
-        val startTime = System.currentTimeMillis()
-
-        while (System.currentTimeMillis() - startTime < timeout) {
-            // CORREGIDO: Verificar txHash antes de continuar
-            val txHash = intent.pendingTxHash
-            if (txHash.isNullOrBlank()) {
-                delay(POLL_INTERVAL)
-                continue
-            }
-            
-            val result = tronScanVerifier.verifyPayment(
-                txHash = txHash,
-                expectedAmount = intent.amount,
-                recipientAddress = walletAddress
-            )
-
-            result.onSuccess { verification ->
-                if (verification.isValid) {
-                    return AppResult.Success(verification)
+                val response = client.newCall(request).execute()
+                
+                if (response.isSuccessful) {
+                    val result = gson.fromJson(response.body?.string(), Map::class.java)
+                    val success = result["success"] as? Boolean ?: false
+                    val message = result["message"] as? String ?: ""
+                    withContext(Dispatchers.Main) {
+                        onResult(PaymentResult(success, message))
+                    }
+                } else {
+                    withContext(Dispatchers.Main) {
+                        onResult(PaymentResult(false, "Payment verification failed"))
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    onResult(PaymentResult(false, e.message ?: "Error"))
                 }
             }
+        }
+    }
 
-            delay(POLL_INTERVAL)
+    /**
+     * Create subscription via n8n
+     */
+    fun createSubscription(
+        email: String,
+        tier: String,
+        paymentMethod: String,
+        onResult: (SubscriptionResult) -> Unit
+    ) {
+        if (!isN8nEnabled()) {
+            onResult(SubscriptionResult(null, "Subscription not available"))
+            return
         }
 
-        return AppResult.Error(AppError.PaymentError("Tiempo de espera agotado"))
+        scope.launch {
+            try {
+                val n8nUrl = "${getN8nBaseUrl()}/webhook/subscription"
+                
+                val body = gson.toJson(mapOf(
+                    "action" to "create",
+                    "email" to email,
+                    "tier" to tier,
+                    "payment_method" to paymentMethod,
+                    "device_id" to getDeviceId()
+                ))
+
+                val request = Request.Builder()
+                    .url(n8nUrl)
+                    .post(body.toRequestBody("application/json".toMediaType()))
+                    .build()
+
+                val response = client.newCall(request).execute()
+                
+                if (response.isSuccessful) {
+                    val result = gson.fromJson(response.body?.string(), Map::class.java)
+                    val subscriptionId = result["subscription_id"] as? String
+                    withContext(Dispatchers.Main) {
+                        onResult(SubscriptionResult(subscriptionId, "Success"))
+                    }
+                } else {
+                    withContext(Dispatchers.Main) {
+                        onResult(SubscriptionResult(null, "Failed"))
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    onResult(SubscriptionResult(null, e.message ?: "Error"))
+                }
+            }
+        }
     }
 
-    // CORREGIDO: Pasar txHash verificado a activate
-    suspend fun confirmPayment(verification: PaymentVerification, tier: SubscriptionTier): AppResult<Unit> {
-        val id = UUID.randomUUID().toString()
-        
-        // CORREGIDO: Usar el txHash de la verificación
-        val txHash = verification.txHash
-        
-        return subscriptionRepo.activate(id, tier, txHash, 30)
+    /**
+     * Validate license via n8n
+     */
+    fun validateLicense(
+        licenseKey: String,
+        onResult: (LicenseValidationResult) -> Unit
+    ) {
+        if (!isN8nEnabled()) {
+            onResult(LicenseValidationResult(false, "License system not configured"))
+            return
+        }
+
+        scope.launch {
+            try {
+                val n8nUrl = "${getN8nBaseUrl()}/webhook/license"
+                
+                val body = gson.toJson(mapOf(
+                    "action" to "validate",
+                    "license_key" to licenseKey,
+                    "device_id" to getDeviceId()
+                ))
+
+                val request = Request.Builder()
+                    .url(n8nUrl)
+                    .post(body.toRequestBody("application/json".toMediaType()))
+                    .build()
+
+                val response = client.newCall(request).execute()
+                
+                if (response.isSuccessful) {
+                    val result = gson.fromJson(response.body?.string(), Map::class.java)
+                    val valid = result["valid"] as? Boolean ?: false
+                    val tier = result["tier"] as? String ?: "FREE"
+                    val expiresAt = (result["expires_at"] as? Number)?.toLong() ?: 0L
+                    
+                    withContext(Dispatchers.Main) {
+                        onResult(LicenseValidationResult(valid, tier, expiresAt))
+                    }
+                } else {
+                    withContext(Dispatchers.Main) {
+                        onResult(LicenseValidationResult(false, "FREE", 0))
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    onResult(LicenseValidationResult(false, "FREE", 0))
+                }
+            }
+        }
     }
 
-    private fun generateQRData(amount: Double): String {
-        return "tron:$walletAddress?amount=$amount&token=USDT"
+    // ==================== UTILS ====================
+
+    private fun getDeviceId(): String {
+        val prefs = context.getSharedPreferences("nexus_prefs", Context.MODE_PRIVATE)
+        return prefs.getString("device_id", "") ?: ""
     }
 
-    companion object {
-        private const val POLL_INTERVAL = 15000L // 15 segundos
-    }
+    fun cancel() = scope.cancel()
 }
 
-data class PaymentIntent(
-    val id: String,
-    val walletAddress: String,
-    val amount: Double,
-    val tier: SubscriptionTier,
-    val qrData: String,
-    val createdAt: Long,
-    var pendingTxHash: String? = null
-)
+data class PaymentResult(val success: Boolean, val message: String)
+data class SubscriptionResult(val subscriptionId: String?, val message: String)
+data class LicenseValidationResult(val valid: Boolean, val tier: String, val expiresAt: Long)

@@ -1,13 +1,16 @@
 /*
  * SponsorFlow Nexus v1.0 - Network Module (Hilt)
- * CORREGIDO: Múltiples Retrofit con diferentes base URLs
+ * Uses NexusConfigManager - URLs loaded from GitHub (BRAIN)
  */
 package com.sponsorflow.nexus.di
 
+import android.content.Context
 import com.sponsorflow.nexus.BuildConfig
+import com.sponsorflow.nexus.config.NexusConfigManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
 import okhttp3.CertificatePinner
@@ -24,9 +27,16 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    // CORREGIDO: CertificatePinner eliminado - ver SecurityModule.kt
-    // SecurityModule proporciona CertificatePinner con implementación completa
-    
+    @Provides
+    @Singleton
+    fun provideNexusConfigManager(
+        @ApplicationContext context: Context
+    ): NexusConfigManager {
+        val manager = NexusConfigManager(context)
+        manager.loadCachedConfig()
+        return manager
+    }
+
     @Provides
     @Singleton
     fun provideOkHttpClient(
@@ -57,29 +67,15 @@ object NetworkModule {
             .build()
     }
 
-    // Retrofit para TRON API
+    // TRON API - loaded from GitHub config
     @Provides
     @Singleton
     @Named("tron")
     fun provideTronRetrofit(
-        okHttpClient: OkHttpClient
+        okHttpClient: OkHttpClient,
+        configManager: NexusConfigManager
     ): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl("https://api.trongrid.io/")
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
-
-    // Retrofit para el servidor personalizado (configurable)
-    @Provides
-    @Singleton
-    @Named("server")
-    fun provideServerRetrofit(
-        okHttpClient: OkHttpClient
-    ): Retrofit {
-        // URL base del servidor desde config
-        val baseUrl = BuildConfig.SERVER_URL.ifEmpty { "https://api.example.com/" }
+        val baseUrl = configManager.getString("tron_api_url", "https://api.trongrid.io/")
         return Retrofit.Builder()
             .baseUrl(baseUrl)
             .client(okHttpClient)
@@ -87,29 +83,33 @@ object NetworkModule {
             .build()
     }
 
-    // Retrofit para GitHub API
+    // Server API - loaded from GitHub config (BRAIN)
     @Provides
     @Singleton
-    @Named("github")
-    fun provideGitHubRetrofit(
-        okHttpClient: OkHttpClient
+    @Named("server")
+    fun provideServerRetrofit(
+        okHttpClient: OkHttpClient,
+        configManager: NexusConfigManager
     ): Retrofit {
+        val baseUrl = configManager.getApiBaseUrl().ifEmpty { "https://api.sponsorflow.com/" }
         return Retrofit.Builder()
-            .baseUrl("https://api.github.com/")
+            .baseUrl(baseUrl)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
 
-    // Retrofit para Llama API (nueva implementación)
+    // GitHub API - loaded from GitHub config
     @Provides
     @Singleton
-    @Named("llama")
-    fun provideLlamaRetrofit(
-        okHttpClient: OkHttpClient
+    @Named("github")
+    fun provideGitHubRetrofit(
+        okHttpClient: OkHttpClient,
+        configManager: NexusConfigManager
     ): Retrofit {
+        val baseUrl = configManager.getString("github_api_url", "https://api.github.com/")
         return Retrofit.Builder()
-            .baseUrl("http://localhost:8080/") // URL base para Llama.cpp server
+            .baseUrl(baseUrl)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

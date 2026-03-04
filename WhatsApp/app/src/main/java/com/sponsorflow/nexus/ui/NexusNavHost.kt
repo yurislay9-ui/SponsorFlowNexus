@@ -2,571 +2,141 @@
  * SponsorFlow Nexus v1.0 - Navigation Host
  * 
  * Componente encargado de la gestión de navegación en la aplicación.
- * Implementa un sistema de rutas seguro y robusto que permite la
- * navegación entre diferentes pantallas y funcionalidades del sistema.
- * 
- * Este componente es fundamental para la arquitectura de la aplicación,
- * proporcionando una capa de abstracción para la navegación que mejora
- * la mantenibilidad y la seguridad del sistema.
+ * Implementa un sistema de rutas seguro y robusto.
  * 
  * @author SponsorFlow Nexus Team
  * @version 1.0
- * @since 1.0
  */
 package com.sponsorflow.nexus.ui
 
-import android.content.Intent
-import android.widget.Toast
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.sponsorflow.nexus.R
 import com.sponsorflow.nexus.ui.inventory.InventoryManagementScreen
 import com.sponsorflow.nexus.ui.settings.IntegrationsScreen
-import com.sponsorflow.nexus.ui.subscription.SubscriptionScreen
 
 /**
  * Componente principal de navegación de la aplicación.
+ * Gestiona todas las rutas de la aplicación.
  * 
- * Este es el host de navegación central que gestiona todas las rutas
- * de la aplicación y permite la navegación entre diferentes pantallas
- * y funcionalidades del sistema.
- * 
- * @param navController Controlador de navegación proporcionado por Navigation Compose
- * @param startDestination Ruta de destino inicial, por defecto "home"
- * 
- * @see HomeScreen
- * @see InventoryManagementScreen
- * @see IntegrationsScreen
- * @see AssistantChatScreen
- * @see NavHostController
+ * @param navController Controlador de navegación
+ * @param startDestination Ruta de destino inicial
+ * @param queueManager Manager de cola inteligente
+ * @param windowManager Manager de ventana de 24h
+ * @param riskManager Manager de nivel de riesgo
+ * @param banManager Manager de detección de bloqouos
+ * @param humanManager Manager de comportamiento humano
  */
 @Composable
 fun NexusNavHost(
     navController: NavHostController,
-    startDestination: String = "home"
+    startDestination: String = "home",
+    // Managers para Anti-Detección
+    queueManager: com.sponsorflow.nexus.queue.SmartQueueManager? = null,
+    windowManager: com.sponsorflow.nexus.window.TwentyFourHourWindowManager? = null,
+    riskManager: com.sponsorflow.nexus.risk.RiskLevelManager? = null,
+    banManager: com.sponsorflow.nexus.ban.BanDetectionManager? = null,
+    humanManager: com.sponsorflow.nexus.human.HumanBehaviorManager? = null
 ) {
     NavHost(
         navController = navController,
         startDestination = startDestination
     ) {
+        // Home Screen
         composable("home") {
             HomeScreen(
                 onNavigateToInventory = { navController.navigate("inventory") },
-                onNavigateToSettings = { navController.navigate("settings") }
+                onNavigateToSettings = { navController.navigate("settings") },
+                onNavigateToPlugins = { navController.navigate("plugins") },
+                onNavigateToAnalytics = { navController.navigate("analytics") },
+                onNavigateToSmartQueue = { navController.navigate("smart_queue") },
+                onNavigateToRiskLevel = { navController.navigate("risk_level") },
+                onNavigateToBanDetection = { navController.navigate("ban_detection") }
             )
         }
+        
+        // Inventory Screen
         composable("inventory") {
             InventoryManagementScreen(
                 onBack = { navController.popBackStack() }
             )
         }
+        
+        // Settings Screen
         composable("settings") {
             IntegrationsScreen(
                 onBack = { navController.popBackStack() }
             )
         }
+        
+        // Chat Screen
         composable("chat") {
             AssistantChatScreen(
                 onBack = { navController.popBackStack() }
             )
         }
-    }
-}
-
-/**
- * Pantalla principal de la aplicación.
- * 
- * Esta es la pantalla de inicio que muestra el estado del asistente,
- * acciones rápidas y estadísticas generales del sistema. Proporciona
- * una interfaz centralizada para acceder a las diferentes funcionalidades
- * de la aplicación.
- * 
- * @param onNavigateToInventory Callback para navegar a la pantalla de inventario
- * @param onNavigateToSettings Callback para navegar a la pantalla de configuración
- * 
- * @see InventoryManagementScreen
- * @see IntegrationsScreen
- * @see QuickActionButton
- * @see StatCard
- */
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun HomeScreen(
-    onNavigateToInventory: () -> Unit,
-    onNavigateToSettings: () -> Unit
-) {
-    val context = LocalContext.current
-    var isActive by remember { mutableStateOf(false) }
-    var showSubscription by remember { mutableStateOf(false) }
-    
-    if (showSubscription) {
-        SubscriptionScreen(
-            onBack = { showSubscription = false },
-            onSubscribe = { plan ->
-                Toast.makeText(context, "Suscripción a $plan iniciada", Toast.LENGTH_SHORT).show()
-                showSubscription = false
-            }
-        )
-        return
-    }
-    
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { 
-                    Text(
-                        text = "SponsorFlow Nexus",
-                        fontWeight = FontWeight.Bold
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = Color.White
-                ),
-                actions = {
-                    IconButton(onClick = onNavigateToSettings) {
-                        Icon(Icons.Default.Settings, "Configuración", tint = Color.White)
-                    }
-                }
-            )
-        }
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .verticalScroll(rememberScrollState())
-        ) {
-            // Hero Section
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.primary,
-                                MaterialTheme.colorScheme.primaryContainer
-                            )
-                        )
-                    )
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    // Logo/Avatar
-                    Box(
-                        modifier = Modifier
-                            .size(80.dp)
-                            .clip(CircleShape)
-                            .background(Color.White.copy(alpha = 0.2f)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            Icons.Default.SmartToy,
-                            contentDescription = null,
-                            modifier = Modifier.size(48.dp),
-                            tint = Color.White
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Text(
-                        text = "Tu Asistente de WhatsApp",
-                        color = Color.White,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = "Potenciado con IA",
-                        color = Color.White.copy(alpha = 0.8f)
-                    )
-                }
-            }
-            
-            Column(
-                modifier = Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                // Status Card
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = if (isActive) 
-                            Color(0xFFE8F5E9) 
-                        else 
-                            MaterialTheme.colorScheme.surfaceVariant
-                    )
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .size(48.dp)
-                                .clip(CircleShape)
-                                .background(
-                                    if (isActive) Color(0xFF4CAF50)
-                                    else Color.Gray
-                                ),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                if (isActive) Icons.Default.PlayArrow else Icons.Default.Pause,
-                                contentDescription = null,
-                                tint = Color.White,
-                                modifier = Modifier.size(28.dp)
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = if (isActive) "Servicio Activo" else "Servicio Inactivo",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 18.sp
-                            )
-                            Text(
-                                text = if (isActive) "Escuchando mensajes de WhatsApp" else "Toca para activar el asistente",
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
-                }
-                
-                // Main Button
-                Button(
-                    onClick = { 
-                        isActive = !isActive
-                        Toast.makeText(
-                            context, 
-                            if (isActive) "¡Asistente activado!" else "Asistente desactivado",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (isActive) 
-                            MaterialTheme.colorScheme.error 
-                        else 
-                            MaterialTheme.colorScheme.primary
-                    )
-                ) {
-                    Icon(
-                        if (isActive) Icons.Default.Stop else Icons.Default.PlayArrow,
-                        contentDescription = null,
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = if (isActive) "DETENER ASISTENTE" else "ACTIVAR ASISTENTE",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-                
-                Spacer(modifier = Modifier.height(8.dp))
-                
-                // Quick Actions
-                Text(
-                    text = "Acciones Rápidas",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                )
-                
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    QuickActionButton(
-                        icon = Icons.Default.Chat,
-                        label = "Chat IA",
-                        color = Color(0xFF2196F3),
-                        onClick = {
-                            context.startActivity(
-                                Intent(context, AssistantChatActivity::class.java)
-                            )
-                        },
-                        modifier = Modifier.weight(1f)
-                    )
-                    QuickActionButton(
-                        icon = Icons.Default.Inventory,
-                        label = "Inventario",
-                        color = Color(0xFFFF9800),
-                        onClick = onNavigateToInventory,
-                        modifier = Modifier.weight(1f)
-                    )
-                }
-                
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    QuickActionButton(
-                        icon = Icons.Default.Extension,
-                        label = "Plugins",
-                        color = Color(0xFF9C27B0),
-                        onClick = { /* TODO */ },
-                        modifier = Modifier.weight(1f)
-                    )
-                    QuickActionButton(
-                        icon = Icons.Default.Analytics,
-                        label = "Estadísticas",
-                        color = Color(0xFF4CAF50),
-                        onClick = { /* TODO */ },
-                        modifier = Modifier.weight(1f)
-                    )
-                }
-                
-                Spacer(modifier = Modifier.height(16.dp))
-                
-                // Subscription Card
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer
-                    )
-                ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                Icons.Default.Star,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.size(32.dp)
-                            )
-                            Spacer(modifier = Modifier.width(12.dp))
-                            Column {
-                                Text(
-                                    text = "Plan Actual: GRATIS",
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 16.sp
-                                )
-                                Text(
-                                    text = "Actualiza para desbloquear todas las funciones",
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(12.dp))
-                        Button(
-                            onClick = { showSubscription = true },
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(12.dp)
-                        ) {
-                            Icon(Icons.Default.ArrowUpward, contentDescription = null)
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text("Ver Planes de Suscripción")
-                        }
-                    }
-                }
-                
-                Spacer(modifier = Modifier.height(16.dp))
-                
-                // Stats Cards
-                Text(
-                    text = "Estadísticas de Hoy",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp
-                )
-                
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    StatCard(
-                        title = "Mensajes",
-                        value = "0",
-                        icon = Icons.Default.Message,
-                        color = Color(0xFF2196F3),
-                        modifier = Modifier.weight(1f)
-                    )
-                    StatCard(
-                        title = "Respuestas",
-                        value = "0",
-                        icon = Icons.Default.Reply,
-                        color = Color(0xFF4CAF50),
-                        modifier = Modifier.weight(1f)
-                    )
-                }
-            }
-        }
-    }
-}
-
-/**
- * Botón de acción rápida para la pantalla principal.
- * 
- * Este componente representa un botón de acción rápida que permite
- * acceder de forma inmediata a funcionalidades específicas de la
- * aplicación. Cada botón tiene un icono, una etiqueta y un color
- * distintivo que lo identifica visualmente.
- * 
- * @param icon Icono que representa la acción
- * @param label Etiqueta de texto que describe la acción
- * @param color Color distintivo del botón
- * @param onClick Callback que se ejecuta al hacer clic
- * @param modifier Modificador de Compose para personalizar el layout
- * 
- * @see HomeScreen
- * @see StatCard
- * @see ImageVector
- */
-@Composable
-fun QuickActionButton(
-    icon: ImageVector,
-    label: String,
-    color: Color,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier,
-        shape = RoundedCornerShape(12.dp),
-        onClick = onClick
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(CircleShape)
-                    .background(color.copy(alpha = 0.1f)),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    icon,
-                    contentDescription = null,
-                    tint = color,
-                    modifier = Modifier.size(28.dp)
+        
+        // Anti-Detección: Smart Queue
+        composable("smart_queue") {
+            queueManager?.let {
+                com.sponsorflow.nexus.ui.queue.SmartQueueScreen(
+                    onBack = { navController.popBackStack() },
+                    queueManager = it
                 )
             }
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = label,
-                fontWeight = FontWeight.Medium
+        }
+        
+        // Anti-Detección: Human Behavior
+        composable("human_behavior") {
+            humanManager?.let {
+                com.sponsorflow.nexus.ui.human.HumanBehaviorScreen(
+                    onBack = { navController.popBackStack() },
+                    manager = it
+                )
+            }
+        }
+        
+        // Anti-Detección: 24h Window
+        composable("window_24h") {
+            windowManager?.let {
+                com.sponsorflow.nexus.ui.window.TwentyFourHourWindowScreen(
+                    onBack = { navController.popBackStack() },
+                    windowManager = it
+                )
+            }
+        }
+        
+        // Anti-Detección: Risk Level
+        composable("risk_level") {
+            riskManager?.let {
+                com.sponsorflow.nexus.ui.risk.RiskLevelScreen(
+                    onBack = { navController.popBackStack() },
+                    riskManager = it
+                )
+            }
+        }
+        
+        // Anti-Detección: Ban Detection
+        composable("ban_detection") {
+            banManager?.let {
+                com.sponsorflow.nexus.ui.ban.BanDetectionScreen(
+                    onBack = { navController.popBackStack() },
+                    banManager = it
+                )
+            }
+        }
+        
+        // Analytics
+        composable("analytics") {
+            com.sponsorflow.nexus.ui.dashboard.AnalyticsDashboardScreen(
+                onBack = { navController.popBackStack() }
             )
         }
-    }
-}
-
-/**
- * Tarjeta de estadísticas para la pantalla principal.
- * 
- * Este componente muestra una estadística específica del sistema
- * en formato de tarjeta con un icono, valor numérico y título
- * descriptivo. Se utiliza para presentar métricas clave de forma
- * visualmente atractiva y fácil de entender.
- * 
- * @param title Título descriptivo de la estadística
- * @param value Valor numérico de la estadística
- * @param icon Icono que representa la estadística
- * @param color Color distintivo de la tarjeta
- * @param modifier Modificador de Compose para personalizar el layout
- * 
- * @see HomeScreen
- * @see QuickActionButton
- * @see ImageVector
- */
-@Composable
-fun StatCard(
-    title: String,
-    value: String,
-    icon: ImageVector,
-    color: Color,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier,
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = color.copy(alpha = 0.1f)
-        )
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Icon(icon, contentDescription = null, tint = color)
-            Text(
-                text = value,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = color
-            )
-            Text(
-                text = title,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+        
+        // Plugins
+        composable("plugins") {
+            com.sponsorflow.nexus.ui.plugins.PluginManagerScreen(
+                onBack = { navController.popBackStack() }
             )
         }
     }

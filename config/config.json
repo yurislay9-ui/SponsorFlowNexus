@@ -1,0 +1,112 @@
+{
+  "app": {
+    "name": "Workflow Hub",
+    "version": "1.0.0",
+    "min_version": 5,
+    "latest_version": 5,
+    "update_url": ""
+  },
+  
+  "api": {
+    "base_url": "https://your-ngrok-url.ngrok-free.app",
+    "whatsapp_api_url": "https://graph.facebook.com/v18.0",
+    "webhook_url": "https://your-ngrok-url.ngrok-free.app/webhook"
+  },
+  
+  "n8n": {
+    "enabled": true,
+    "base_url": "https://your-ngrok-url.ngrok-free.app",
+    "workflows": {
+      "payment": "/webhook/payment",
+      "license": "/webhook/license",
+      "subscription": "/webhook/subscription",
+      "webhook": "/webhook/nexus"
+    }
+  },
+  
+  "github": {
+    "api_url": "https://api.github.com",
+    "raw_url": "https://raw.githubusercontent.com",
+    "repo": "yurislay9-ui/nexus-backend",
+    "config_path": "refs/heads/main/config.json"
+  },
+  
+  "tron": {
+    "api_url": "https://api.trongrid.io",
+    "contract_address": "",
+    "usdt_wallet": ""
+  },
+  
+  "encryption": {
+    "key_version": "1",
+    "algorithm": "AES-256-GCM"
+  },
+  
+  "tiers": {
+    "FREE": {
+      "name": "Plan Gratis",
+      "price": 0,
+      "maxNumbers": 1,
+      "maxMessagesPerDay": 50,
+      "maxProducts": 10,
+      "antiDetectionLevel": 1,
+      "features": ["basic_automation", "keywords"]
+    },
+    "BASICO": {
+      "name": "Plan Básico",
+      "price": 9.99,
+      "maxNumbers": 2,
+      "maxMessagesPerDay": 200,
+      "maxProducts": 50,
+      "antiDetectionLevel": 2,
+      "features": ["basic_automation", "keywords", "scheduled_messages"]
+    },
+    "AVANZADO": {
+      "name": "Plan Avanzado",
+      "price": 19.99,
+      "maxNumbers": 3,
+      "maxMessagesPerDay": 500,
+      "maxProducts": 200,
+      "antiDetectionLevel": 2,
+      "features": ["full_automation", "keywords", "scheduled_messages", "ecommerce", "analytics"]
+    },
+    "VIP": {
+      "name": "Plan VIP",
+      "price": 29.99,
+      "maxNumbers": 4,
+      "maxMessagesPerDay": 1000,
+      "maxProducts": 1000,
+      "antiDetectionLevel": 3,
+      "features": ["full_automation", "keywords", "scheduled_messages", "ecommerce", "analytics", "voice_clone", "multi_channel"]
+    }
+  },
+  
+  "features": {
+    "voice_clone": true,
+    "multi_channel": true,
+    "analytics": true,
+    "scheduled_messages": true,
+    "ecommerce": true,
+    "human_handoff": true
+  },
+  
+  "limits": {
+    "max_wa_numbers": 4,
+    "daily_message_limit": 1000,
+    "hourly_message_limit": 50,
+    "queue_size_per_number": 50
+  },
+  
+  "anti_detection": {
+    "min_delay_ms": 5000,
+    "max_delay_ms": 15000,
+    "peak_hours": [9, 10, 11, 12, 17, 18, 19, 20],
+    "cutoff_hours": 24
+  },
+  
+  "security": {
+    "root_detection": true,
+    "emulator_detection": true,
+    "integrity_check": true
+  }
+}

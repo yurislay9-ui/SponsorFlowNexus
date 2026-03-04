@@ -1,10 +1,11 @@
 /*
  * SponsorFlow Nexus v1.0 - License Verifier
- * CORREGIDO: Versión desde BuildConfig, Mutex para cachedLicense, Dispatchers.IO
+ * Uses NexusConfigManager as BRAIN - URLs hidden from UI
  */
 package com.sponsorflow.nexus.account
 
 import android.content.Context
+import com.sponsorflow.nexus.config.NexusConfigManager
 import com.sponsorflow.nexus.core.contracts.security.ILicenseValidator
 import com.sponsorflow.nexus.core.contracts.security.LicenseInfo
 import com.sponsorflow.nexus.core.enums.SubscriptionTier
@@ -23,35 +24,36 @@ import java.util.concurrent.TimeUnit
 
 class LicenseVerifier(
     private val context: Context,
-    private val sessionManager: SessionManager,
-    private val serverUrl: String
+    private val sessionManager: SessionManager
 ) : ILicenseValidator {
 
-    // CORREGIDO: Timeouts configurados
+    // BRAIN - gets URL from GitHub config
+    private val configManager = NexusConfigManager(context)
+    
     private val client = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)
         .build()
     
     private val gson = Gson()
-    
-    // CORREGIDO: Mutex para thread-safety
     private val cacheMutex = Mutex()
     private var cachedLicense: LicenseInfo? = null
 
-    // Obtener versión desde BuildConfig
+    // Get server URL from BRAIN (GitHub) - never exposed in UI
+    private fun getServerUrl(): String = configManager.getApiBaseUrl()
+
     private fun getAppVersion(): String {
         return try {
             com.sponsorflow.nexus.BuildConfig.VERSION_NAME
         } catch (e: Exception) {
-            "2.4.0" // Fallback
+            "2.4.0"
         }
     }
 
     override suspend fun validate(licenseKey: String): AppResult<LicenseInfo> {
-        // CORREGIDO: withContext(Dispatchers.IO)
         return withContext(Dispatchers.IO) {
             try {
+                val serverUrl = getServerUrl()
                 val deviceId = sessionManager.getDeviceId()
                 val appVersion = getAppVersion()
                 
@@ -70,7 +72,6 @@ class LicenseVerifier(
                 
                 if (response.isSuccessful) {
                     val info = parseLicense(response.body?.string() ?: "")
-                    // CORREGIDO: Actualizar cache con mutex
                     cacheMutex.withLock {
                         cachedLicense = info
                     }
@@ -84,7 +85,6 @@ class LicenseVerifier(
         }
     }
 
-    // CORREGIDO: Leer cachedLicense dentro del mutex para evitar race condition
     override suspend fun refresh(): AppResult<LicenseInfo> {
         val key = cacheMutex.withLock {
             cachedLicense?.key
@@ -97,10 +97,8 @@ class LicenseVerifier(
         return license.isExpired() && getRemainingGraceDays() > 0
     }
 
-    // CORREGIDO: Sin returns confusos en lambdas
     override fun getRemainingGraceDays(): Int {
         val license = cachedLicense ?: return 0
-        
         if (!license.isExpired()) return 0
         
         val graceEnd = license.expiresAt + (3 * 86400000L)
@@ -113,10 +111,8 @@ class LicenseVerifier(
         }
     }
 
-    // CORREGIDO: Acceso thread-safe
     override fun getCachedLicenseInfo(): LicenseInfo? = cachedLicense
     
-    // CORREGIDO: Usar mutex para evitar race condition con validate()
     override suspend fun clearCache() {
         cacheMutex.withLock {
             cachedLicense = null

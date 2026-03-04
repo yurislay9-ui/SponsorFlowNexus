@@ -2,8 +2,8 @@
 <!-- CORREGIDO: MEDIUM-002 - Strings centralizados para i18n -->
 <resources>
     <!-- App -->
-    <string name="app_name">SponsorFlow Nexus</string>
-    <string name="welcome_message">Bienvenido a SponsorFlow Nexus</string>
+    <string name="app_name">Workflow Hub</string>
+    <string name="welcome_message">Bienvenido a Workflow Hub</string>
     
     <!-- Navigation -->
     <string name="nav_home">Inicio</string>

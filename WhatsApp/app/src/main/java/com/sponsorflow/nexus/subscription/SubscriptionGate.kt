@@ -1,6 +1,6 @@
 /*
  * SponsorFlow Nexus v1.0 - Subscription Gate
- * Anti-detección obligatorio para WhatsApp en todos los planes
+ * Anti-detección obligatorio para WhatsApp - VERSIÓN INTEGRADA
  */
 package com.sponsorflow.nexus.subscription
 
@@ -18,20 +18,51 @@ class SubscriptionGate(
 ) {
     // Anti-detección obligatorio - todos los planes deben usarlo
     fun canUseWhatsApp(): Boolean {
-        return HumanBehavior.isActiveTime() // Solo responder en horas activas
+        return HumanBehavior.isActiveTime()
     }
     
-    // Delay obligatorio antes de responder
+    /**
+     * Delay obligatorio antes de responder
+     * VERSIÓN MEJORADA: Usa todos los sistemas anti-detección
+     */
     suspend fun applyAntiDetection(message: String): Boolean {
+        // 1. Verificar horario activo
         if (!HumanBehavior.isActiveTime()) return false
-        kotlinx.coroutines.delay(HumanBehavior.getReadTime(message))
+        
+        // 2. Delay de "lectura" (tiempo que lleva leer el mensaje)
+        kotlinx.coroutines.delay(HumanBehavior.getTypingDelay(message))
+        
+        // 3. Delay de respuesta (3-25 segundos variable)
         kotlinx.coroutines.delay(HumanBehavior.getResponseDelay())
+        
         return true
     }
     
-    // Procesar respuesta con anti-detección
+    /**
+     * Procesar respuesta con anti-detección completa
+     * Filtra frases de IA y formatea como humano
+     */
     fun processResponse(text: String): String {
-        return HumanBehavior.addTypo(PatternRotator.formatResponse(text))
+        // 1. Filtrar frases que delatan a la IA
+        var filtered = HumanBehavior.filterBotPhrases(text)
+        
+        // 2. Aplicar variación para evitar patrones repetitivos
+        filtered = PatternRotator.formatResponse(filtered)
+        
+        // 3. Formatear al estilo WhatsApp (emojis, minúsculas, etc)
+        filtered = HumanBehavior.formatWhatsAppStyle(filtered)
+        
+        // 4. Posible error de tipeo menor (10% chance)
+        filtered = HumanBehavior.addTypo(filtered)
+        
+        return filtered
+    }
+    
+    /**
+     * Verificar si el texto suena a bot (para logging)
+     */
+    fun isBotLike(text: String): Boolean {
+        return HumanBehavior.soundsLikeBot(text)
     }
     
     // NLP - Disponible para TODAS las suscripciones
@@ -60,7 +91,6 @@ class SubscriptionGate(
 
     /**
      * Verifica acceso a funcionalidad
-     * CORREGIDO: Usa getCurrentTierAsync para consistencia
      */
     fun checkAccess(feature: String): Boolean {
         try {
@@ -72,7 +102,7 @@ class SubscriptionGate(
                 "plugins" -> tier.hasPlugins
                 "plugin_sdk", "sdk" -> tier.hasPluginSDK
                 "categories", "categorias" -> tier.hasCategories
-                "whatsapp", "auto_reply" -> true // Anti-detección obligatorio, todos tienen acceso
+                "whatsapp", "auto_reply" -> true // Anti-detección obligatorio
                 else -> false
             }
         } catch (e: IllegalArgumentException) {
@@ -90,7 +120,6 @@ class SubscriptionGate(
 
     /**
      * Obtiene tier de forma síncrona desde cache
-     * CORREGIDO: Nombre consistente con uso
      */
     private fun getCurrentTierAsync(): SubscriptionTier {
         return licenseValidator.getCachedLicenseInfo()?.tier ?: SubscriptionTier.FREE
