@@ -61,4 +61,12 @@
     <string name="success_saved">Guardado correctamente</string>
     <string name="success_deleted">Eliminado correctamente</string>
     <string name="success_updated">Actualizado correctamente</string>
+    
+    <!-- Onboarding -->
+    <string name="onboarding_title">Bienvenido</string>
+    <string name="onboarding_welcome">Configura tu asistente de WhatsApp</string>
+    <string name="onboarding_start">Comenzar</string>
+    
+    <!-- Accessibility Service -->
+    <string name="service_name">Workflow Hub Service</string>
 </resources>
