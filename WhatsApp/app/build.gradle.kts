@@ -22,6 +22,8 @@ android {
         versionCode = 24
         versionName = "2.4.0"
         
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        
         buildConfigField("String", "CONFIG_URL", "\"${project.findProperty("CONFIG_URL") ?: ""}\"")
         buildConfigField("String", "SERVER_URL", "\"${project.findProperty("SERVER_URL") ?: ""}\"")
         buildConfigField("Long", "CLOUD_PROJECT_NUMBER", "${project.findProperty("CLOUD_PROJECT_NUMBER") ?: "0"}L")
