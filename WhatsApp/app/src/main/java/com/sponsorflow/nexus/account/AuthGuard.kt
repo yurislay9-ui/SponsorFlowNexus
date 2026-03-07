@@ -1,5 +1,5 @@
 /*
- * SponsorFlow Nexus v1.0 - Auth Guard (Protección de Sesión)
+ * SponsorFlow Nexus v1.0 - Auth Guard (ProtecciÃ³n de SesiÃ³n)
  * CORREGIDO: URL de API correcta, redirectToLogin, @Volatile, Dispatchers.IO
  */
 package com.sponsorflow.nexus.account
@@ -8,7 +8,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import com.sponsorflow.nexus.network.NetworkHelper
-import com.sponsorflow.nexus.ui.auth.LoginActivity
+import com.sponsorflow.nexus.ui.LoginActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.Request
@@ -38,7 +38,7 @@ object AuthGuard {
             return TokenValidationResult.Invalid("Sin token")
         }
         
-        // Verificar caché reciente
+        // Verificar cachÃ© reciente
         val now = System.currentTimeMillis()
         if (now - lastVerification < VERIFICATION_INTERVAL) {
             return TokenValidationResult.Valid
@@ -65,25 +65,25 @@ object AuthGuard {
                         TokenValidationResult.Valid
                     } else {
                         sessionManager.clearSession()
-                        TokenValidationResult.Invalid(verifyResponse.error ?: "Token inválido")
+                        TokenValidationResult.Invalid(verifyResponse.error ?: "Token invÃ¡lido")
                     }
                 } else {
-                    // Error de red - permitir acceso si hay sesión local
+                    // Error de red - permitir acceso si hay sesiÃ³n local
                     if (response.code == 401 || response.code == 403) {
                         sessionManager.clearSession()
-                        TokenValidationResult.Invalid("Sesión expirada")
+                        TokenValidationResult.Invalid("SesiÃ³n expirada")
                     } else {
                         TokenValidationResult.NetworkError
                     }
                 }
             } catch (e: Exception) {
-                // Error de red - permitir acceso si hay sesión local
+                // Error de red - permitir acceso si hay sesiÃ³n local
                 TokenValidationResult.NetworkError
             }
         }
     }
     
-    // Requerir autenticación - redirigir a login si no hay sesión
+    // Requerir autenticaciÃ³n - redirigir a login si no hay sesiÃ³n
     fun requireAuth(activity: Activity, sessionManager: SessionManager): Boolean {
         if (!sessionManager.isLoggedIn()) {
             redirectToLogin(activity)
@@ -92,7 +92,7 @@ object AuthGuard {
         return true
     }
     
-    // Verificar sesión válida (token + timestamp)
+    // Verificar sesiÃ³n vÃ¡lida (token + timestamp)
     fun hasValidSession(sessionManager: SessionManager): Boolean {
         if (!sessionManager.isLoggedIn()) return false
         
@@ -114,7 +114,7 @@ object AuthGuard {
         activity.finish()
     }
     
-    // Verificar sesión al iniciar actividad
+    // Verificar sesiÃ³n al iniciar actividad
     fun checkActivityAccess(
         activity: Activity,
         sessionManager: SessionManager,
