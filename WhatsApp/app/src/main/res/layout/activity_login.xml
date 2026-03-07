@@ -1,124 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/login_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/background"
-    android:gravity="center"
-    android:padding="24dp">
+    android:background="#0F172A">
 
-    <!-- Logo -->
-    <ImageView
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:src="@drawable/ic_launcher_foreground"
-        android:layout_marginBottom="24dp" />
-
-    <!-- Title -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Workflow Hub"
-        android:textColor="@color/text_primary"
-        android:textSize="28sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Inicia sesión para continuar"
-        android:textColor="@color/text_secondary"
-        android:textSize="14sp"
-        android:layout_marginBottom="48dp" />
-
-    <!-- Gmail Sign In Button -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_gmail"
+    <!-- Compose content will be inflated via setContent{} -->
+    <!-- This layout exists for ViewBinding compatibility -->
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/compose_view"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:text="Continuar con Google"
-        android:textAllCaps="false"
-        android:textSize="16sp"
-        app:icon="@android:drawable/ic_dialog_email"
-        app:iconGravity="textStart"
-        app:iconPadding="16dp"
-        app:backgroundTint="@color/surface"
-        app:strokeColor="@color/surface_light"
-        app:strokeWidth="1dp"
-        app:cornerRadius="12dp"
-        android:textColor="@color/text_primary" />
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Divider -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="32dp">
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1"
-            android:background="@color/surface_light" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=" o "
-            android:textColor="@color/text_secondary"
-            android:textSize="12sp" />
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1"
-            android:background="@color/surface_light" />
-
-    </LinearLayout>
-
-    <!-- Email Input -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/til_email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Correo electrónico"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        app:boxStrokeColor="@color/primary"
-        app:hintTextColor="@color/text_secondary">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"
-            android:textColor="@color/text_primary" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <!-- Continue Button -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_continue"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_marginTop="24dp"
-        android:text="Continuar"
-        android:textAllCaps="false"
-        android:textSize="16sp"
-        app:backgroundTint="@color/primary"
-        app:cornerRadius="12dp" />
-
-    <!-- Terms -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="Al continuar, aceptas nuestros Términos y Política de Privacidad"
-        android:textColor="@color/text_hint"
-        android:textSize="11sp"
-        android:gravity="center" />
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
