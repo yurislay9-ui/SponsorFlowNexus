@@ -1,6 +1,6 @@
 /*
  * SponsorFlow Nexus v1.0 - Main Activity
- * Version actualizada a v1.0 - CON ANTI-DETECCIÓN INTEGRADA
+ * Version actualizada a v1.0 - CON ANTI-DETECCIÃN INTEGRADA
  */
 package com.sponsorflow.nexus.ui
 
@@ -25,9 +25,9 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    // Managers de Anti-Detección - inicializados una sola vez
+    // Managers de Anti-DetecciÃ³n - inicializados una sola vez
     private lateinit var queueManager: SmartQueueManager
-    private lateinit var windowManager: TwentyFourHourWindowManager
+    private lateinit var hourWindowManager: TwentyFourHourWindowManager
     private lateinit var riskManager: RiskLevelManager
     private lateinit var banManager: BanDetectionManager
     private lateinit var humanManager: HumanBehaviorManager
@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
-        // Inicializar managers de Anti-Detección
+        // Inicializar managers de Anti-DetecciÃ³n
         initializeAntiDetectionManagers()
         
         startServiceIfNeeded()
@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
                     NexusNavHost(
                         navController = navController,
                         queueManager = queueManager,
-                        windowManager = windowManager,
+                        windowManager = hourWindowManager,
                         riskManager = riskManager,
                         banManager = banManager,
                         humanManager = humanManager
@@ -63,16 +63,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Inicializa todos los managers de Anti-Detección
+     * Inicializa todos los managers de Anti-DetecciÃ³n
      */
     private fun initializeAntiDetectionManagers() {
         queueManager = SmartQueueManager(this)
-        windowManager = TwentyFourHourWindowManager(this)
+        hourWindowManager = TwentyFourHourWindowManager(this)
         riskManager = RiskLevelManager(this)
         banManager = BanDetectionManager(this)
         humanManager = HumanBehaviorManager(this)
         
-        // Cargar configuración guardada
+        // Cargar configuraciÃ³n guardada
         queueManager.loadFromPrefs()
         windowManager.loadFromPrefs()
         riskManager.loadFromPrefs()
