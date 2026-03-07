@@ -1,25 +1,28 @@
-/*
- * SponsorFlow Nexus v1.0 - Dashboard Fragment
- * Nuevo diseño profesional
- */
 package com.sponsorflow.nexus.ui.dashboard
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.google.android.material.switchmaterial.SwitchMaterial
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.sponsorflow.nexus.R
-import com.sponsorflow.nexus.ui.AssistantChatActivity
+import kotlinx.coroutines.launch
 
 class DashboardFragment : Fragment() {
 
-    private var isServiceActive = false
+    private val viewModel: DashboardViewModel by viewModels()
+
+    private var tvTotalSent: TextView? = null
+    private var tvTotalFailed: TextView? = null
+    private var tvSuccessRate: TextView? = null
+    private var tvDailyCount: TextView? = null
+    private var tvStatus: TextView? = null
+    private var rvRecentActivity: RecyclerView? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,73 +34,48 @@ class DashboardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
-        setupViews(view)
-        loadStats(view)
+        initViews(view)
+        observeViewModel()
+        viewModel.loadDashboardData()
     }
 
-    private fun setupViews(view: View) {
-        // Service toggle switch
-        val switchService = view.findViewById<SwitchMaterial>(R.id.switch_service)
-        switchService?.setOnCheckedChangeListener { _, isChecked ->
-            isServiceActive = isChecked
-            updateStatus(view, isChecked)
-        }
+    private fun initViews(view: View) {
+        tvTotalSent = view.findViewById(R.id.tv_total_sent)
+        tvTotalFailed = view.findViewById(R.id.tv_total_failed)
+        tvSuccessRate = view.findViewById(R.id.tv_success_rate)
+        tvDailyCount = view.findViewById(R.id.tv_daily_count)
+        tvStatus = view.findViewById(R.id.tv_status)
+        rvRecentActivity = view.findViewById(R.id.rv_recent_activity)
+        rvRecentActivity?.layoutManager = LinearLayoutManager(requireContext())
+    }
 
-        // AI Assistant card
-        view.findViewById<View>(R.id.card_ai_assistant)?.setOnClickListener {
-            startActivity(Intent(requireContext(), AssistantChatActivity::class.java))
-        }
-
-        // Settings button
-        view.findViewById<ImageView>(R.id.btn_settings)?.setOnClickListener {
-            Toast.makeText(requireContext(), "Configuración", Toast.LENGTH_SHORT).show()
-            // Navigate to settings
-        }
-
-        // Analytics card
-        view.findViewById<View>(R.id.card_analytics)?.setOnClickListener {
-            Toast.makeText(requireContext(), "Análisis", Toast.LENGTH_SHORT).show()
-        }
-
-        // Products card
-        view.findViewById<View>(R.id.card_products)?.setOnClickListener {
-            Toast.makeText(requireContext(), "Inventario", Toast.LENGTH_SHORT).show()
-        }
-
-        // Subscription card
-        view.findViewById<View>(R.id.card_subscription)?.setOnClickListener {
-            Toast.makeText(requireContext(), "Suscripción", Toast.LENGTH_SHORT).show()
+    private fun observeViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.dashboardState.collect { state ->
+                updateUI(state)
+            }
         }
     }
 
-    private fun loadStats(view: View) {
-        // These would normally load from a ViewModel
-        // For now, showing sample data
-        view.findViewById<TextView>(R.id.count_messages)?.text = "0"
-        view.findViewById<TextView>(R.id.count_chats)?.text = "0"
-        view.findViewById<TextView>(R.id.count_responses)?.text = "0"
-        view.findViewById<TextView>(R.id.count_products)?.text = "0"
+    private fun updateUI(state: DashboardState) {
+        tvTotalSent?.text = state.totalMessagesSent.toString()
+        tvTotalFailed?.text = state.totalMessagesFailed.toString()
+        tvSuccessRate?.text = String.format("%.1f%%", state.successRate * 100)
+        tvDailyCount?.text = state.dailyMessageCount.toString()
+        tvStatus?.text = state.statusText
     }
 
-    private fun updateStatus(view: View, active: Boolean) {
-        val statusTitle = view.findViewById<TextView>(R.id.status_title)
-        val statusSubtitle = view.findViewById<TextView>(R.id.status_subtitle)
-        
-        if (active) {
-            statusTitle?.text = "Servicio Activo"
-            statusSubtitle?.text = "Monitoreando conversaciones"
-            Toast.makeText(requireContext(), "Asistente activado", Toast.LENGTH_SHORT).show()
-        } else {
-            statusTitle?.text = "Servicio Detenido"
-            statusSubtitle?.text = "Inactivo"
-            Toast.makeText(requireContext(), "Asistente detenido", Toast.LENGTH_SHORT).show()
-        }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        tvTotalSent = null
+        tvTotalFailed = null
+        tvSuccessRate = null
+        tvDailyCount = null
+        tvStatus = null
+        rvRecentActivity = null
     }
 
-    override fun onResume() {
-        super.onResume()
-        // Refresh stats when returning to dashboard
-        view?.let { loadStats(it) }
+    companion object {
+        fun newInstance(): DashboardFragment = DashboardFragment()
     }
 }
