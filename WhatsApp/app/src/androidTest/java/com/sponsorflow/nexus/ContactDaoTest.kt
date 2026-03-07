@@ -1,7 +1,7 @@
 /**
  * SponsorFlow Nexus v1.0 - Contact DAO Test
  * 
- * Test de instrumentación para validar el comportamiento del DAO de contactos
+ * Test de instrumentaciÃ³n para validar el comportamiento del DAO de contactos
  * con Room Database. Este test asegura que las operaciones CRUD en la base de datos
  * funcionen correctamente en un entorno Android real.
  * 
@@ -14,8 +14,8 @@ package com.sponsorflow.nexus
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.sponsorflow.nexus.data.ContactEntity
-import com.sponsorflow.nexus.data.NexusDatabase
+import com.sponsorflow.nexus.data.entity.ContactEntity
+import com.sponsorflow.nexus.data.database.NexusDatabase
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.*
@@ -24,7 +24,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * Test de instrumentación para ContactDao.
+ * Test de instrumentaciÃ³n para ContactDao.
  * 
  * Este test valida las operaciones CRUD del DAO de contactos utilizando
  * una base de datos en memoria para pruebas. Asegura que todas las operaciones
@@ -57,7 +57,7 @@ class ContactDaoTest {
      * Test para insertar y recuperar un contacto.
      * 
      * Verifica que un contacto pueda ser insertado en la base de datos
-     * y recuperado correctamente por su número de teléfono.
+     * y recuperado correctamente por su nÃºmero de telÃ©fono.
      */
     @Test
     fun insertAndRetrieve() = runBlocking {
@@ -192,7 +192,7 @@ class ContactDaoTest {
      * Test para obtener contactos bloqueados.
      * 
      * Verifica que se puedan obtener correctamente todos los contactos
-     * que están actualmente bloqueados.
+     * que estÃ¡n actualmente bloqueados.
      */
     @Test
     fun getBlockedContacts() = runBlocking {
@@ -248,14 +248,14 @@ class ContactDaoTest {
      * Test para obtener contactos por rango de tiempo.
      * 
      * Verifica que se puedan obtener contactos que han interactuado
-     * dentro de un rango de tiempo específico.
+     * dentro de un rango de tiempo especÃ­fico.
      */
     @Test
     fun getContactsByTimeRange() = runBlocking {
         // Given
         val now = System.currentTimeMillis()
-        val oneHourAgo = now - (60 * 60 * 1000) // 1 hora atrás
-        val twoHoursAgo = now - (2 * 60 * 60 * 1000) // 2 horas atrás
+        val oneHourAgo = now - (60 * 60 * 1000) // 1 hora atrÃ¡s
+        val twoHoursAgo = now - (2 * 60 * 60 * 1000) // 2 horas atrÃ¡s
         
         val recentContact = ContactEntity(
             phone = "+1234567897",
@@ -292,7 +292,7 @@ class ContactDaoTest {
      * Test para eliminar un contacto.
      * 
      * Verifica que un contacto pueda ser eliminado de la base de datos
-     * y que ya no esté disponible para recuperación.
+     * y que ya no estÃ© disponible para recuperaciÃ³n.
      */
     @Test
     fun deleteContact() = runBlocking {
@@ -320,9 +320,9 @@ class ContactDaoTest {
     }
     
     /**
-     * Test para obtener estadísticas de contactos.
+     * Test para obtener estadÃ­sticas de contactos.
      * 
-     * Verifica que las estadísticas generales de contactos (total, bloqueados, etc.)
+     * Verifica que las estadÃ­sticas generales de contactos (total, bloqueados, etc.)
      * puedan ser calculadas correctamente.
      */
     @Test
