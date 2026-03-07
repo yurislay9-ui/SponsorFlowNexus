@@ -25,6 +25,7 @@ android {
         
         buildConfigField("String", "CONFIG_URL", "\"${project.findProperty("CONFIG_URL") ?: ""}\"")
         buildConfigField("String", "SERVER_URL", "\"${project.findProperty("SERVER_URL") ?: ""}\"")
+        buildConfigField("String", "APP_SIGNATURE", "\"${project.findProperty("APP_SIGNATURE") ?: ""}\"")
         buildConfigField("Long", "CLOUD_PROJECT_NUMBER", "${project.findProperty("CLOUD_PROJECT_NUMBER") ?: "0"}L")
     }
 
