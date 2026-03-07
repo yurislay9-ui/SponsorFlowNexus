@@ -34,7 +34,7 @@ class NexusApplication : Application(), Configuration.Provider {
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
     
-    private lateinit var encryptedPrefs: EncryptedSharedPreferences
+    private lateinit var encryptedPrefs: android.content.SharedPreferences
     private lateinit var masterKey: MasterKey
     
     // CORREGIDO: CoroutineExceptionHandler para manejar excepciones no capturadas
@@ -87,7 +87,7 @@ class NexusApplication : Application(), Configuration.Provider {
             masterKey,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        ) as EncryptedSharedPreferences
+        ) 
     }
 
     private fun initWorkManager() {
@@ -117,11 +117,11 @@ class NexusApplication : Application(), Configuration.Provider {
             .apply()
     }
     
-    fun getEncryptedPrefs(): EncryptedSharedPreferences = encryptedPrefs
+    fun getEncryptedPrefs(): android.content.SharedPreferences = encryptedPrefs
     fun getMasterKey(): MasterKey = masterKey
 }
 
-// CORREGIDO: @HiltWorker con @AssistedInject para inyección correcta
+// CORREGIDO: @HiltWorker con @AssistedInject para inyecciÃ³n correcta
 @HiltWorker
 class ConfigSyncWorker @AssistedInject constructor(
     @Assisted appContext: android.content.Context,
