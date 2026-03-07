@@ -7,7 +7,7 @@ package com.sponsorflow.nexus.inventory
 import com.sponsorflow.nexus.core.result.AppResult
 import com.sponsorflow.nexus.core.result.AppError
 import com.sponsorflow.nexus.data.entity.ProductEntity
-import com.sponsorflow.nexus.data.repository.ProductRepository
+import com.sponsorflow.nexus.data.repositories.ProductRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
