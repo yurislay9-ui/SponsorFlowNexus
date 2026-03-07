@@ -62,9 +62,3 @@ data class ProductEntity(
         return ((price - costPrice) / costPrice) * 100
     }
 }
-
-enum class StockStatus {
-    IN_STOCK,      // Verde
-    LOW_STOCK,     // Amarillo
-    OUT_OF_STOCK   // Rojo
-}
