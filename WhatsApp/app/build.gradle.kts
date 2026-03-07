@@ -21,7 +21,6 @@ android {
         targetSdk = 34
         versionCode = 24
         versionName = "2.4.0"
-        
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         
         buildConfigField("String", "CONFIG_URL", "\"${project.findProperty("CONFIG_URL") ?: ""}\"")
@@ -31,7 +30,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -79,6 +79,18 @@ dependencies {
     implementation(libs.kotlin.coroutines.android)
     implementation(libs.kotlin.coroutines.play.services)
     implementation(libs.kotlinx.serialization.json)
+
+    // Activity y Fragment KTX
+    implementation(libs.androidx.activity.activity)
+    implementation(libs.androidx.fragment.fragment)
+    
+    // SQLite (Room maneja la base de datos)
+    implementation("androidx.sqlite:sqlite-ktx:2.4.0")
+    
+    // Testing
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.espresso.core)
     
     // AndroidX Core
     implementation(libs.androidx.core.ktx)
@@ -110,9 +122,6 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.gson)
     
-    // SQLite (Room maneja la base de datos)
-    implementation("androidx.sqlite:sqlite-ktx:2.4.0")
-    
     // Security
     implementation(libs.androidx.security.crypto)
     
@@ -138,9 +147,4 @@ dependencies {
     implementation(libs.play.services.auth)
     implementation(libs.play.services.tasks)
     implementation(libs.play.integrity)
-    
-    // Testing
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.test.espresso.core)
 }
