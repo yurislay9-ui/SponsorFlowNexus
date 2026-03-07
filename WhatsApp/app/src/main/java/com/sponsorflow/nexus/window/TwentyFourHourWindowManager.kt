@@ -1,51 +1,95 @@
-/*
- * 24-Hour Window Manager (Compact)
- */
 package com.sponsorflow.nexus.window
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.google.gson.Gson
-import java.util.concurrent.ConcurrentHashMap
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import java.util.LinkedList
+import java.util.concurrent.TimeUnit
 
-class TwentyFourHourWindowManager(private val context: Context) {
-    private val prefs = context.getSharedPreferences("nexus_window", Context.MODE_PRIVATE)
-    private val gson = Gson()
-    private val activeWindows = ConcurrentHashMap<String, ChatWindow>()
-    private var config = WindowConfig()
+class TwentyFourHourWindowManager(context: Context) {
 
-    fun startWindow(phoneNumber: String, startedByCustomer: Boolean = true): ChatWindow {
-        val now = System.currentTimeMillis()
-        val window = ChatWindow(phoneNumber, now, now, now + WindowConstants.HOURS_24_MS, 0, true, startedByCustomer)
-        activeWindows[phoneNumber] = window
-        saveToPrefs()
-        return window
+    private val prefs: SharedPreferences =
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+    private val mutex = Mutex()
+    private val messageTimestamps: LinkedList<Long> = LinkedList()
+
+    init {
+        loadPersistedTimestamps()
     }
 
-    fun checkWindow(phoneNumber: String): WindowCheckResult {
-        val window = activeWindows[phoneNumber] ?: return WindowCheckResult(false, WindowStatus.NO_WINDOW, reason = "No active window")
-        val now = System.currentTimeMillis()
-        val remaining = window.windowEndTime - now
-        return when {
-            remaining <= 0 -> WindowCheckResult(false, WindowStatus.EXPIRED, reason = "24h window expired")
-            remaining < WindowConstants.HOUR_MS -> WindowCheckResult(true, WindowStatus.NEAR_EXPIRE, remaining, window.messagesInWindow)
-            else -> WindowCheckResult(true, WindowStatus.ACTIVE, remaining, window.messagesInWindow)
+    private fun loadPersistedTimestamps() {
+        val serialized = prefs.getString(KEY_TIMESTAMPS, "") ?: ""
+        if (serialized.isNotEmpty()) {
+            val now = System.currentTimeMillis()
+            val windowStart = now - WINDOW_DURATION_MS
+            serialized.split(",")
+                .mapNotNull { it.toLongOrNull() }
+                .filter { it > windowStart }
+                .forEach { messageTimestamps.add(it) }
         }
     }
 
-    fun recordMessage(phoneNumber: String): Boolean {
-        val window = activeWindows[phoneNumber] ?: return false
-        val check = checkWindow(phoneNumber)
-        if (!check.canRespond) return false
-        activeWindows[phoneNumber] = window.copy(messagesInWindow = window.messagesInWindow + 1)
-        saveToPrefs()
-        return true
+    private fun persistTimestamps() {
+        prefs.edit()
+            .putString(KEY_TIMESTAMPS, messageTimestamps.joinToString(","))
+            .apply()
     }
 
-    fun closeWindow(phoneNumber: String) { activeWindows.remove(phoneNumber); saveToPrefs() }
-    fun getWindow(phoneNumber: String): ChatWindow? = activeWindows[phoneNumber]
-    fun getAllWindows() = activeWindows.toMap()
-    fun setConfig(newConfig: WindowConfig) { config = newConfig; saveToPrefs() }
-    private fun saveToPrefs() { prefs.edit().putString("windows", gson.toJson(activeWindows)).apply() }
-    fun loadFromPrefs() { prefs.getString("windows", null)?.let { activeWindows.putAll(gson.fromJson(it)) } }
+    suspend fun recordMessage(): Boolean = mutex.withLock {
+        cleanExpiredTimestamps()
+        if (messageTimestamps.size >= MAX_MESSAGES_PER_DAY) {
+            return@withLock false
+        }
+        messageTimestamps.add(System.currentTimeMillis())
+        persistTimestamps()
+        true
+    }
+
+    suspend fun getMessageCount(): Int = mutex.withLock {
+        cleanExpiredTimestamps()
+        messageTimestamps.size
+    }
+
+    suspend fun getRemainingCapacity(): Int = mutex.withLock {
+        cleanExpiredTimestamps()
+        (MAX_MESSAGES_PER_DAY - messageTimestamps.size).coerceAtLeast(0)
+    }
+
+    suspend fun canSendMessage(): Boolean = mutex.withLock {
+        cleanExpiredTimestamps()
+        messageTimestamps.size < MAX_MESSAGES_PER_DAY
+    }
+
+    suspend fun getOldestMessageTimestamp(): Long? = mutex.withLock {
+        cleanExpiredTimestamps()
+        messageTimestamps.peekFirst()
+    }
+
+    suspend fun getTimeUntilNextSlot(): Long = mutex.withLock {
+        cleanExpiredTimestamps()
+        if (messageTimestamps.size < MAX_MESSAGES_PER_DAY) return@withLock 0L
+        val oldest = messageTimestamps.peekFirst() ?: return@withLock 0L
+        val windowStart = System.currentTimeMillis() - WINDOW_DURATION_MS
+        (oldest - windowStart).coerceAtLeast(0L)
+    }
+
+    suspend fun reset() = mutex.withLock {
+        messageTimestamps.clear()
+        prefs.edit().remove(KEY_TIMESTAMPS).apply()
+    }
+
+    private fun cleanExpiredTimestamps() {
+        val windowStart = System.currentTimeMillis() - WINDOW_DURATION_MS
+        while (messageTimestamps.isNotEmpty() && (messageTimestamps.peekFirst() ?: Long.MAX_VALUE) <= windowStart) {
+            messageTimestamps.pollFirst()
+        }
+    }
+
+    companion object {
+        private const val PREFS_NAME = "twenty_four_hour_window"
+        private const val KEY_TIMESTAMPS = "message_timestamps"
+        private const val MAX_MESSAGES_PER_DAY = 1000
+        private val WINDOW_DURATION_MS = TimeUnit.HOURS.toMillis(24)
+    }
 }
