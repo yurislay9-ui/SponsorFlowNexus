@@ -7,12 +7,12 @@
     
     <!-- Navigation -->
     <string name="nav_home">Inicio</string>
-    <string name="nav_settings">Configuración</string>
+    <string name="nav_settings">ConfiguraciÃ³n</string>
     <string name="nav_inventory">Inventario</string>
-    <string name="nav_subscription">Suscripción</string>
+    <string name="nav_subscription">SuscripciÃ³n</string>
     
     <!-- Common -->
-    <string name="loading">Cargando…</string>
+    <string name="loading">Cargandoâ¦</string>
     <string name="error_generic">Ha ocurrido un error</string>
     <string name="retry">Reintentar</string>
     <string name="save">Guardar</string>
@@ -22,7 +22,7 @@
     <string name="confirm">Confirmar</string>
     
     <!-- Settings -->
-    <string name="settings_auto_reply">Respuesta automática</string>
+    <string name="settings_auto_reply">Respuesta automÃ¡tica</string>
     <string name="settings_notifications">Notificaciones</string>
     <string name="settings_theme">Tema</string>
     <string name="settings_language">Idioma</string>
@@ -31,11 +31,11 @@
     <string name="license_status">Estado de licencia</string>
     <string name="license_active">Licencia activa</string>
     <string name="license_expired">Licencia expirada</string>
-    <string name="license_invalid">Licencia inválida</string>
+    <string name="license_invalid">Licencia invÃ¡lida</string>
     
     <!-- Subscription -->
     <string name="subscription_free">Gratis</string>
-    <string name="subscription_basic">Básico</string>
+    <string name="subscription_basic">BÃ¡sico</string>
     <string name="subscription_pro">Pro</string>
     <string name="subscription_enterprise">Enterprise</string>
     
@@ -47,14 +47,14 @@
     <string name="payment_failed">Fallido</string>
     
     <!-- AI -->
-    <string name="ai_typing">Escribiendo…</string>
+    <string name="ai_typing">Escribiendoâ¦</string>
     <string name="ai_error">Error en IA</string>
-    <string name="ai_model_loading">Cargando modelo…</string>
+    <string name="ai_model_loading">Cargando modeloâ¦</string>
     
     <!-- Errors -->
-    <string name="error_network">Error de conexión</string>
+    <string name="error_network">Error de conexiÃ³n</string>
     <string name="error_database">Error de base de datos</string>
-    <string name="error_validation">Error de validación</string>
+    <string name="error_validation">Error de validaciÃ³n</string>
     <string name="error_security">Error de seguridad</string>
     
     <!-- Success -->
@@ -69,4 +69,13 @@
     
     <!-- Accessibility Service -->
     <string name="service_name">Workflow Hub Service</string>
+
+    <!-- Added for Doc3 corrections -->
+    <string name="app_description">Workflow Hub para automatizaciÃ³n de WhatsApp</string>
+    <string name="hub_assistant_title">Asistente</string>
+    <string name="service_name">SponsorFlow Nexus Service</string>
+    <string name="accessibility_service_description">Servicio de accesibilidad para automatizaciÃ³n de WhatsApp</string>
+    <string name="accessibility_service_summary">Permite interactuar con la interfaz de WhatsApp</string>
+    <string name="dashboard_title">Panel de Control</string>
+    <string name="settings_title">ConfiguraciÃ³n</string>
 </resources>
