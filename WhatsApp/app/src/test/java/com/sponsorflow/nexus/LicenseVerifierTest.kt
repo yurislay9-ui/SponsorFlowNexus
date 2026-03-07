@@ -2,8 +2,8 @@
  * SponsorFlow Nexus v1.0 - License Verifier Test
  * 
  * Test unitario para validar el comportamiento del verificador de licencias.
- * Este test asegura que la lógica de validación de licencias funcione
- * correctamente y maneje adecuadamente los casos de éxito y error.
+ * Este test asegura que la lÃ³gica de validaciÃ³n de licencias funcione
+ * correctamente y maneje adecuadamente los casos de Ã©xito y error.
  * 
  * @author SponsorFlow Nexus Team
  * @version 1.0
@@ -11,8 +11,8 @@
  */
 package com.sponsorflow.nexus
 
-import com.sponsorflow.nexus.subscription.LicenseVerifier
-import com.sponsorflow.nexus.subscription.SubscriptionTier
+import com.sponsorflow.nexus.account.LicenseVerifier
+import com.sponsorflow.nexus.core.enums.SubscriptionTier
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
 import org.junit.Before
@@ -26,8 +26,8 @@ import org.mockito.junit.MockitoJUnitRunner
  * Test unitario para LicenseVerifier.
  * 
  * Este test valida el comportamiento del verificador de licencias,
- * asegurando que maneje correctamente la validación de claves,
- * la gestión de suscripciones y el manejo de errores.
+ * asegurando que maneje correctamente la validaciÃ³n de claves,
+ * la gestiÃ³n de suscripciones y el manejo de errores.
  * 
  * @see LicenseVerifier
  * @see SubscriptionTier
@@ -47,10 +47,10 @@ class LicenseVerifierTest {
     }
     
     /**
-     * Test para validar una licencia válida.
+     * Test para validar una licencia vÃ¡lida.
      * 
-     * Verifica que cuando se proporciona una clave de licencia válida,
-     * el sistema retorne un resultado exitoso con la información correcta.
+     * Verifica que cuando se proporciona una clave de licencia vÃ¡lida,
+     * el sistema retorne un resultado exitoso con la informaciÃ³n correcta.
      */
     @Test
     fun `validate license returns success for valid key`() = runTest {
@@ -68,9 +68,9 @@ class LicenseVerifierTest {
     }
     
     /**
-     * Test para validar una licencia inválida.
+     * Test para validar una licencia invÃ¡lida.
      * 
-     * Verifica que cuando se proporciona una clave de licencia inválida,
+     * Verifica que cuando se proporciona una clave de licencia invÃ¡lida,
      * el sistema retorne un resultado de error con el mensaje adecuado.
      */
     @Test
@@ -131,9 +131,9 @@ class LicenseVerifierTest {
     }
     
     /**
-     * Test para validar una licencia nula o vacía.
+     * Test para validar una licencia nula o vacÃ­a.
      * 
-     * Verifica que cuando se proporciona una clave de licencia nula o vacía,
+     * Verifica que cuando se proporciona una clave de licencia nula o vacÃ­a,
      * el sistema retorne un resultado de error.
      */
     @Test
@@ -151,10 +151,10 @@ class LicenseVerifierTest {
     }
     
     /**
-     * Test para validar una licencia con diferentes tipos de suscripción.
+     * Test para validar una licencia con diferentes tipos de suscripciÃ³n.
      * 
-     * Verifica que el sistema pueda manejar diferentes tipos de suscripción
-     * y retorne la información correcta para cada tipo.
+     * Verifica que el sistema pueda manejar diferentes tipos de suscripciÃ³n
+     * y retorne la informaciÃ³n correcta para cada tipo.
      */
     @Test
     fun `validate license returns correct tier information`() = runTest {
@@ -183,14 +183,14 @@ class LicenseVerifierTest {
     }
     
     /**
-     * Test para validar el manejo de excepciones en la validación.
+     * Test para validar el manejo de excepciones en la validaciÃ³n.
      * 
      * Verifica que el sistema maneje adecuadamente las excepciones
-     * que puedan ocurrir durante el proceso de validación.
+     * que puedan ocurrir durante el proceso de validaciÃ³n.
      */
     @Test
     fun `validate license handles exceptions gracefully`() = runTest {
-        // Given - Mock para simular una excepción
+        // Given - Mock para simular una excepciÃ³n
         `when`(mockLicenseVerifier.validate(anyString()))
             .thenThrow(RuntimeException("Network error"))
         
@@ -205,9 +205,9 @@ class LicenseVerifierTest {
     }
     
     /**
-     * Test para validar el tiempo de respuesta de la validación.
+     * Test para validar el tiempo de respuesta de la validaciÃ³n.
      * 
-     * Verifica que el proceso de validación complete en un tiempo razonable.
+     * Verifica que el proceso de validaciÃ³n complete en un tiempo razonable.
      */
     @Test
     fun `validate license completes in reasonable time`() = runTest {
@@ -226,10 +226,10 @@ class LicenseVerifierTest {
     }
     
     /**
-     * Test para validar múltiples solicitudes concurrentes.
+     * Test para validar mÃºltiples solicitudes concurrentes.
      * 
-     * Verifica que el sistema pueda manejar múltiples solicitudes
-     * de validación de forma concurrente sin problemas.
+     * Verifica que el sistema pueda manejar mÃºltiples solicitudes
+     * de validaciÃ³n de forma concurrente sin problemas.
      */
     @Test
     fun `validate license handles concurrent requests`() = runTest {
