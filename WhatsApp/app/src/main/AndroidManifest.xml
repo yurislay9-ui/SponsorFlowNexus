@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Permisos -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -12,12 +13,16 @@
     <application
         android:name=".NexusApplication"
         android:allowBackup="false"
+        android:description="@string/app_description"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/Theme.SponsorFlowNexus">
 
         <!-- Login Flow -->
-        <activity android:name=".ui.LoginActivity"
+        <activity
+            android:name=".ui.LoginActivity"
             android:exported="true"
             android:theme="@style/Theme.SponsorFlowNexus">
             <intent-filter>
@@ -26,31 +31,40 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.VerificationActivity"
+        <activity
+            android:name=".ui.VerificationActivity"
             android:exported="false"
             android:theme="@style/Theme.SponsorFlowNexus" />
 
-        <activity android:name=".ui.PhoneNumbersActivity"
+        <activity
+            android:name=".ui.OnboardingActivity"
             android:exported="false"
             android:theme="@style/Theme.SponsorFlowNexus" />
 
-        <!-- Actividad Principal -->
-        <activity android:name=".ui.MainActivity"
-            android:exported="true" android:launchMode="singleTask" />
+        <activity
+            android:name=".ui.ResourceDownloadActivity"
+            android:exported="false"
+            android:theme="@style/Theme.SponsorFlowNexus" />
 
-        <!-- Otras Actividades -->
-        <activity android:name=".ui.OnboardingActivity" android:exported="false" />
-        <activity android:name=".ui.ResourceDownloadActivity" android:exported="false" />
-        <activity android:name=".ui.AssistantChatActivity" android:exported="false" />
+        <activity
+            android:name=".ui.MainActivity"
+            android:exported="false"
+            android:theme="@style/Theme.SponsorFlowNexus" />
 
-        <!-- Servicios -->
-        <service android:name=".core.NexusForegroundService"
-            android:foregroundServiceType="dataSync" android:exported="false" />
+        <activity
+            android:name=".ui.AssistantChatActivity"
+            android:exported="false"
+            android:theme="@style/Theme.SponsorFlowNexus" />
 
-        <!-- Accessibility Service para WhatsApp -->
-        <!-- CORREGIDO: exported=true requerido para que el sistema pueda vincularse -->
+        <!-- Foreground Service -->
         <service
-            android:name=".core.NexusAccessibilityService"
+            android:name=".core.NexusForegroundService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
+
+        <!-- Accessibility Service -->
+        <service
+            android:name=".accessibility.NexusAccessibilityService"
             android:exported="true"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
@@ -61,13 +75,27 @@
                 android:resource="@xml/accessibility_service_config" />
         </service>
 
-        <!-- Receiver Boot - CORREGIDO: exported=true para Android 12+ -->
-        <receiver android:name=".core.BootReceiver" android:exported="true">
+        <!-- Boot Receiver -->
+        <receiver
+            android:name=".core.BootReceiver"
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
+
+        <!-- WorkManager Init: removed to prevent double initialization with Hilt -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
 
     </application>
 </manifest>
