@@ -145,6 +145,14 @@ class BanDetectionManager(context: Context) {
         saveState()
     }
 
+    fun loadFromPrefs() {
+        loadState()
+    }
+
+    fun saveToPrefs() {
+        saveState()
+    }
+
     companion object {
         private const val PREFS_NAME = "ban_detection_manager"
         private const val KEY_ACCOUNT_DISABLED = "account_disabled"

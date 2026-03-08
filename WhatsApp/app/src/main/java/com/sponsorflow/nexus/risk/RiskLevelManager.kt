@@ -134,6 +134,14 @@ class RiskLevelManager(context: Context) {
         saveState()
     }
 
+    fun loadFromPrefs() {
+        loadState()
+    }
+
+    fun saveToPrefs() {
+        saveState()
+    }
+
     private fun updateErrorRate(isError: Boolean) {
         recentErrorRate = recentErrorRate * ERROR_RATE_DECAY + (if (isError) 1.0 else 0.0) * (1 - ERROR_RATE_DECAY)
     }

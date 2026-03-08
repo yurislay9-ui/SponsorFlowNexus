@@ -23,39 +23,41 @@ class IntegrityChecker(
         }
     }
 
-    fun checkSignature(context: Context): Boolean = try {
-        val expected = getExpectedSignature()
-        
-        // Si no hay firma configurada, fallar en release
-        if (expected.isBlank() || expected == "YOUR_APP_SIGNATURE") {
-            return !BuildConfig.DEBUG // En debug permite, en release falla
-        }
-        
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            val packageInfo = context.packageManager.getPackageInfo(
-                context.packageName,
-                PackageManager.GET_SIGNING_CERTIFICATES
-            )
-            val signingInfo = packageInfo.signingInfo
-            val signatures = if (signingInfo.hasMultipleSigners()) {
-                signingInfo.apkContentsSigners
-            } else {
-                signingInfo.signingCertificateHistory
+    fun checkSignature(context: Context): Boolean {
+        return try {
+            val expected = getExpectedSignature()
+            
+            // Si no hay firma configurada, fallar en release
+            if (expected.isBlank() || expected == "YOUR_APP_SIGNATURE") {
+                return !BuildConfig.DEBUG // En debug permite, en release falla
             }
-            val hash = signatures.firstOrNull()?.let { hashSHA256(it.toByteArray()) } ?: ""
-            hash == expected
-        } else {
-            @Suppress("DEPRECATION")
-            val sigs = context.packageManager.getPackageInfo(
-                context.packageName, PackageManager.GET_SIGNATURES
-            ).signatures
-            val hash = sigs.firstOrNull()?.let { hashSHA256(it.toByteArray()) } ?: ""
-            hash == expected
-        }
+            
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                val packageInfo = context.packageManager.getPackageInfo(
+                    context.packageName,
+                    PackageManager.GET_SIGNING_CERTIFICATES
+                )
+                val signingInfo = packageInfo.signingInfo
+                val signatures = if (signingInfo.hasMultipleSigners()) {
+                    signingInfo.apkContentsSigners
+                } else {
+                    signingInfo.signingCertificateHistory
+                }
+                val hash = signatures.firstOrNull()?.let { hashSHA256(it.toByteArray()) } ?: ""
+                hash == expected
+            } else {
+                @Suppress("DEPRECATION")
+                val sigs = context.packageManager.getPackageInfo(
+                    context.packageName, PackageManager.GET_SIGNATURES
+                ).signatures
+                val hash = sigs.firstOrNull()?.let { hashSHA256(it.toByteArray()) } ?: ""
+                hash == expected
+            }
         } catch (e: SecurityException) {
             false
         } catch (e: Exception) {
             false
+        }
     }
 
     // CORREGIDO: Solo aceptar Google Play como instalador válido

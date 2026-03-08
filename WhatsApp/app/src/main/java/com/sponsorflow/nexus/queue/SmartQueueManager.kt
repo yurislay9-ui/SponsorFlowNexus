@@ -34,4 +34,5 @@ class SmartQueueManager(private val context: Context) {
     fun setConfig(newConfig: QueueConfig) { config = newConfig }
     fun getConfig(): QueueConfig = config
     fun loadFromPrefs() { /* Load from prefs */ }
+    fun saveToPrefs() { /* Save to prefs */ }
 }

@@ -79,6 +79,14 @@ class TwentyFourHourWindowManager(context: Context) {
         prefs.edit().remove(KEY_TIMESTAMPS).apply()
     }
 
+    fun loadFromPrefs() {
+        loadPersistedTimestamps()
+    }
+
+    fun saveToPrefs() {
+        persistTimestamps()
+    }
+
     private fun cleanExpiredTimestamps() {
         val windowStart = System.currentTimeMillis() - WINDOW_DURATION_MS
         while (messageTimestamps.isNotEmpty() && (messageTimestamps.peekFirst() ?: Long.MAX_VALUE) <= windowStart) {

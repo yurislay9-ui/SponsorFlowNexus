@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         
         // Cargar configuraciÃ³n guardada
         queueManager.loadFromPrefs()
-        windowManager.loadFromPrefs()
+        hourWindowManager.loadFromPrefs()
         riskManager.loadFromPrefs()
         banManager.loadFromPrefs()
         humanManager.loadFromPrefs()
@@ -91,7 +91,7 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         // Guardar estado al cerrar
         queueManager.saveToPrefs()
-        windowManager.saveToPrefs()
+        hourWindowManager.saveToPrefs()
         riskManager.saveToPrefs()
         banManager.saveToPrefs()
     }

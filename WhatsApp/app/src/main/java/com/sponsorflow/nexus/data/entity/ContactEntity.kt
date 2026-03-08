@@ -12,16 +12,17 @@ import androidx.room.PrimaryKey
     tableName = "contacts",
     indices = [
         Index(value = ["phone"], unique = true),
-        Index(value = ["lastMessageAt"])
+        Index(value = ["lastMessageTime"])
     ]
 )
 data class ContactEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
-    val name: String,
+    val name: String?,
     val phone: String,
-    val lastMessageAt: Long = 0,
-    val conversationCount: Int = 0,
-    val isActive: Boolean = true,
-    val createdAt: Long = System.currentTimeMillis()
+    val lastMessage: String? = null,
+    val lastMessageTime: Long = 0,
+    val isBlocked: Boolean = false,
+    val messageCount: Int = 0,
+    val lastInteraction: Long = System.currentTimeMillis()
 )

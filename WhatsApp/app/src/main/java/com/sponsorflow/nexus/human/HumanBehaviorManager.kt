@@ -23,6 +23,6 @@ class HumanBehaviorManager(private val context: Context) {
     }
     fun setConfig(newConfig: HumanBehaviorConfig) { config = newConfig; saveToPrefs() }
     fun getConfig(): HumanBehaviorConfig = config
-    private fun saveToPrefs() { prefs.edit().putString("config", config.toString()).apply() }
     fun loadFromPrefs() { /* Load config from prefs */ }
+    fun saveToPrefs() { prefs.edit().putString("config", config.toString()).apply() }
 }

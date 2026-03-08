@@ -61,15 +61,13 @@ class NexusApplication : Application(), Configuration.Provider {
             android.util.Log.e("NexusApplication", "Initialization state error: ${e.message}")
         } catch (e: SecurityException) {
             android.util.Log.e("NexusApplication", "Security initialization error: ${e.message}")
-        } catch (e: SecurityException) {
-            android.util.Log.e("NexusApplication", "Security initialization error: ${e.message}")
         } catch (e: Exception) {
             android.util.Log.e("NexusApplication", "General initialization error: ${e.message}")
         }
     }
 
     private fun initSecurity() {
-        val integrity = IntegrityChecker()
+        val integrity = IntegrityChecker(this)
         val report = integrity.runAllChecks(this)
         if (!report.passedAll) {
             logSecurityEvent(report.toString())
@@ -104,7 +102,7 @@ class NexusApplication : Application(), Configuration.Provider {
     // CORREGIDO: Usar scope con SupervisorJob
     private fun fetchRemoteConfig() {
         applicationScope.launch {
-            DynamicConfigManager(this@NexusApplication).fetchConfig()
+            DynamicConfigManager(this@NexusApplication).syncConfig()
         }
     }
     
@@ -130,7 +128,7 @@ class ConfigSyncWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
         return try {
-            DynamicConfigManager(applicationContext).fetchConfig()
+            DynamicConfigManager(applicationContext).syncConfig()
             Result.success()
         } catch (e: Exception) {
             Result.retry()

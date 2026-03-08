@@ -1,7 +1,7 @@
 /*
  * SponsorFlow Nexus v1.0 - WhatsApp Business API
  * Plan: ENTERPRISE (Opcional)
- * CORREGIDO: Version actualizada a v1.0
+ * CORREGIDO: Version actualizada a v21.0, imports faltantes
  */
 package com.sponsorflow.nexus.integration
 
@@ -11,9 +11,12 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import com.google.gson.Gson
+import com.google.gson.JsonException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 data class WhatsAppConfig(
@@ -24,7 +27,7 @@ data class WhatsAppConfig(
 
 class WhatsAppAPI(private val config: WhatsAppConfig) {
 
-    // CORREGIDO: Timeouts configurados
+    // CORREGIDO: Timeouts configurados y URL actualizada a v21.0
     private val client = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)
@@ -32,7 +35,7 @@ class WhatsAppAPI(private val config: WhatsAppConfig) {
         .build()
     
     private val gson = Gson()
-    private val baseUrl = "https://graph.facebook.com/v18.0"
+    private val baseUrl = "https://graph.facebook.com/v21.0"
 
     /**
      * Envía mensaje de WhatsApp
@@ -59,13 +62,11 @@ class WhatsAppAPI(private val config: WhatsAppConfig) {
             if (response.isSuccessful) {
                 AppResult.Success("Mensaje enviado")
             } else {
-                AppResult.Error(AppError.NetworkError(response.code))
+                AppResult.Error(AppError.NetworkError("HTTP ${response.code}", response.code))
             }
         } catch (e: IOException) {
             AppResult.Error(AppError.NetworkError(e.message ?: "Network error"))
-        } catch (e: HttpException) {
-            AppResult.Error(AppError.NetworkError(e.message ?: "HTTP error"))
-        } catch (e: JSONException) {
+        } catch (e: JsonException) {
             AppResult.Error(AppError.ParseError(e.message ?: "JSON parse error"))
         } catch (e: SecurityException) {
             AppResult.Error(AppError.SecurityError(e.message ?: "Security error"))
@@ -98,7 +99,7 @@ class WhatsAppAPI(private val config: WhatsAppConfig) {
             if (response.isSuccessful) {
                 AppResult.Success("Template enviado")
             } else {
-                AppResult.Error(AppError.NetworkError(response.code))
+                AppResult.Error(AppError.NetworkError("HTTP ${response.code}", response.code))
             }
         } catch (e: Exception) {
             AppResult.Error(AppError.fromException(e))

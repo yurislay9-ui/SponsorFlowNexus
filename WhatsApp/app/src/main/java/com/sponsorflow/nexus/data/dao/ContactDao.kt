@@ -18,6 +18,9 @@ interface ContactDao {
     @Query("DELETE FROM contacts WHERE id = :id")
     suspend fun deleteById(id: Long)
 
+    @Query("DELETE FROM contacts WHERE phone = :phone")
+    suspend fun deleteByPhone(phone: String)
+
     @Query("SELECT * FROM contacts WHERE id = :id")
     suspend fun getById(id: Long): ContactEntity?
 
@@ -32,6 +35,21 @@ interface ContactDao {
 
     @Query("SELECT COUNT(*) FROM contacts WHERE isActive = 1")
     suspend fun getCount(): Int
+    
+    @Query("SELECT COUNT(*) FROM contacts WHERE isActive = 1")
+    suspend fun getTotalContacts(): Int
+
+    @Query("SELECT * FROM contacts WHERE isActive = 0")
+    suspend fun getBlockedContacts(): List<ContactEntity>
+
+    @Query("UPDATE contacts SET isActive = :blocked WHERE phone = :phone")
+    suspend fun setBlocked(phone: String, blocked: Boolean)
+
+    @Query("UPDATE contacts SET conversationCount = conversationCount + 1 WHERE phone = :phone")
+    suspend fun incrementMessageCount(phone: String)
+
+    @Query("SELECT * FROM contacts WHERE lastMessageAt BETWEEN :startTime AND :endTime")
+    suspend fun getContactsByTimeRange(startTime: Long, endTime: Long): List<ContactEntity>
 
     @Query("UPDATE contacts SET lastMessageAt = :timestamp, conversationCount = conversationCount + 1 WHERE id = :id")
     suspend fun updateLastMessage(id: Long, timestamp: Long)
