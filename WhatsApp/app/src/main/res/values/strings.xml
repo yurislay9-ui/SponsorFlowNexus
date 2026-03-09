@@ -68,12 +68,11 @@
     <string name="onboarding_start">Comenzar</string>
     
     <!-- Accessibility Service -->
-    <string name="service_name">Workflow Hub Service</string>
+    <string name="service_name">SponsorFlow Nexus Service</string>
 
     <!-- Added for Doc3 corrections -->
     <string name="app_description">Workflow Hub para automatizaciÃ³n de WhatsApp</string>
     <string name="hub_assistant_title">Asistente</string>
-    <string name="service_name">SponsorFlow Nexus Service</string>
     <string name="accessibility_service_description">Servicio de accesibilidad para automatizaciÃ³n de WhatsApp</string>
     <string name="accessibility_service_summary">Permite interactuar con la interfaz de WhatsApp</string>
     <string name="dashboard_title">Panel de Control</string>
