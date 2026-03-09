@@ -27,30 +27,30 @@ interface ContactDao {
     @Query("SELECT * FROM contacts WHERE phone = :phone LIMIT 1")
     suspend fun getByPhone(phone: String): ContactEntity?
 
-    @Query("SELECT * FROM contacts WHERE isActive = 1 ORDER BY lastMessageAt DESC")
+    @Query("SELECT * FROM contacts WHERE isBlocked = 0 ORDER BY lastMessageTime DESC")
     suspend fun getAll(): List<ContactEntity>
 
-    @Query("SELECT * FROM contacts WHERE isActive = 1 ORDER BY lastMessageAt DESC")
+    @Query("SELECT * FROM contacts WHERE isBlocked = 0 ORDER BY lastMessageTime DESC")
     fun getAllFlow(): Flow<List<ContactEntity>>
 
-    @Query("SELECT COUNT(*) FROM contacts WHERE isActive = 1")
+    @Query("SELECT COUNT(*) FROM contacts WHERE isBlocked = 0")
     suspend fun getCount(): Int
     
-    @Query("SELECT COUNT(*) FROM contacts WHERE isActive = 1")
+    @Query("SELECT COUNT(*) FROM contacts WHERE isBlocked = 0")
     suspend fun getTotalContacts(): Int
 
-    @Query("SELECT * FROM contacts WHERE isActive = 0")
+    @Query("SELECT * FROM contacts WHERE isBlocked = 1")
     suspend fun getBlockedContacts(): List<ContactEntity>
 
-    @Query("UPDATE contacts SET isActive = :blocked WHERE phone = :phone")
+    @Query("UPDATE contacts SET isBlocked = :blocked WHERE phone = :phone")
     suspend fun setBlocked(phone: String, blocked: Boolean)
 
-    @Query("UPDATE contacts SET conversationCount = conversationCount + 1 WHERE phone = :phone")
+    @Query("UPDATE contacts SET messageCount = messageCount + 1 WHERE phone = :phone")
     suspend fun incrementMessageCount(phone: String)
 
-    @Query("SELECT * FROM contacts WHERE lastMessageAt BETWEEN :startTime AND :endTime")
+    @Query("SELECT * FROM contacts WHERE lastMessageTime BETWEEN :startTime AND :endTime")
     suspend fun getContactsByTimeRange(startTime: Long, endTime: Long): List<ContactEntity>
 
-    @Query("UPDATE contacts SET lastMessageAt = :timestamp, conversationCount = conversationCount + 1 WHERE id = :id")
+    @Query("UPDATE contacts SET lastMessageTime = :timestamp, messageCount = messageCount + 1 WHERE id = :id")
     suspend fun updateLastMessage(id: Long, timestamp: Long)
 }

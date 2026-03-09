@@ -68,7 +68,7 @@
     <string name="onboarding_start">Comenzar</string>
     
     <!-- Accessibility Service -->
-    <string name="service_name">SponsorFlow Nexus Service</string>
+    <string name="nexus_service_name">SponsorFlow Nexus Service</string>
 
     <!-- Added for Doc3 corrections -->
     <string name="app_description">Workflow Hub para automatizaciÃ³n de WhatsApp</string>
