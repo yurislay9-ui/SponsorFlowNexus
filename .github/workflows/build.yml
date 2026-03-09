@@ -21,7 +21,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: gradle
+          cache: gradle # Gestión automática y optimizada de caché
 
       - name: Setup project from ZIP (if URL provided)
         if: ${{ github.event.inputs.zip_url != '' }}
@@ -31,70 +31,49 @@ jobs:
           mkdir -p zip_extracted
           unzip -q project.zip -d zip_extracted
 
-          # Find the root of the Android project inside the ZIP
-          # Look for gradlew or settings.gradle(.kts) to identify the root
           PROJECT_ROOT=$(find zip_extracted -maxdepth 3 \
             \( -name 'gradlew' -o -name 'settings.gradle' -o -name 'settings.gradle.kts' \) \
             -printf '%h\n' | sort | head -n 1)
 
           if [ -z "$PROJECT_ROOT" ]; then
             echo "ERROR: Could not find Android project root inside ZIP."
-            echo "Contents of zip_extracted:"
-            find zip_extracted -maxdepth 4 | head -60
             exit 1
           fi
 
-          echo "Found project root at: $PROJECT_ROOT"
-
-          # Copy all contents from discovered root into workspace root
-          # Use rsync to avoid issues with hidden files and overwrites
           rsync -a --exclude='.git' "$PROJECT_ROOT/" ./
-
-          echo "Project files in workspace after setup:"
-          ls -la
+          rm -rf project.zip zip_extracted # Liberar I/O y espacio inmediatamente
 
       - name: Validate project structure
         run: |
-          echo "=== Validating Android project structure ==="
           if [ ! -f "gradlew" ]; then
             echo "ERROR: gradlew not found in workspace root."
-            ls -la
             exit 1
           fi
           if [ ! -f "app/build.gradle" ] && [ ! -f "app/build.gradle.kts" ]; then
             echo "ERROR: app/build.gradle(.kts) not found."
-            find . -name 'build.gradle*' | head -20
             exit 1
           fi
-          echo "Project structure is valid."
-          echo "gradlew found: OK"
-          ls -la app/
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Cache Gradle packages
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/libs.versions.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+      - name: Configure Gradle CI Environment
+        run: |
+          mkdir -p ~/.gradle
+          echo "org.gradle.daemon=false" >> ~/.gradle/gradle.properties
+          echo "org.gradle.parallel=true" >> ~/.gradle/gradle.properties
+          echo "org.gradle.caching=true" >> ~/.gradle/gradle.properties
+          echo "org.gradle.configureondemand=true" >> ~/.gradle/gradle.properties
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug --stacktrace --warning-mode all
+        run: ./gradlew assembleDebug --parallel --build-cache
 
       - name: Locate APK files after build
         if: always()
         run: |
-          echo "=== Searching for APK files ==="
-          find WhatsApp -name '*.apk' -type f 2>/dev/null | while read f; do
+          find app/build/outputs/apk -name '*.apk' -type f 2>/dev/null | while read f; do
             echo "Found APK: $f (size: $(du -sh "$f" | cut -f1))"
           done
-          echo "=== Expected output directory ==="
-          ls -la app/build/outputs/apk/debug/ 2>/dev/null || echo "Directory does not exist yet."
 
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
@@ -103,6 +82,17 @@ jobs:
           path: app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
           retention-days: 7
+
+      - name: Upload Build Reports (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-reports
+          path: |
+            app/build/reports/
+            app/build/outputs/logs/
+          if-no-files-found: ignore
+          retention-days: 3
 
       - name: Upload Build Reports (on failure)
         if: failure()
