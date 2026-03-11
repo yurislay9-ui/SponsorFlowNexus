@@ -18,7 +18,7 @@ object NexusLogger {
     private const val MAX_TAG_LENGTH = 23
     private var isDebugMode = true
     
-    private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US)
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
     
     enum class Level {
         VERBOSE, DEBUG, INFO, WARN, ERROR
