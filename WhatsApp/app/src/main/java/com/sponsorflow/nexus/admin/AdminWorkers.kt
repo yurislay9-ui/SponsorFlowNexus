@@ -7,6 +7,9 @@ import android.content.Context
 import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import java.io.IOException
+import retrofit2.HttpException
+import org.json.JSONException
 
 class HeartbeatWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
     override suspend fun doWork(): Result {

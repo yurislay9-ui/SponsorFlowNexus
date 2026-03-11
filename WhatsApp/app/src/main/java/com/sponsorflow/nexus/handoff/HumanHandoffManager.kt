@@ -6,6 +6,7 @@ package com.sponsorflow.nexus.handoff
 import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -73,9 +74,21 @@ class HumanHandoffManager(private val context: Context) {
     fun getAgent(agentId: String): Agent? = agents[agentId]
 
     private fun notifyAgents(ticket: HandoffTicket) { /* Notification logic */ }
-    private fun saveToPrefs() { prefs.edit().putString("tickets", gson.toJson(tickets)).putString("agents", gson.toJson(agents)).apply() }
+    private fun saveToPrefs() {
+        prefs.edit()
+            .putString("tickets", gson.toJson(tickets))
+            .putString("agents", gson.toJson(agents))
+            .apply()
+    }
+
     fun loadFromPrefs() {
-        prefs.getString("tickets", null)?.let { tickets.putAll(gson.fromJson(it)) }
-        prefs.getString("agents", null)?.let { agents.putAll(gson.fromJson(it)) }
+        prefs.getString("tickets", null)?.let {
+            val t = object : TypeToken<ConcurrentHashMap<String, HandoffTicket>>() {}.type
+            tickets.putAll(gson.fromJson(it, t))
+        }
+        prefs.getString("agents", null)?.let {
+            val t = object : TypeToken<ConcurrentHashMap<String, Agent>>() {}.type
+            agents.putAll(gson.fromJson(it, t))
+        }
     }
 }

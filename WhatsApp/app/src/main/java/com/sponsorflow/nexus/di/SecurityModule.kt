@@ -7,8 +7,8 @@ package com.sponsorflow.nexus.di
 import android.content.Context
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import com.google.android.play.core.integrity.IntegrityManager
-import com.google.android.play.core.integrity.IntegrityManagerFactory
+import com.google.android.play.integrity.IntegrityManager
+import com.google.android.play.integrity.IntegrityManagerFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -46,23 +46,16 @@ object SecurityModule {
 
     @Provides
     @Singleton
-    fun provideIntegrityManager(@ApplicationContext context: Context): IntegrityManager {
-        return IntegrityManagerFactory.create(context)
+    fun provideSharedPreferences(
+        encryptedSharedPreferences: EncryptedSharedPreferences
+    ): android.content.SharedPreferences {
+        return encryptedSharedPreferences
     }
 
     @Provides
     @Singleton
-    fun provideCertificatePinner(): CertificatePinner {
-        // CORREGIDO: Remover certificate pinning en desarrollo para evitar SSLPeerUnverifiedException
-        // En producción, obtener los pins reales con:
-        // openssl s_client -connect domain:443 | openssl x509 -pubkey -noout | openssl pkey -pubin -outform der | openssl dgst -sha256 -binary | openssl enc -base64
-        
-        return CertificatePinner.Builder()
-            // Deshabilitado temporalmente en desarrollo
-            // .add("api.trongrid.io", "sha256/REAL_PIN_AQUI")
-            // .add("www.googleapis.com", "sha256/REAL_PIN_AQUI")
-            // .add("api.sponsorflow.com", "sha256/REAL_PIN_AQUI")
-            // .add("api.github.com", "sha256/REAL_PIN_AQUI")
-            .build()
+    fun provideIntegrityManager(@ApplicationContext context: Context): IntegrityManager {
+        return IntegrityManagerFactory.create(context)
     }
+
 }

@@ -15,7 +15,8 @@ hilt = "2.50"
 hiltExt = "1.2.0"
 work = "2.9.0"
 navigation = "2.7.7"
-security = "1.0.0"
+security = "1.1.0-alpha06"
+datastore = "1.1.1"
 compose = "2024.02.02"
 activity = "1.8.2"
 fragment = "1.6.2"
@@ -92,6 +93,7 @@ androidx-navigation-compose = { module = "androidx.navigation:navigation-compose
 
 # Security
 androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "security" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 
 # Jetpack Compose
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose" }

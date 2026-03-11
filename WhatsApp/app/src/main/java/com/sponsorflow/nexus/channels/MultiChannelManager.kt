@@ -8,6 +8,7 @@ import android.content.SharedPreferences
 import android.content.Intent
 import android.view.accessibility.AccessibilityEvent
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import java.util.concurrent.ConcurrentHashMap
 
 class MultiChannelManager(private val context: Context) {
@@ -105,7 +106,13 @@ class MultiChannelManager(private val context: Context) {
     // ==================== PERSISTENCIA ====================
 
     private fun saveConfigs() { prefs.edit().putString(ChannelConstants.PREF_CHANNELS, gson.toJson(channelConfigs)).apply() }
-    fun loadFromPrefs() { prefs.getString(ChannelConstants.PREF_CHANNELS, null)?.let { channelConfigs.putAll(gson.fromJson(it)) } }
+    fun loadFromPrefs() {
+        prefs.getString(ChannelConstants.PREF_CHANNELS, null)?.let {
+            val type = object : TypeToken<ConcurrentHashMap<Channel, ChannelConfig>>() {}.type
+            val saved: ConcurrentHashMap<Channel, ChannelConfig> = gson.fromJson(it, type)
+            channelConfigs.putAll(saved)
+        }
+    }
 }
 
 data class ChannelStats(

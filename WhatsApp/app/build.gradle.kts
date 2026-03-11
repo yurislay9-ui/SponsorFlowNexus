@@ -125,6 +125,7 @@ dependencies {
     
     // Security
     implementation(libs.androidx.security.crypto)
+    implementation(libs.androidx.datastore.preferences)
     
     // Navigation
     implementation(libs.androidx.navigation.fragment.ktx)

@@ -14,7 +14,7 @@ import org.json.JSONObject
 import java.net.URL
 import javax.net.ssl.HttpsURLConnection
 
-data class WebhookEvent(
+data class UserWebhookEvent(
     val eventType: String,
     val orderId: String? = null,
     val amount: Double? = null,
@@ -59,7 +59,7 @@ class UserWebhookManager(private val context: Context) {
     }
     
     // Enviar webhook
-    suspend fun sendWebhook(event: WebhookEvent): Result<Boolean> = withContext(Dispatchers.IO) {
+    suspend fun sendWebhook(event: UserWebhookEvent): Result<Boolean> = withContext(Dispatchers.IO) {
         val url = getUserWebhookUrl()
         if (url.isNullOrBlank()) {
             return@withContext Result.failure(Exception("No webhook URL configured"))
@@ -89,7 +89,7 @@ class UserWebhookManager(private val context: Context) {
     
     // Test webhook
     suspend fun testWebhook(): Result<Boolean> {
-        val testEvent = WebhookEvent(
+        val testEvent = UserWebhookEvent(
             eventType = "test_webhook",
             orderId = "TEST-${System.currentTimeMillis()}",
             amount = 0.0,
@@ -99,7 +99,7 @@ class UserWebhookManager(private val context: Context) {
         return sendWebhook(testEvent)
     }
     
-    private fun buildJsonPayload(event: WebhookEvent): String {
+    private fun buildJsonPayload(event: UserWebhookEvent): String {
         val json = JSONObject()
         json.put("event_type", event.eventType)
         json.put("order_id", event.orderId ?: "N/A")

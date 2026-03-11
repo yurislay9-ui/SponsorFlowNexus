@@ -55,7 +55,7 @@ object AIEngine : IAIEngine {
             }
             
             val startTime = System.currentTimeMillis()
-            val loaded = llamaBridge?.loadModel(modelPath) ?: false
+            val loaded = llamaBridge?.loadModelSimple(modelPath) == true
             
             if (loaded) {
                 modelInfo = ModelInfo(
