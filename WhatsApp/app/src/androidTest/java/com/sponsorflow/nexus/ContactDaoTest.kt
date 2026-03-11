@@ -14,6 +14,7 @@ package com.sponsorflow.nexus
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.sponsorflow.nexus.data.dao.ContactDao
 import com.sponsorflow.nexus.data.entity.ContactEntity
 import com.sponsorflow.nexus.data.database.NexusDatabase
 import kotlinx.coroutines.runBlocking
@@ -37,7 +38,7 @@ import org.junit.runner.RunWith
 class ContactDaoTest {
     
     private lateinit var database: NexusDatabase
-    private lateinit var dao: NexusDatabase.ContactDao
+    private lateinit var dao: ContactDao
     
     @Before
     fun setup() {

@@ -195,7 +195,7 @@ class LicenseVerifierTest {
      * Verifica que los 4 niveles de suscripción existen y tienen los valores correctos.
      */
     @Test
-    fun `verify subscription tiers exist`() = {
+    fun `verify subscription tiers exist`() {
         // Then - Los 4 tiers: FREE, BASICO, AVANZADO, VIP
         assertEquals("FREE tier should exist", SubscriptionTier.FREE, SubscriptionTier.fromName("FREE"))
         assertEquals("BASICO tier should exist", SubscriptionTier.BASICO, SubscriptionTier.fromName("BASICO"))
@@ -215,7 +215,7 @@ class LicenseVerifierTest {
      * Verifica que la comparación de tiers funcione correctamente.
      */
     @Test
-    fun `verify tier comparison works`() = {
+    fun `verify tier comparison works`() {
         // VIP es mayor que todos
         assertTrue("VIP is at least BASICO", SubscriptionTier.VIP.isAtLeast(SubscriptionTier.BASICO))
         assertTrue("VIP is at least AVANZADO", SubscriptionTier.VIP.isAtLeast(SubscriptionTier.AVANZADO))

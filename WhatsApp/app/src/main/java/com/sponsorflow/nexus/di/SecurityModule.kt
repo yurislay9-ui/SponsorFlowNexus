@@ -34,14 +34,14 @@ object SecurityModule {
     fun provideEncryptedSharedPreferences(
         @ApplicationContext context: Context,
         masterKey: MasterKey
-    ): EncryptedSharedPreferences {
+    ): android.content.SharedPreferences {
         return EncryptedSharedPreferences.create(
             context,
             "nexus_encrypted_prefs",
             masterKey,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        ) as EncryptedSharedPreferences
+        )
     }
 
     @Provides

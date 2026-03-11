@@ -43,35 +43,6 @@
 }
 
 # ------------------------------
-# Gson (Serialización JSON)
-# ------------------------------
-
-# Reglas para Gson - mantener clases de datos
--keep class com.sponsorflow.nexus.data.** { *; }
--keep class com.sponsorflow.nexus.model.** { *; }
--keep class com.sponsorflow.nexus.network.** { *; }
--keep class com.sponsorflow.nexus.subscription.** { *; }
--keep class com.sponsorflow.nexus.inventory.** { *; }
--keep class com.sponsorflow.nexus.sentiment.** { *; }
--keep class com.sponsorflow.nexus.plugin.** { *; }
-
-# Reglas específicas para Gson
--keep class com.google.gson.** { *; }
--keep class com.google.gson.stream.** { *; }
--keep class com.google.gson.annotations.** { *; }
-
-# Mantener constructores sin argumentos para clases de datos
--keepclassmembers class * {
-    public <init>();
-}
-
-# Mantener métodos getter y setter
--keepclassmembers class * {
-    public <fields>;
-    public <methods>;
-}
-
-# ------------------------------
 # Room Database
 # ------------------------------
 
