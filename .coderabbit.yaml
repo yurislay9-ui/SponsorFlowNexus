@@ -1,0 +1,447 @@
+
+# .coderabbit.yaml
+# Configuración Profesional - Revisión Completa de Código
+
+# ============================================
+# CONFIGURACIÓN GENERAL
+# ============================================
+language: "es"
+early_access: false
+
+# ============================================
+# PERFIL DE REVISIÓN
+# ============================================
+reviews:
+  profile: "assertive"  # Máximo detalle y rigor
+  
+  # Revisión automática inteligente
+  auto_review:
+    enabled: true
+    auto_incremental_review: true
+    ignore_title_keywords:
+      - "WIP"
+      - "DO NOT MERGE"
+    drafts: false  # No revisar borradores
+    
+  # Filtrado de archivos
+  path_filters:
+    # Archivos a incluir
+    - "src/**"
+    - "app/**"
+    - "lib/**"
+    - "packages/**"
+    - "*.kt"
+    - "*.java"
+    - "*.kts"
+    - "*.gradle"
+    - "*.toml"
+    - "build.gradle*"
+    - "settings.gradle*"
+    
+    # Archivos a excluir
+    - "!**/node_modules/**"
+    - "!**/dist/**"
+    - "!**/build/**"
+    - "!**/*.min.js"
+    - "!**/*.bundle.js"
+    - "!**/vendor/**"
+    - "!**/third_party/**"
+    - "!**/*.lock"
+    - "!**/gradle-wrapper.jar"
+    - "!**/.gradle/**"
+
+  # ============================================
+  # INSTRUCCIONES ESPECÍFICAS POR PATH
+  # ============================================
+  path_instructions:
+    # ============================================
+    # KOTLIN - BUILD & COMPILATION
+    # ============================================
+    - path: "**/build.gradle.kts"
+      instructions: |
+        VERIFICACIÓN DE COMPILACIÓN Y BUILD:
+        1. Validar que todas las dependencias tengan versiones compatibles
+        2. Verificar que no haya dependencias duplicadas o conflictivas
+        3. Asegurar que los plugins de KSP/Hilt estén correctamente configurados
+        4. Validar versiones de Kotlin y herramientas de compilación
+        5. Revisar configuración de compileSdk, minSdk, targetSdk
+        6. Verificar que android.buildFeatures esté correctamente configurado
+        7. Validar configuraciones de signing y flavors
+        8. Asegurar que no haya hardcoding de versiones
+        
+        ERRORES DE COMPILACIÓN:
+        - Detectar imports faltantes o incorrectos
+        - Identificar referencias a recursos inexistentes
+        - Validar que todas las clases estén correctamente importadas
+        - Verificar visibilidad de miembros (public/private/internal)
+        - Detectar overrides incorrectos
+        
+        OPTIMIZACIÓN:
+        - Sugerir uso de implementation vs api
+        - Identificar dependencias no utilizadas
+        - Sugerir versiones estables sobre alpha/beta
+
+    - path: "**/libs.versions.toml"
+      instructions: |
+        GESTIÓN DE VERSIONES:
+        1. Verificar consistencia de versiones entre dependencias relacionadas
+        2. Validar que las versiones sean compatibles entre sí
+        3. Detectar versiones obsoletas o con vulnerabilidades conocidas
+        4. Asegurar que androidx libraries usen versiones compatibles
+        5. Verificar versiones de Kotlin y herramientas asociadas
+        
+        COMPATIBILIDAD:
+        - Validar que security-crypto sea compatible con la versión de Android
+        - Asegurar que Hilt/KSP versions estén sincronizadas
+        - Verificar compatibilidad de Room, DataStore, etc.
+
+    # ============================================
+    # KOTLIN - SOURCE CODE
+    # ============================================
+    - path: "**/*.kt"
+      instructions: |
+        ANÁLISIS DE CÓDIGO FUENTE - KOTLIN:
+        
+        1. ERRORES DE TIPO Y COMPILACIÓN:
+           - Detectar nullability issues (NullPointerException potenciales)
+           - Validar tipos en operaciones de casteo (as, is)
+           - Verificar tipos genéricos y reification
+           - Identificar tipos incompatibles en asignaciones
+           - Detectar platform types no manejados (@JvmField, @JvmStatic)
+        
+        2. INYECCIÓN DE DEPENDENCIAS (HILT):
+           - Validar anotaciones @Inject, @Provides, @Module
+           - Verificar que los módulos estén correctamente instalados
+           - Detectar dependencias cíclicas
+           - Asegurar que @HiltAndroidApp esté en la Application class
+           - Validar scopes (@Singleton, @ActivityScoped, etc.)
+           - Verificar que los bindings estén correctamente definidos
+        
+        3. KSP (Kotlin Symbol Processing):
+           - Detectar errores en anotaciones procesadas por KSP
+           - Validar generación de código
+           - Verificar que las anotaciones estén correctamente aplicadas
+        
+        4. GESTIÓN DE ERRORES:
+           - Identificar try-catch mal implementados
+           - Detectar exceptions no manejadas
+           - Validar uso de Result, sealed classes para errores
+           - Sugerir manejo apropiado de excepciones
+        
+        5. CONCURRENCIA Y COROUTINES:
+           - Detectar misuse de suspend functions
+           - Validar uso de Dispatchers apropiados
+           - Identificar posibles memory leaks con coroutines
+           - Verificar cancelación apropiada de jobs
+           - Detectar race conditions potenciales
+        
+        6. GESTIÓN DE MEMORIA:
+           - Identificar memory leaks potenciales
+           - Detectar referencias circulares
+           - Validar uso de weak references cuando sea necesario
+           - Sugerir limpieza de recursos
+        
+        7. SEGURIDAD:
+           - Detectar hardcoded secrets o API keys
+           - Validar uso apropiado de encrypted SharedPreferences/DataStore
+           - Verificar certificados SSL pinning
+           - Identificar vulnerabilidades de seguridad comunes
+        
+        8. PERFORMANCE:
+           - Detectar operaciones bloqueantes en el main thread
+           - Identificar allocations innecesarias
+           - Sugerir uso de lazy initialization
+           - Detectar N+1 queries en bases de datos
+           - Validar uso apropiado de caching
+        
+        9. ROOM DATABASE:
+           - Verificar entidades y relaciones
+           - Validar migraciones de base de datos
+           - Detectar queries ineficientes
+           - Asegurar que los DAOs estén correctamente definidos
+        
+        10. DATASTORE:
+            - Validar implementación de preferences
+            - Verificar manejo de errores en lectura/escritura
+            - Asegurar migración desde SharedPreferences si aplica
+        
+        11. GSON/JACKSON SERIALIZATION:
+            - Detectar tipos incorrectos en fromJson/toJson
+            - Validar que las clases sean serializables
+            - Identificar problemas con tipos genéricos
+            - Verificar manejo de nulls en serialización
+        
+        12. VALIDACIONES ESPECÍFICAS:
+            - Revisar CertificatePinner implementación
+            - Validar Play Integrity API integration
+            - Verificar MultiChannelManager configuración
+            - Asegurar AdminControlManager/Workers correctos
+            - Validar AnalyticsData/DailyStats implementación
+            - Revisar UserWebhookEvent/WebhookManager
+
+    - path: "**/*.java"
+      instructions: |
+        ANÁLISIS DE CÓDIGO JAVA:
+        1. Detectar interoperabilidad Kotlin-Java issues
+        2. Validar anotaciones para Hilt (@AndroidEntryPoint, etc.)
+        3. Verificar nullability annotations (@Nullable, @NonNull)
+        4. Detectar memory leaks comunes en Java
+        5. Validar uso de generics y type erasure
+
+    # ============================================
+    # CONFIGURACIÓN Y BUILD SYSTEM
+    # ============================================
+    - path: "**/gradle.properties"
+      instructions: |
+        VALIDAR CONFIGURACIÓN GRADLE:
+        1. Verificar configuración de Kotlin daemon
+        2. Validar enablement de build cache
+        3. Asegurar configuración de parallel builds
+        4. Verificar memory allocation apropiada
+
+    - path: "**/settings.gradle.kts"
+      instructions: |
+        CONFIGURACIÓN DE PROYECTO:
+        1. Validar plugin management
+        2. Verificar dependency resolution
+        3. Asegurar que todos los módulos estén incluidos
+
+    # ============================================
+    # ARCHIVOS DE CONFIGURACIÓN
+    # ============================================
+    - path: "**/*.xml"
+      instructions: |
+        RECURSOS ANDROID:
+        1. Detectar recursos no utilizados
+        2. Validar referencias a recursos
+        3. Verificar layouts por memory leaks
+        4. Asegurar que los IDs sean únicos
+        5. Validar themes y styles
+
+    - path: "**/AndroidManifest.xml"
+      instructions: |
+        MANIFEST VALIDATION:
+        1. Verificar permissions declaradas
+        2. Validar activities, services, receivers
+        3. Asegurar que Hilt esté configurado
+        4. Detectar componentes no utilizados
+        5. Verificar intent filters
+
+    # ============================================
+    # ARCHIVOS DE PRUEBAS
+    # ============================================
+    - path: "**/test/**/*.kt"
+      instructions: |
+        UNIT TESTS:
+        1. Validar que los tests cubran casos edge
+        2. Verificar uso apropiado de mocks
+        3. Detectar tests frágiles o flaky
+        4. Asegurar que los tests sean independientes
+        5. Validar aserciones apropiadas
+
+    - path: "**/androidTest/**/*.kt"
+      instructions: |
+        INSTRUMENTATION TESTS:
+        1. Verificar uso de Espresso/UI Automator
+        2. Validar manejo de asincronía
+        3. Detectar tests lentos o inestables
+        4. Asegurar limpieza entre tests
+
+    # ============================================
+    # ARCHIVOS DE DOCUMENTACIÓN
+    # ============================================
+    - path: "**/*.md"
+      instructions: |
+        DOCUMENTACIÓN:
+        1. Validar que la documentación esté actualizada
+        2. Verificar que los ejemplos de código sean correctos
+        3. Asegurar que los changelogs sean claros
+
+  # ============================================
+  # HERRAMIENTAS DE ANÁLISIS
+  # ============================================
+  tools:
+    # Análisis estático de Kotlin
+    detekt:
+      enabled: true
+      config: |
+        config:
+          validation: true
+          warningsAsErrors: true
+        complexity:
+          active: true
+          LongMethod:
+            threshold: 60
+          ComplexMethod:
+            threshold: 15
+        naming:
+          active: true
+        performance:
+          active: true
+        potential-bugs:
+          active: true
+        style:
+          active: true
+    
+    # Análisis de código Kotlin
+    ktlint:
+      enabled: true
+      config: |
+        indent_size: 4
+        max_line_length: 120
+        disabled_rules:
+          - no-wildcard-imports
+    
+    # Análisis de seguridad
+    bandit:
+      enabled: true
+    
+    # Shell scripts
+    shellcheck:
+      enabled: true
+    
+    # Python (si hay scripts)
+    ruff:
+      enabled: true
+    
+    # JavaScript/TypeScript (si aplica)
+    eslint:
+      enabled: true
+      config: |
+        env:
+          browser: true
+          es2021: true
+        extends:
+          - eslint:recommended
+        rules:
+          no-unused-vars: error
+          no-undef: error
+    
+    # Formateo
+    prettier:
+      enabled: true
+    
+    # Análisis de dependencias
+    gitleaks:
+      enabled: true  # Detectar secrets en el código
+
+  # ============================================
+  # INSTRUCCIONES DE TONO Y ESTILO
+  # ============================================
+  tone_instructions: |
+    - Sé profesional, constructivo y específico
+    - Proporciona ejemplos de código corregido cuando sea posible
+    - Explica el POR QUÉ del problema, no solo el QUÉ
+    - Prioriza problemas de seguridad y performance
+    - Sugiere mejores prácticas de Android/Kotlin
+    - Mantén un tono respetuoso y colaborativo
+
+  # ============================================
+  # INSTRUCCIONES DE ALTO NIVEL
+  # ============================================
+  high_level_summary_instructions: |
+    Proporciona un resumen ejecutivo que incluya:
+    1. Estado general de la compilación
+    2. Errores críticos encontrados (compilación, seguridad)
+    3. Advertencias importantes (performance, bugs potenciales)
+    4. Sugerencias de mejora
+    5. Impacto estimado del cambio
+    6. Recomendación: Aprobar / Solicitar cambios / Comentarios menores
+
+  # ============================================
+  # CONFIGURACIÓN DE COMMITS
+  # ============================================
+  commitlint:
+    enabled: true
+    config: |
+      extends:
+        - "@commitlint/config-conventional"
+      rules:
+        type-enum:
+          - 2
+          - always
+          - - feat
+            - fix
+            - docs
+            - style
+            - refactor
+            - perf
+            - test
+            - build
+            - ci
+            - chore
+            - revert
+
+  # ============================================
+  # LABELS AUTOMÁTICAS
+  # ============================================
+  labels:
+    enabled: true
+    auto_assign:
+      enabled: true
+      reviewers:
+        - yurislay9-ui  # Tu usuario de GitHub
+    
+    auto_label:
+      enabled: true
+      labels:
+        - name: "bug"
+          condition: "commit_message contains 'fix' OR description contains 'bug'"
+        - name: "feature"
+          condition: "commit_message contains 'feat' OR description contains 'feature'"
+        - name: "security"
+          condition: "files changed contain 'security' OR 'CertificatePinner' OR 'PlayIntegrity'"
+        - name: "performance"
+          condition: "files changed contain 'optimization' OR 'performance'"
+        - name: "needs-compilation-check"
+          condition: "files changed contain 'build.gradle' OR 'gradle.properties'"
+        - name: "hilt-ksp"
+          condition: "files changed contain '@Module' OR '@Provides' OR 'ksp'"
+
+# ============================================
+# CONFIGURACIÓN DE KNOWLEDGE BASE
+# ============================================
+knowledge_base:
+  enabled: true
+  learnings:
+    - "El proyecto usa Hilt para dependency injection"
+    - "KSP se usa para procesamiento de anotaciones"
+    - "DataStore reemplaza a SharedPreferences"
+    - "Room es la base de datos local"
+    - "Gson se usa para serialización JSON"
+    - "El proyecto es una app de Android con WhatsApp integration"
+    - "Se requiere Play Integrity para verificación"
+    - "CertificatePinner se usa para SSL pinning"
+
+# ============================================
+# CONFIGURACIÓN DE NOTIFICACIONES
+# ============================================
+notifications:
+  enabled: true
+  on_review_completed: true
+  on_critical_issues: true
+  channels:
+    - github_comments
+    # - slack  # Si tienes integración
+
+# ============================================
+# CONFIGURACIÓN DE CI/CD
+# ============================================
+ci:
+  enabled: true
+  fail_on:
+    - compilation_errors
+    - security_issues
+    - critical_bugs
+  warnings_as_errors: false
+
+# ============================================
+# CONFIGURACIÓN DE MERGE
+# ============================================
+merge:
+  require_passing_checks: true
+  require_code_review: true
+  minimum_approvals: 1
+  block_on:
+    - compilation_errors
+    - security_vulnerabilities
