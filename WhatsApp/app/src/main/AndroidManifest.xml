@@ -64,7 +64,7 @@
 
         <!-- Accessibility Service -->
         <service
-            android:name=".accessibility.NexusAccessibilityService"
+            android:name=".core.NexusAccessibilityService"
             android:exported="true"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>

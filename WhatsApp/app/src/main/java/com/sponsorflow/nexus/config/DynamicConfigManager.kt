@@ -89,6 +89,15 @@ class DynamicConfigManager(context: Context) {
         saveConfig(defaultConfig)
     }
 
+    /**
+     * Sincroniza la configuración actualizando desde preferencias.
+     * Este método es llamado por NexusApplication y ConfigSyncWorker.
+     */
+    suspend fun syncConfig() = mutex.withLock {
+        val freshConfig = loadConfig()
+        _config.value = freshConfig
+    }
+
     companion object {
         private const val PREFS_NAME = "dynamic_config"
         private const val KEY_MIN_DELAY = "min_delay_ms"
