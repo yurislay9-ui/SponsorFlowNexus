@@ -405,7 +405,7 @@ knowledge_base:
   enabled: true
   learnings:
     - "El proyecto usa Hilt para dependency injection"
-    - "KSP se usa para procesamiento de anotaciones"
+    - "KSP se usa para procesamiento de anotaciones
     - "DataStore reemplaza a SharedPreferences"
     - "Room es la base de datos local"
     - "Gson se usa para serialización JSON"
