@@ -7,8 +7,7 @@ package com.sponsorflow.nexus.di
 import android.content.Context
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import com.google.android.play.integrity.IntegrityManager
-import com.google.android.play.integrity.IntegrityManagerFactory
+import com.google.android.gms.tasks.Tasks
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -43,19 +42,4 @@ object SecurityModule {
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
     }
-
-    @Provides
-    @Singleton
-    fun provideSharedPreferences(
-        encryptedSharedPreferences: EncryptedSharedPreferences
-    ): android.content.SharedPreferences {
-        return encryptedSharedPreferences
-    }
-
-    @Provides
-    @Singleton
-    fun provideIntegrityManager(@ApplicationContext context: Context): IntegrityManager {
-        return IntegrityManagerFactory.create(context)
-    }
-
 }
