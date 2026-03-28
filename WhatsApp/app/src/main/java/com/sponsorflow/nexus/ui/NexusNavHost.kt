@@ -79,52 +79,37 @@ fun NexusNavHost(
         
         // Anti-Detección: Smart Queue
         composable("smart_queue") {
-            queueManager?.let {
-                com.sponsorflow.nexus.ui.queue.SmartQueueScreen(
-                    onBack = { navController.popBackStack() },
-                    queueManager = it
-                )
-            }
+            com.sponsorflow.nexus.ui.queue.SmartQueueScreen(
+                onBack = { navController.popBackStack() }
+            )
         }
-        
+
         // Anti-Detección: Human Behavior
         composable("human_behavior") {
-            humanManager?.let {
-                com.sponsorflow.nexus.ui.human.HumanBehaviorScreen(
-                    onBack = { navController.popBackStack() },
-                    manager = it
-                )
-            }
+            com.sponsorflow.nexus.ui.human.HumanBehaviorScreen(
+                onBack = { navController.popBackStack() }
+            )
         }
-        
+
         // Anti-Detección: 24h Window
         composable("window_24h") {
-            windowManager?.let {
-                com.sponsorflow.nexus.ui.window.TwentyFourHourWindowScreen(
-                    onBack = { navController.popBackStack() },
-                    windowManager = it
-                )
-            }
+            com.sponsorflow.nexus.ui.window.TwentyFourHourWindowScreen(
+                onBack = { navController.popBackStack() }
+            )
         }
-        
+
         // Anti-Detección: Risk Level
         composable("risk_level") {
-            riskManager?.let {
-                com.sponsorflow.nexus.ui.risk.RiskLevelScreen(
-                    onBack = { navController.popBackStack() },
-                    riskManager = it
-                )
-            }
+            com.sponsorflow.nexus.ui.risk.RiskLevelScreen(
+                onBack = { navController.popBackStack() }
+            )
         }
-        
+
         // Anti-Detección: Ban Detection
         composable("ban_detection") {
-            banManager?.let {
-                com.sponsorflow.nexus.ui.ban.BanDetectionScreen(
-                    onBack = { navController.popBackStack() },
-                    banManager = it
-                )
-            }
+            com.sponsorflow.nexus.ui.ban.BanDetectionScreen(
+                onBack = { navController.popBackStack() }
+            )
         }
         
         // Analytics

@@ -10,7 +10,11 @@ data class DailyStats(
     val averageDeliveryTimeMs: Long = 0L,
     val peakHour: Int = 0,
     val successRate: Double = 0.0,
-    val timestamp: Long = System.currentTimeMillis()
+    val timestamp: Long = System.currentTimeMillis(),
+    // UI display fields
+    val messagesReceived: Int = 0,
+    val messagesSent: Int = 0,
+    val revenue: Double = 0.0
 ) {
     val failureRate: Double
         get() = if (totalMessagesSent > 0) totalMessagesFailed.toDouble() / totalMessagesSent.toDouble() else 0.0

@@ -17,16 +17,27 @@ class SmartQueueManager(private val context: Context) {
 
     fun enqueue(phone: String, message: String, priority: MessagePriority = MessagePriority.NORMAL): QueueResult {
         val queue = queues.getOrPut(phone) { mutableListOf() }
-        val msg = QueuedMessage("MSG_${System.currentTimeMillis()}", phone, null, message, System.currentTimeMillis(), priority)
+        val msg = QueuedMessage(
+            recipientNumber = phone,
+            content = message,
+            priority = priority
+        )
         queue.add(msg)
-        return QueueResult(true, msg.id, queue.size, Random.nextLong(config.minDelayMs, config.maxDelayMs))
+        return QueueResult(
+            success = true,
+            messageId = msg.id,
+            queueSize = queue.size
+        )
     }
 
     fun dequeue(phone: String): ProcessResult {
-        val queue = queues[phone] ?: return ProcessResult(false)
-        if (queue.isEmpty()) return ProcessResult(false)
+        val queue = queues[phone] ?: return ProcessResult(success = false)
+        if (queue.isEmpty()) return ProcessResult(success = false)
         val msg = queue.removeAt(0)
-        return ProcessResult(true, msg, Random.nextLong(config.minDelayMs, config.maxDelayMs))
+        return ProcessResult(
+            success = true,
+            messageId = msg.id
+        )
     }
 
     fun getQueueSize(phone: String): Int = queues[phone]?.size ?: 0

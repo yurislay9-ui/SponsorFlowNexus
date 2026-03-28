@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.content.pm.PackageInfoCompat
+import com.sponsorflow.nexus.BuildConfig
 
 // CORREGIDO: Agregar Context como parámetro del constructor
 class IntegrityChecker(
@@ -19,7 +20,7 @@ class IntegrityChecker(
     private fun getExpectedSignature(): String {
         return expectedSignature.ifBlank {
             // Intentar obtener desde BuildConfig o config remoto
-            com.sponsorflow.nexus.BuildConfig.APP_SIGNATURE
+            BuildConfig.APP_SIGNATURE
         }
     }
 
@@ -29,7 +30,7 @@ class IntegrityChecker(
             
             // Si no hay firma configurada, fallar en release
             if (expected.isBlank() || expected == "YOUR_APP_SIGNATURE") {
-                return !BuildConfig.DEBUG_MODE.toBoolean() // En debug permite, en release falla
+                return !BuildConfig.DEBUG // En debug permite, en release falla
             }
             
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {

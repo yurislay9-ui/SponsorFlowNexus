@@ -7,10 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.CompoundButton
 import android.widget.EditText
-import android.widget.Switch
 import android.widget.TextView
+import androidx.appcompat.widget.SwitchCompat
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -26,10 +25,10 @@ class SettingsFragment : Fragment() {
     private var etMaxDelay: EditText? = null
     private var etMaxDailyMessages: EditText? = null
     private var etBatchSize: EditText? = null
-    private var switchBanDetection: Switch? = null
-    private var switchRiskAssessment: Switch? = null
-    private var switchNotifications: Switch? = null
-    private var switchDarkMode: Switch? = null
+    private var switchBanDetection: SwitchCompat? = null
+    private var switchRiskAssessment: SwitchCompat? = null
+    private var switchNotifications: SwitchCompat? = null
+    private var switchDarkMode: SwitchCompat? = null
     private var btnSave: Button? = null
     private var btnReset: Button? = null
     private var tvVersion: TextView? = null

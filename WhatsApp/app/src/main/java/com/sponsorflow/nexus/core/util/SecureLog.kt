@@ -9,7 +9,7 @@ import com.sponsorflow.nexus.BuildConfig
 object SecureLog {
     
     // Solo loguear en DEBUG builds
-    private val isDebug = BuildConfig.DEBUG_MODE.toBoolean()
+    private val isDebug = BuildConfig.DEBUG
     
     fun d(tag: String, message: String) {
         if (isDebug) Log.d(tag, message)

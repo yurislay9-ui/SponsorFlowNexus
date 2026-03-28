@@ -9,6 +9,12 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import java.math.BigDecimal
 
+enum class StockStatus {
+    IN_STOCK,
+    LOW_STOCK,
+    OUT_OF_STOCK
+}
+
 @Entity(
     tableName = "products",
     indices = [
@@ -21,24 +27,24 @@ import java.math.BigDecimal
 data class ProductEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
-    
+
     // Identificación
     val sku: String = "",                    // Código de inventario
     val name: String,
     val description: String = "",
-    
+
     // Precios (BigDecimal para precisión)
     val price: Double,                       // Precio de venta
     val costPrice: Double = 0.0,             // Precio de costo (ganancias)
-    
+
     // Inventario
     val stockQuantity: Int = 0,              // Stock actual
     val minStockAlert: Int = 5,              // umbral de alerta
-    
+
     // Categorización
     val category: String = "general",
     val imageUrl: String? = null,
-    
+
     // Estado
     val isActive: Boolean = true,
     val createdAt: Long = System.currentTimeMillis(),
@@ -52,11 +58,11 @@ data class ProductEntity(
             else -> StockStatus.IN_STOCK
         }
     }
-    
+
     fun isAvailable(): Boolean = isActive && stockQuantity > 0
-    
+
     fun calculateProfit(): Double = price - costPrice
-    
+
     fun calculateProfitMargin(): Double {
         if (costPrice == 0.0) return 0.0
         return ((price - costPrice) / costPrice) * 100

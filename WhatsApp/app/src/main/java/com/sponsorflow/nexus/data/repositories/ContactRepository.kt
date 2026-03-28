@@ -30,8 +30,8 @@ class ContactRepository(private val dao: ContactDao) : IRepository<ContactEntity
         require(entity.phone.length >= MIN_PHONE_LENGTH) { 
             "Phone debe tener al menos $MIN_PHONE_LENGTH caracteres" 
         }
-        require(entity.name.length <= MAX_NAME_LENGTH) { 
-            "Name no puede exceder $MAX_NAME_LENGTH caracteres" 
+        require(entity.name?.length ?: 0 <= MAX_NAME_LENGTH) {
+            "Name no puede exceder $MAX_NAME_LENGTH caracteres"
         }
     }
     

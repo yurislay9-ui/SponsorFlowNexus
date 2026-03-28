@@ -24,7 +24,7 @@ class ProductManager @Inject constructor(
     suspend fun getAllProducts(): AppResult<List<ProductEntity>> {
         return withContext(Dispatchers.IO) {
             try {
-                AppResult.Success(productRepo.getAll())
+                productRepo.getAll()
             } catch (e: IllegalArgumentException) {
                 AppResult.Error(AppError.ValidationError(e.message ?: "Invalid parameters"))
             } catch (e: IllegalStateException) {
@@ -40,7 +40,7 @@ class ProductManager @Inject constructor(
     suspend fun getProduct(id: Long): AppResult<ProductEntity?> {
         return withContext(Dispatchers.IO) {
             try {
-                AppResult.Success(productRepo.getById(id))
+                productRepo.getById(id)
             } catch (e: IllegalArgumentException) {
                 AppResult.Error(AppError.ValidationError(e.message ?: "Invalid parameters"))
             } catch (e: IllegalStateException) {
@@ -58,15 +58,21 @@ class ProductManager @Inject constructor(
         return stockMutex.withLock {
             withContext(Dispatchers.IO) {
                 try {
-                    val product = productRepo.getById(productId)
-                    if (product == null) {
-                        return@withContext AppResult.Error(AppError.NotFound("Producto no encontrado"))
+                    val productResult = productRepo.getById(productId)
+                    when (productResult) {
+                        is AppResult.Success -> {
+                            val product = productResult.data
+                            if (product == null) {
+                                AppResult.Error(AppError.NotFound("Producto no encontrado"))
+                            } else if (product.stockQuantity < quantity) {
+                                AppResult.Error(AppError.InsufficientStock("Stock insuficiente"))
+                            } else {
+                                val updatedProduct = product.copy(stockQuantity = product.stockQuantity - quantity)
+                                productRepo.update(updatedProduct)
+                            }
+                        }
+                        is AppResult.Error -> productResult
                     }
-                    if (product.stock < quantity) {
-                        return@withContext AppResult.Error(AppError.InsufficientStock("Stock insuficiente"))
-                    }
-                    productRepo.update(product.copy(stock = product.stock - quantity))
-                    AppResult.Success(Unit)
                 } catch (e: IllegalArgumentException) {
                     AppResult.Error(AppError.ValidationError(e.message ?: "Invalid parameters"))
                 } catch (e: IllegalStateException) {
@@ -84,12 +90,19 @@ class ProductManager @Inject constructor(
         return stockMutex.withLock {
             withContext(Dispatchers.IO) {
                 try {
-                    val product = productRepo.getById(productId)
-                    if (product == null) {
-                        return@withContext AppResult.Error(AppError.NotFound("Producto no encontrado"))
+                    val productResult = productRepo.getById(productId)
+                    when (productResult) {
+                        is AppResult.Success -> {
+                            val product = productResult.data
+                            if (product == null) {
+                                AppResult.Error(AppError.NotFound("Producto no encontrado"))
+                            } else {
+                                val updatedProduct = product.copy(stockQuantity = product.stockQuantity + quantity)
+                                productRepo.update(updatedProduct)
+                            }
+                        }
+                        is AppResult.Error -> productResult
                     }
-                    productRepo.update(product.copy(stock = product.stock + quantity))
-                    AppResult.Success(Unit)
                 } catch (e: IllegalArgumentException) {
                     AppResult.Error(AppError.ValidationError(e.message ?: "Invalid parameters"))
                 } catch (e: IllegalStateException) {
@@ -106,8 +119,7 @@ class ProductManager @Inject constructor(
     suspend fun addProduct(product: ProductEntity): AppResult<Long> {
         return withContext(Dispatchers.IO) {
             try {
-                val id = productRepo.insert(product)
-                AppResult.Success(id)
+                productRepo.insert(product)
             } catch (e: IllegalArgumentException) {
                 AppResult.Error(AppError.ValidationError(e.message ?: "Invalid parameters"))
             } catch (e: IllegalStateException) {
@@ -124,7 +136,6 @@ class ProductManager @Inject constructor(
         return withContext(Dispatchers.IO) {
             try {
                 productRepo.delete(id)
-                AppResult.Success(Unit)
             } catch (e: IllegalArgumentException) {
                 AppResult.Error(AppError.ValidationError(e.message ?: "Invalid parameters"))
             } catch (e: IllegalStateException) {

@@ -23,3 +23,19 @@ data class HourStats(
     val hour: Int,
     val messageCount: Int
 )
+
+// ROIMetrics for ROI card display
+data class ROIMetrics(
+    val roiPercentage: Double = 0.0,
+    val costVsHumanAgent: Double = 0.0,
+    val totalMessagesProcessed: Int = 0,
+    val totalConversions: Int = 0,
+    val totalRevenue: Double = 0.0
+)
+
+// AntiDetectionMetrics for anti-detection card display
+data class AntiDetectionMetrics(
+    val messagesToday: Int = 0,
+    val riskLevel: Int = 0,
+    val totalBans: Int = 0
+)

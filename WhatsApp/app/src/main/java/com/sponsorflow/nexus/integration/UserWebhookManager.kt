@@ -10,6 +10,7 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.HttpException
 import java.io.IOException
@@ -83,6 +84,7 @@ class UserWebhookManager(private val context: Context) {
             Result.failure(e)
         } catch (e: SecurityException) {
             Log.e(TAG, "Webhook security error: ${e.message}")
+            Result.failure(e)
         } catch (e: Exception) {
             Log.e(TAG, "Webhook unexpected error: ${e.message}")
             Result.failure(e)

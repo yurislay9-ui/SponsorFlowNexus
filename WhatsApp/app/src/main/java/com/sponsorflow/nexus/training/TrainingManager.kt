@@ -6,6 +6,7 @@ package com.sponsorflow.nexus.training
 import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 class TrainingManager(private val context: Context) {
     private val prefs = context.getSharedPreferences("nexus_training", Context.MODE_PRIVATE)
@@ -33,8 +34,12 @@ class TrainingManager(private val context: Context) {
         return "Eres ${c.businessName}. Tono: ${c.tone}. Productos: ${c.products.joinToString { it.name }}"
     }
 
-    fun loadFromPrefs() { prefs.getString("clients", null)?.let { clients.putAll(gson.fromJson(it)) } }
+    fun loadFromPrefs() {
+        prefs.getString("clients", null)?.let { json ->
+            val type = object : TypeToken<Map<String, ClientTraining>>() {}.type
+            val loadedClients: Map<String, ClientTraining> = gson.fromJson(json, type)
+            clients.putAll(loadedClients)
+        }
+    }
     fun saveToPrefs() { prefs.edit().putString("clients", gson.toJson(clients)).apply() }
 }
-
-data class ClientTraining(val phone: String, val businessName: String, val businessType: String, val tone: String, val language: String = "es", val trainingItems: List<TrainingItem> = emptyList(), val customRules: List<String> = emptyList(), val keywords: List<String> = emptyList(), val faq: List<QAPair> = emptyList(), val products: List<ProductInfo> = emptyList(), val createdAt: Long = System.currentTimeMillis(), val updatedAt: Long = System.currentTimeMillis())
