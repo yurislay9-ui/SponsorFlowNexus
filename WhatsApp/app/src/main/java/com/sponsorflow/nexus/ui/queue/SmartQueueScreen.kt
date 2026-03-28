@@ -2,6 +2,7 @@ package com.sponsorflow.nexus.ui.queue
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
+import androidx.compose.ui.unit.dp
 
 @Composable
 fun SmartQueueScreen(onBack: () -> Unit = {}) {

@@ -4,19 +4,6 @@
 package com.sponsorflow.nexus.queue
 
 /**
- * Configuración de la cola
- */
-data class QueueConfig(
-    val minDelayMs: Long = 30000L,
-    val maxDelayMs: Long = 90000L,
-    val maxQueuePerNumber: Int = 50,
-    val enabled: Boolean = true,
-    val prioritizeFrequent: Boolean = true,
-    val maxPerHour: Int = 45,
-    val distributeThroughoutDay: Boolean = true
-)
-
-/**
  * Mensaje en cola esperando ser procesado
  */
 data class QueuedMessage(
@@ -29,16 +16,6 @@ data class QueuedMessage(
     val retryCount: Int = 0,
     val contextData: Map<String, String>? = null
 )
-
-/**
- * Prioridad del mensaje
- */
-enum class MessagePriority {
-    LOW,      // No urgency
-    NORMAL,   // Default
-    HIGH,     // Important client
-    URGENT    // Needs immediate response
-}
 
 /**
  * Estado de procesamiento de un número

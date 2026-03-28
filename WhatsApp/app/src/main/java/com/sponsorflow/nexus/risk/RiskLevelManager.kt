@@ -5,13 +5,6 @@ import android.content.SharedPreferences
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-enum class RiskLevel(val score: Int) {
-    LOW(0),
-    MEDIUM(1),
-    HIGH(2),
-    CRITICAL(3)
-}
-
 data class RiskAssessment(
     val level: RiskLevel,
     val score: Int,

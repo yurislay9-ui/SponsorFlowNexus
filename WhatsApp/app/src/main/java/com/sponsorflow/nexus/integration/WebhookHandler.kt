@@ -49,7 +49,7 @@ class WebhookHandler(private val context: Context) {
     private fun handlePaymentSuccess(event: WebhookEvent) {
         val payment = PaymentEvent(
             transactionId = event.data?.get("transaction_id") ?: "",
-            amount = (event.data?.get("amount") as? Number)?.toDouble() ?: 0.0,
+            amount = event.data?.get("amount")?.toDoubleOrNull() ?: 0.0,
             currency = event.data?.get("currency") ?: "USD",
             tier = event.data?.get("tier") ?: "FREE"
         )
@@ -63,7 +63,7 @@ class WebhookHandler(private val context: Context) {
     private fun handleSubscriptionCreated(event: WebhookEvent) {
         val subscription = SubscriptionEvent(
             tier = event.data?.get("tier") ?: "FREE",
-            expiresAt = (event.data?.get("expires_at") as? Number)?.toLong() ?: 0L,
+            expiresAt = event.data?.get("expires_at")?.toLongOrNull() ?: 0L,
             status = "active"
         )
         onSubscriptionChanged?.invoke(subscription)
@@ -72,7 +72,7 @@ class WebhookHandler(private val context: Context) {
     private fun handleSubscriptionUpgraded(event: WebhookEvent) {
         val subscription = SubscriptionEvent(
             tier = event.data?.get("tier") ?: "FREE",
-            expiresAt = (event.data?.get("expires_at") as? Number)?.toLong() ?: 0L,
+            expiresAt = event.data?.get("expires_at")?.toLongOrNull() ?: 0L,
             status = "upgraded"
         )
         onSubscriptionChanged?.invoke(subscription)
@@ -91,8 +91,8 @@ class WebhookHandler(private val context: Context) {
         val license = LicenseEvent(
             licenseKey = event.data?.get("license_key") ?: "",
             tier = event.data?.get("tier") ?: "FREE",
-            expiresAt = (event.data?.get("expires_at") as? Number)?.toLong() ?: 0L,
-            active = event.data?.get("active") as? Boolean ?: false
+            expiresAt = event.data?.get("expires_at")?.toLongOrNull() ?: 0L,
+            active = event.data?.get("active")?.toBoolean() ?: false
         )
         onLicenseUpdated?.invoke(license)
     }
@@ -104,7 +104,7 @@ class WebhookHandler(private val context: Context) {
 data class WebhookEvent(
     val type: String,
     val timestamp: Long = System.currentTimeMillis(),
-    val data: Map<String, Any>?
+    val data: Map<String, String>?
 )
 
 data class PaymentEvent(
