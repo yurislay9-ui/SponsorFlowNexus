@@ -46,11 +46,10 @@ enum class BanRiskLevel(
     val color: String,
     val action: String
 ) {
-    SAFE("Seguro", "green", "Normal"),
-    LOW("Bajo", "yellow", "Precaución"),
-    MEDIUM("Medio", "orange", "Reducir actividad"),
-    HIGH("Alto", "red", "Pausar inmediatamente"),
-    CRITICAL("Crítico", "darkred", "Apagar app")
+    SAFE("Seguro", "green", "Continuar con precaución"),
+    WARNING("Advertencia", "yellow", "Reducir frecuencia de mensajería"),
+    DANGER("Peligro", "red", "Detener todas las actividades de mensajería"),
+    BANNED("Baneado", "darkred", "Cuenta baneada")
 }
 
 /**

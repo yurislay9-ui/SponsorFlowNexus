@@ -5,13 +5,6 @@ import android.content.SharedPreferences
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-enum class BanRiskLevel {
-    SAFE,
-    WARNING,
-    DANGER,
-    BANNED
-}
-
 data class BanStatus(
     val isBanned: Boolean,
     val riskLevel: BanRiskLevel,
