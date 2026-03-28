@@ -20,7 +20,7 @@ enum class RiskLevel(
 }
 
 data class RiskConfig(
-    val level: RiskLevel = RiskLevel.NORMAL,
+    val level: RiskLevel = RiskLevel.MEDIUM,
     val enabled: Boolean = true,
     val customMaxDaily: Int? = null,
     val customMaxPerHour: Int? = null
