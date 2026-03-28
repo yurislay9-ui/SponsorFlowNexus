@@ -33,7 +33,7 @@ fun <T> AppResult<T>.toResult(): Result<T> = when (this) {
 fun com.sponsorflow.nexus.core.result.AppError.toException(): Exception = when (this) {
     is com.sponsorflow.nexus.core.result.AppError.NetworkError -> Exception(message)
     is com.sponsorflow.nexus.core.result.AppError.TimeoutError -> Exception(message)
-    is com.sponsorflow.nexus.core.result.AppError.DatabaseError -> cause
+    is com.sponsorflow.nexus.core.result.AppError.DatabaseError -> Exception(cause?.message ?: "Database error")
     is com.sponsorflow.nexus.core.result.AppError.AuthError -> Exception(message)
     is com.sponsorflow.nexus.core.result.AppError.PermissionError -> Exception(message)
     is com.sponsorflow.nexus.core.result.AppError.SecurityError -> Exception(message)

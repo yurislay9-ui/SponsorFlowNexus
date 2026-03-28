@@ -13,10 +13,10 @@ enum class RiskLevel(
     val allowExpired: Boolean,
     val warningMessage: String
 ) {
-    CONSERVATIVE("Conservador", "Máxima seguridad", 50, 10, 45000L, 120000L, false, "Muy seguro"),
-    NORMAL("Normal", "Balance seguridad/volumen", 88, 18, 30000L, 90000L, false, "Recomendado"),
+    LOW("Bajo", "Máxima seguridad", 50, 10, 45000L, 120000L, false, "Muy seguro"),
+    MEDIUM("Medio", "Balance seguridad/volumen", 88, 18, 30000L, 90000L, false, "Recomendado"),
     HIGH("Alto", "Más volumen", 120, 25, 15000L, 45000L, false, "Riesgo medio"),
-    EXTREME("Extremo", "Máximo volumen", 150, 35, 8000L, 25000L, true, "Riesgo alto")
+    CRITICAL("Crítico", "Máximo volumen", 150, 35, 8000L, 25000L, true, "Riesgo alto")
 }
 
 data class RiskConfig(

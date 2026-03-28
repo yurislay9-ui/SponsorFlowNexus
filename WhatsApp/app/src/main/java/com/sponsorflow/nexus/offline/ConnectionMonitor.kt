@@ -9,6 +9,9 @@ import com.sponsorflow.nexus.network.NetworkHelper
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import okhttp3.Request
+import org.json.JSONException
+import retrofit2.HttpException
+import java.io.IOException
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicLong

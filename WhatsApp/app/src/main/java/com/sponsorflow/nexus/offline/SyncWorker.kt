@@ -13,6 +13,9 @@ import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONException
+import retrofit2.HttpException
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 class SyncWorker(

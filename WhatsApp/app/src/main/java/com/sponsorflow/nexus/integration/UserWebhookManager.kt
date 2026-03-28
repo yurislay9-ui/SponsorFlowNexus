@@ -11,6 +11,8 @@ import androidx.security.crypto.MasterKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
+import retrofit2.HttpException
+import java.io.IOException
 import java.net.URL
 import javax.net.ssl.HttpsURLConnection
 

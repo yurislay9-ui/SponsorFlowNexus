@@ -49,7 +49,7 @@ object NetworkModule {
         certificatePinner: CertificatePinner
     ): OkHttpClient {
         val logging = HttpLoggingInterceptor().apply {
-            level = if (BuildConfig.DEBUG) {
+            level = if (BuildConfig.DEBUG_MODE.toBoolean()) {
                 HttpLoggingInterceptor.Level.BODY
             } else {
                 HttpLoggingInterceptor.Level.BASIC
