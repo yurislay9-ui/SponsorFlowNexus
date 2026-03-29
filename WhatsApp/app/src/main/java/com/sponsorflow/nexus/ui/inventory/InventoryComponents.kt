@@ -13,8 +13,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.sponsorflow.nexus.data.entity.ProductEntity
 import com.sponsorflow.nexus.data.entity.StockStatus
@@ -65,41 +63,3 @@ fun ProductCard(
     }
 }
 
-@Composable
-fun AddProductDialog(
-    onDismiss: () -> Unit,
-    onAdd: (ProductEntity) -> Unit
-) {
-    var name by remember { mutableStateOf("") }
-    var sku by remember { mutableStateOf("") }
-    var price by remember { mutableStateOf("") }
-    var stock by remember { mutableStateOf("0") }
-    
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Nuevo Producto") },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedTextField(name, { name = it }, label = { Text("Nombre") })
-                OutlinedTextField(sku, { sku = it }, label = { Text("SKU") })
-                OutlinedTextField(price, { price = it }, label = { Text("Precio") }, 
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number))
-                OutlinedTextField(stock, { stock = it }, label = { Text("Stock inicial") }, 
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number))
-            }
-        },
-        confirmButton = {
-            Button(onClick = {
-                if (name.isNotBlank()) {
-                    onAdd(ProductEntity(
-                        name = name,
-                        sku = sku.ifBlank { "SKU-${System.currentTimeMillis()}" },
-                        price = price.toDoubleOrNull() ?: 0.0,
-                        stockQuantity = stock.toIntOrNull() ?: 0
-                    ))
-                }
-            }) { Text("Guardar") }
-        },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
-    )
-}

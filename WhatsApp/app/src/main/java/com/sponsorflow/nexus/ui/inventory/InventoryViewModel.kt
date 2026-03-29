@@ -45,6 +45,7 @@ class InventoryViewModel @Inject constructor(
                 when (result) {
                     is AppResult.Success -> _products.value = result.data
                     is AppResult.Error -> _products.value = emptyList()
+                    is AppResult.Loading -> {}
                 }
             }
             _isLoading.value = false
@@ -97,6 +98,7 @@ class InventoryViewModel @Inject constructor(
                     is AppResult.Error -> {
                         // Handle error
                     }
+                    is AppResult.Loading -> {}
                 }
             }
         }
@@ -108,6 +110,7 @@ class InventoryViewModel @Inject constructor(
                 when (result) {
                     is AppResult.Success -> loadProducts()
                     is AppResult.Error -> { /* Handle error */ }
+                    is AppResult.Loading -> {}
                 }
             }
         }
@@ -119,6 +122,7 @@ class InventoryViewModel @Inject constructor(
                 when (result) {
                     is AppResult.Success -> loadProducts()
                     is AppResult.Error -> { /* Handle error */ }
+                    is AppResult.Loading -> {}
                 }
             }
         }
@@ -130,6 +134,7 @@ class InventoryViewModel @Inject constructor(
                 when (result) {
                     is AppResult.Success -> loadProducts()
                     is AppResult.Error -> { /* Handle error */ }
+                    is AppResult.Loading -> {}
                 }
             }
         }

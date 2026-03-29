@@ -47,7 +47,7 @@ data class AntiDetectionResult(
  */
 data class DailyUsage(
     val date: String = java.util.Calendar.getInstance().let {
-        "${it.get(it.YEAR)}-${it.get(it.MONTH) + 1}-${it.get(it.DAY_OF_MONTH)}"
+        "${it.get(java.util.Calendar.YEAR)}-${it.get(java.util.Calendar.MONTH) + 1}-${it.get(java.util.Calendar.DAY_OF_MONTH)}"
     },
     var todayCount: Int = 0,
     val hourlyCount: MutableMap<Int, Int> = mutableMapOf()
@@ -77,7 +77,6 @@ data class AntiDetectionStats(
 // Extensiones
 fun Char.isEmoji(): Boolean = Character.UnicodeBlock.of(this) == Character.UnicodeBlock.MISCELLANEOUS_SYMBOLS_AND_PICTOGRAPHS ||
     Character.UnicodeBlock.of(this) == Character.UnicodeBlock.EMOTICONS ||
-    Character.UnicodeBlock.of(this) == Character.UnicodeBlock.SYMBOLS_AND_PICTURES_EXTENDED_A ||
     this.code in 0x1F600..0x1F64F || this.code in 0x1F300..0x1F5FF ||
     this.code in 0x1F680..0x1F6FF || this.code in 0x1F1E0..0x1F1FF
 
