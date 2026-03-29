@@ -67,5 +67,6 @@ sealed class AppError {
         is Unknown -> "Error desconocido."
         is UnexpectedError -> "Error inesperado."
         is ParseError -> "Error al procesar datos."
+        is AIError -> "Error de IA: $message"
     }
 }

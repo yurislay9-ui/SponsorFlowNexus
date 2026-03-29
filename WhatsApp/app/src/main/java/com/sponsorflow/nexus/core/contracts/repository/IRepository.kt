@@ -48,4 +48,5 @@ fun com.sponsorflow.nexus.core.result.AppError.toException(): Exception = when (
     is com.sponsorflow.nexus.core.result.AppError.Unknown -> Exception("Unknown error")
     is com.sponsorflow.nexus.core.result.AppError.UnexpectedError -> cause ?: Exception("Unexpected error")
     is com.sponsorflow.nexus.core.result.AppError.ParseError -> Exception(message)
+    is com.sponsorflow.nexus.core.result.AppError.AIError -> Exception(message)
 }
