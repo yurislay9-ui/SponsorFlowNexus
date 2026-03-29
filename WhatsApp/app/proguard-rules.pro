@@ -63,7 +63,7 @@
 # ------------------------------
 
 # Mantener Application class
--keep class com.sponsorflow.nexus.SponsorFlowNexusApplication { *; }
+-keep class com.sponsorflow.nexus.NexusApplication { *; }
 
 # Mantener Activities
 -keep class * extends android.app.Activity { *; }

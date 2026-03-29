@@ -65,7 +65,7 @@ fun PluginManagerScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Gestiรณn de Plugins") },
+                title = { Text("Gestión de Plugins") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, "Volver")
@@ -177,7 +177,7 @@ fun PluginCard(
                 Text(plugin.name, style = MaterialTheme.typography.titleMedium)
                 Text(plugin.description, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
                 Text(
-                    "v${plugin.version} โ�ข ${plugin.type.name.lowercase().replaceFirstChar { it.uppercase() }}",
+                    "v${plugin.version} • ${plugin.type.name.lowercase().replaceFirstChar { it.uppercase() }}",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.primary
                 )

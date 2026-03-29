@@ -72,6 +72,7 @@ class ProductManager @Inject constructor(
                             }
                         }
                         is AppResult.Error -> productResult
+                        else -> AppResult.Error(AppError.Unknown)
                     }
                 } catch (e: IllegalArgumentException) {
                     AppResult.Error(AppError.ValidationError(e.message ?: "Invalid parameters"))
@@ -102,6 +103,7 @@ class ProductManager @Inject constructor(
                             }
                         }
                         is AppResult.Error -> productResult
+                        else -> AppResult.Error(AppError.Unknown)
                     }
                 } catch (e: IllegalArgumentException) {
                     AppResult.Error(AppError.ValidationError(e.message ?: "Invalid parameters"))

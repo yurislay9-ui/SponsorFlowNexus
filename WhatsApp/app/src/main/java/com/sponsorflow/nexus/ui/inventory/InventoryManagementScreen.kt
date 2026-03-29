@@ -26,6 +26,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.sponsorflow.nexus.data.entity.ProductEntity
 import com.sponsorflow.nexus.data.entity.StockStatus
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InventoryManagementScreen(
     viewModel: InventoryViewModel = hiltViewModel(),

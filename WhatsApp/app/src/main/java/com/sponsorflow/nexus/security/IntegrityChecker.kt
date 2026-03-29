@@ -110,19 +110,18 @@ class IntegrityChecker(
             "com.topjohnwu.magisk",
             "com.kernelexpansion.in",
             "com.saurik.substrate",
-            "eu.chainfire.supersu"
+            "eu.chainfire.supersu",
+            "com.koushikdutta.rommanager"
         )
-        return try {
-            dangerousApps.any { app ->
+        return dangerousApps.any { app ->
+            try {
                 context.packageManager.getPackageInfo(app, 0)
                 true
+            } catch (e: PackageManager.NameNotFoundException) {
+                false
+            } catch (e: SecurityException) {
+                false
             }
-        } catch (e: SecurityException) {
-            false
-        } catch (e: PackageManager.NameNotFoundException) {
-            false
-        } catch (e: Exception) {
-            false
         }
     }
 
