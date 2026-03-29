@@ -121,6 +121,7 @@ class InventoryViewModel : ViewModel() {
 
     private val _products = MutableStateFlow<List<ProductEntity>>(emptyList())
     private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
     private var productManager: ProductManager? = null
 
@@ -207,6 +208,17 @@ class InventoryViewModel : ViewModel() {
     fun decreaseStock(productId: Long) {
         viewModelScope.launch {
             productManager?.decreaseStock(productId, 1)?.let { result ->
+                when (result) {
+                    is AppResult.Success -> loadProducts()
+                    is AppResult.Error -> { /* Handle error */ }
+                }
+            }
+        }
+    }
+
+    fun deleteProduct(productId: Long) {
+        viewModelScope.launch {
+            productManager?.deleteProduct(productId)?.let { result ->
                 when (result) {
                     is AppResult.Success -> loadProducts()
                     is AppResult.Error -> { /* Handle error */ }
