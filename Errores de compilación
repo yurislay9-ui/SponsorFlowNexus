@@ -1,0 +1,32 @@
+ultimios errores de compilación.
+
+1. AntiDetectionModels.kt
+ * Referencias no resueltas (Unresolved reference):
+   * YEAR, MONTH, DAY_OF_MONTH: Ocurren en la línea 50. Esto sucede porque falta el import de java.util.Calendar o se están llamando sin el prefijo Calendar..
+   * SYMBOLS_AND_PICTURES_EXTENDED_A: Ocurre en la línea 80. Este bloque de Unicode no existe con ese nombre exacto o no está disponible en la versión de la librería usada.
+ * Error de lógica: La función isEmoji tiene rangos mal definidos que causan errores de sintaxis.
+2. IRepository.kt
+ * Referencias no resueltas:
+   * message: En las líneas 44 y 45, se intenta acceder a .message en tipos que no contienen esa propiedad (posiblemente ResourceNotFound o ResourceExhausted).
+ * Discrepancia de tipos (Type mismatch):
+   * Línea 49: Se infiere un tipo Throwable, pero el código espera un kotlin.Exception. Es necesario un cast explícito (as? Exception).
+3. InventoryManagementScreen.kt e InventoryComponents.kt
+ * Conflictos de sobrecarga (Conflicting overloads):
+   * La función AddProductDialog está duplicada. Aparece definida tanto en InventoryComponents.kt (línea 68) como en InventoryManagementScreen.kt (línea 298). Debes eliminar una de las dos.
+ * Ambigüedad de resolución: Debido a la duplicación anterior, hay errores de "Overload resolution ambiguity" en la línea 173.
+ * Inferencia de tipo fallida: En la línea 175, el compilador no puede inferir el tipo de un parámetro. Debe especificarse explícitamente (ej. onAdd: (ProductEntity) -> Unit).
+4. InventoryViewModel.kt
+ * Expresiones when no exhaustivas:
+   * Aparece en las líneas 45, 92, 108, 119 y 130.
+   * Causa: Estás usando when como una expresión (asignando su valor o retornándolo) y falta cubrir la rama is AppResult.Loading o añadir un else.
+5. ProductManager.kt
+ * when no exhaustivo: En las funciones decreaseStock() e increaseStock(), el bloque when(productResult) no cubre todos los estados de la clase sellada (falta Loading o else).
+ * Tipos de error incorrectos: Uso de AppError.Database (que no existe) en lugar de AppError.DatabaseError.
+6. Archivos de Recursos y Configuración
+ * strings.xml: Corrupción de caracteres (UTF-8). Palabras como "ConfiguraciÃ³n" o "automÃ¡tica" están mal escritas debido a una mala codificación al guardar el archivo.
+ * AndroidManifest.xml: La actividad PhoneNumbersActivity no está registrada, lo que causará un cierre (crash) al intentar abrirla.
+ * proguard-rules.pro: La regla -keep hace referencia a una clase que ya no existe (SponsorFlowNexusApplication), debe ser NexusApplication.
+ * local.properties: Falta el archivo o la definición de sdk.dir en la carpeta /WhatsApp/.
+7. PluginManagerScreen.kt y ScheduledMessagesScreen.kt
+ * Mojibake (Texto roto): Cadenas con caracteres corruptos en los títulos y textos de la interfaz.
+ * Imports faltantes: Faltan @Composable, Modifier y dp en el archivo de mensajes programados.
