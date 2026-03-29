@@ -5,6 +5,7 @@ package com.sponsorflow.nexus.core
 
 import android.app.*
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat

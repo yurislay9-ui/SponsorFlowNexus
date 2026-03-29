@@ -69,6 +69,8 @@
     
     <!-- Accessibility Service -->
     <string name="nexus_service_name">SponsorFlow Nexus Service</string>
+    <string name="notification_channel_name">Nexus Service</string>
+    <string name="service_name">Nexus Automation Service</string>
 
     <!-- Added for Doc3 corrections -->
     <string name="app_description">Workflow Hub para automatizaciÃ³n de WhatsApp</string>

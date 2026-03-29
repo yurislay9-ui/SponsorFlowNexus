@@ -141,7 +141,7 @@ class PaymentManager(private val context: Context) {
         onResult: (LicenseValidationResult) -> Unit
     ) {
         if (!isN8nEnabled()) {
-            onResult(LicenseValidationResult(false, "License system not configured"))
+            onResult(LicenseValidationResult(false, "FREE", 0))
             return
         }
 

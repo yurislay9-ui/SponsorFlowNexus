@@ -82,7 +82,7 @@ object NexusLogger {
         private const val CATEGORY = "Network"
         
         fun request(endpoint: String, method: String, durationMs: Long? = null) {
-            val data = mutableMapOf("endpoint" to endpoint, "method" to method)
+            val data: MutableMap<String, Any> = mutableMapOf("endpoint" to endpoint, "method" to method)
             durationMs?.let { data["duration_ms"] = it }
             d(CATEGORY, "API Request", data)
         }

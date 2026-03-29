@@ -59,7 +59,7 @@ class CloudAIProvider(private val config: CloudAIConfig) {
                 val result = parseResponse(json)
                 AppResult.Success(result)
             } else {
-                AppResult.Error(AppError.NetworkError(response.code))
+                AppResult.Error(AppError.NetworkError("HTTP ${response.code}", response.code))
             }
         } catch (e: Exception) {
             AppResult.Error(AppError.fromException(e))

@@ -1,6 +1,6 @@
 package com.sponsorflow.nexus.antidetection
 
-class PatternRotator {
+object PatternRotator {
 
     private val greetings = listOf("Hola", "Hey", "Qué tal", "Buenos días", "Buenas")
 

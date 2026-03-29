@@ -42,8 +42,11 @@ sealed class AppError {
     // Errores de parsing
     data class ParseError(val message: String, val rawData: String? = null) : AppError()
     
+    // Errores de IA
+    data class AIError(val message: String, val code: String? = null) : AppError()
+
     companion object {
-        fun fromException(e: Exception): AppError = UnexpectedError(e)
+        fun fromException(e: Throwable): AppError = UnexpectedError(e)
     }
     
     fun toUserMessage(): String = when (this) {

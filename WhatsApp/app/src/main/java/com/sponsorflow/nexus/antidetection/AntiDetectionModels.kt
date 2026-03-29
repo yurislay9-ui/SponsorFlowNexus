@@ -46,8 +46,8 @@ data class AntiDetectionResult(
  * Uso diario por número
  */
 data class DailyUsage(
-    val date: String = java.util.Calendar.getInstance().let { 
-        "${it.get(it.YEAR)}-${it.get(it.MONTH)}-${it.get(it.DAY_OF_MONTH)}" 
+    val date: String = java.util.Calendar.getInstance().let {
+        "${it.get(it.YEAR)}-${it.get(it.MONTH) + 1}-${it.get(it.DAY_OF_MONTH)}"
     },
     var todayCount: Int = 0,
     val hourlyCount: MutableMap<Int, Int> = mutableMapOf()

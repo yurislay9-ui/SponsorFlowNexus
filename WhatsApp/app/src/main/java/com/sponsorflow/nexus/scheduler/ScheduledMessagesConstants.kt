@@ -38,14 +38,14 @@ object ScheduledMessagesConstants {
             id = "payment_1",
             type = ScheduledMessageType.PAYMENT_REMINDER,
             name = "Recordatorio pago - 1 día",
-            template = "Hola {{name}}, te recuerdo que tienes un pago pendiente de ${{amount}} por {{product}}. ¿Podrías confirmar el pago?",
+            template = "Hola {{name}}, te recuerdo que tienes un pago pendiente de $'{{amount}} por {{product}}. ¿Podrías confirmar el pago?",
             variables = listOf("name", "amount", "product")
         ),
         MessageTemplate(
             id = "payment_2",
             type = ScheduledMessageType.PAYMENT_REMINDER,
             name = "Recordatorio pago - 3 días",
-            template = "Hola {{name}}, aún tenemos el pago pendiente de ${{amount}}. Por favor, confirmanos cuando puedas. El producto está reservado por 48hrs.",
+            template = "Hola {{name}}, aún tenemos el pago pendiente de $'{{amount}}. Por favor, confirmanos cuando puedas. El producto está reservado por 48hrs.",
             variables = listOf("name", "amount")
         ),
 

@@ -13,7 +13,7 @@ interface ILicenseValidator {
     fun isGracePeriodActive(): Boolean
     fun getRemainingGraceDays(): Int
     fun getCachedLicenseInfo(): LicenseInfo?
-    fun clearCache()
+    suspend fun clearCache()
 }
 
 data class LicenseInfo(
