@@ -13,7 +13,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import com.google.gson.Gson
-import com.google.gson.JsonException
+import org.json.JSONException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.IOException
@@ -66,7 +66,7 @@ class WhatsAppAPI(private val config: WhatsAppConfig) {
             }
         } catch (e: IOException) {
             AppResult.Error(AppError.NetworkError(e.message ?: "Network error"))
-        } catch (e: JsonException) {
+        } catch (e: JSONException) {
             AppResult.Error(AppError.ParseError(e.message ?: "JSON parse error"))
         } catch (e: SecurityException) {
             AppResult.Error(AppError.SecurityError(e.message ?: "Security error"))

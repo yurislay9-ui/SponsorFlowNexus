@@ -34,12 +34,9 @@ class LoginActivity : AppCompatActivity() {
         }
 
         // Continue with email
-        findViewById<Button>(R.id.et_email).let { emailInput ->
-            // This is actually a TextInputEditText, not a Button
-        }
-
         findViewById<Button>(R.id.btn_continue).setOnClickListener {
-            val email = findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.et_email)?.text?.toString()
+            val emailInput = findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.et_email)
+            val email = emailInput?.text?.toString()
             if (email.isNullOrBlank()) {
                 Toast.makeText(this, "Ingresa tu correo electrónico", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener

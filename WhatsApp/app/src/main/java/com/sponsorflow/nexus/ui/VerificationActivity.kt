@@ -44,7 +44,10 @@ class VerificationActivity : AppCompatActivity() {
         }
 
         // Email text
-        findViewById<TextView>(R.id.tv_email).text = "Te enviamos un código a $email"
+        findViewById<TextView>(R.id.tv_email).apply {
+            text = "Te enviamos un código a $email"
+            visibility = View.GONE // Hidden since we use tv_subtitle
+        }
 
         // Code inputs
         etCode1 = findViewById(R.id.et_code_1)
