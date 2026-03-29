@@ -39,10 +39,10 @@ class PluginManagerViewModel @Inject constructor() : ViewModel() {
     private fun loadPlugins() {
         // Plugins de ejemplo preinstalados
         _plugins.addAll(listOf(
-            PluginInfo("auto_reply", "Auto Respuesta", "1.0.0", PluginType.ACTION, "Nexus", "Respuestas automรกticas personalizadas"),
-            PluginInfo("sentiment", "Anรกlisis Sentimiento", "1.0.0", PluginType.ANALYZER, "Nexus", "Analiza emociones en mensajes"),
-            PluginInfo("whatsapp_api", "WhatsApp API", "1.0.0", PluginType.INTEGRATION, "Nexus", "Integraciรณn con WhatsApp Business"),
-            PluginInfo("translator", "Traductor", "1.0.0", PluginType.RESPONSE, "Nexus", "Traduce mensajes automรกticamente")
+            PluginInfo("auto_reply", "Auto Respuesta", "1.0.0", PluginType.ACTION, "Nexus", "Respuestas automáticas personalizadas"),
+            PluginInfo("sentiment", "Análisis Sentimiento", "1.0.0", PluginType.ANALYZER, "Nexus", "Analiza emociones en mensajes"),
+            PluginInfo("whatsapp_api", "WhatsApp API", "1.0.0", PluginType.INTEGRATION, "Nexus", "Integración con WhatsApp Business"),
+            PluginInfo("translator", "Traductor", "1.0.0", PluginType.RESPONSE, "Nexus", "Traduce mensajes automáticamente")
         ))
         _plugins.forEach { _enabledStates[it.id] = it.enabled }
     }

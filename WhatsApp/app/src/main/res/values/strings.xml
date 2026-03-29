@@ -12,7 +12,7 @@
     <string name="nav_subscription">Suscripción</string>
 
     <!-- Common -->
-    <string name="loading">Cargando...</string>
+    <string name="loading">Cargando…</string>
     <string name="error_generic">Ha ocurrido un error</string>
     <string name="retry">Reintentar</string>
     <string name="save">Guardar</string>
@@ -47,9 +47,9 @@
     <string name="payment_failed">Fallido</string>
 
     <!-- AI -->
-    <string name="ai_typing">Escribiendo...</string>
+    <string name="ai_typing">Escribiendo…</string>
     <string name="ai_error">Error en IA</string>
-    <string name="ai_model_loading">Cargando modelo...</string>
+    <string name="ai_model_loading">Cargando modelo…</string>
 
     <!-- Errors -->
     <string name="error_network">Error de conexión</string>
