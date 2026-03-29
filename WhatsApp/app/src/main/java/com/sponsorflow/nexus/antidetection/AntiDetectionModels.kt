@@ -78,6 +78,7 @@ data class AntiDetectionStats(
 fun Char.isEmoji(): Boolean = Character.UnicodeBlock.of(this) == Character.UnicodeBlock.MISCELLANEOUS_SYMBOLS ||
     Character.UnicodeBlock.of(this) == Character.UnicodeBlock.EMOTICONS ||
     this.code in 0x1F600..0x1F64F || this.code in 0x1F300..0x1F5FF ||
-    this.code in 0x1F680..0x1F6FF || this.code in 0x1F1E0..0x1F1FF
+    this.code in 0x1F680..0x1F6FF || this.code in 0x1F1E0..0x1F1FF ||
+    this.code in 0x1F900..0x1F9FF
 
 fun String.endsWithAny(vararg chars: Char): Boolean = if (isEmpty()) false else chars.any { this[length - 1] == it }
