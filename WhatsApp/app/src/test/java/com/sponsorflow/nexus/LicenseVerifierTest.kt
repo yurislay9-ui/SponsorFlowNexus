@@ -13,11 +13,8 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.*
 import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.junit.MockitoSettings
-import org.mockito.quality.Strictness
 
 @RunWith(MockitoJUnitRunner::class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 class LicenseVerifierTest {
 
     @Mock
@@ -37,12 +34,12 @@ class LicenseVerifierTest {
 
     @Before
     fun setup() {
-        // FIX Bug 1: stubear SharedPreferences antes de construir LicenseVerifier
-        `when`(mockContext.getSharedPreferences(any(), anyInt())).thenReturn(mockSharedPreferences)
-        `when`(mockSharedPreferences.getString(any(), anyString())).thenReturn(null)
-        `when`(mockSharedPreferences.edit()).thenReturn(mockSharedPreferencesEditor)
-        `when`(mockSharedPreferencesEditor.putString(any(), any())).thenReturn(mockSharedPreferencesEditor)
-        `when`(mockSessionManager.getDeviceId()).thenReturn("test-device-id")
+        // FIX: usar lenient() para evitar UnnecessaryStubbingException en JUnit4
+        lenient().`when`(mockContext.getSharedPreferences(any(), anyInt())).thenReturn(mockSharedPreferences)
+        lenient().`when`(mockSharedPreferences.getString(any(), anyString())).thenReturn(null)
+        lenient().`when`(mockSharedPreferences.edit()).thenReturn(mockSharedPreferencesEditor)
+        lenient().`when`(mockSharedPreferencesEditor.putString(any(), any())).thenReturn(mockSharedPreferencesEditor)
+        lenient().`when`(mockSessionManager.getDeviceId()).thenReturn("test-device-id")
 
         licenseVerifier = LicenseVerifier(mockContext, mockSessionManager)
     }
