@@ -3,13 +3,15 @@ package com.sponsorflow.nexus.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -23,6 +25,8 @@ private val AccentGreen = Color(0xFF4CAF50)
 private val AccentRed = Color(0xFFEF4444)
 private val AccentBlue = Color(0xFF3B82F6)
 private val AccentPurple = Color(0xFF8B5CF6)
+private val AccentCyan = Color(0xFF06B6D4)
+private val AccentOrange = Color(0xFFF59E0B)
 
 @Composable
 fun HomeScreen(
@@ -35,8 +39,6 @@ fun HomeScreen(
     onNavigateToBanDetection: () -> Unit = {}
 ) {
     var isActive by remember { mutableStateOf(false) }
-
-    // Datos de ejemplo para el dashboard
     var totalSent by remember { mutableStateOf(0) }
     var totalFailed by remember { mutableStateOf(0) }
     var dailyCount by remember { mutableStateOf(0) }
@@ -70,7 +72,7 @@ fun HomeScreen(
                     )
 
                     Text(
-                        text = if (isActive) "Active" else "Idle",
+                        text = if (isActive) "Activo" else "Inactivo",
                         color = if (isActive) AccentGreen else TextSecondary,
                         fontSize = 14.sp
                     )
@@ -105,7 +107,7 @@ fun HomeScreen(
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     StatCard(
-                        title = "Tasa de Éxito",
+                        title = "Tasa Éxito",
                         value = String.format("%.1f%%", successRate),
                         valueColor = AccentGreen,
                         modifier = Modifier.weight(1f)
@@ -150,10 +152,10 @@ fun HomeScreen(
                 }
             }
 
-            // Quick Actions
+            // Anti-Detection Section
             item {
                 Text(
-                    text = "Acciones Rápidas",
+                    text = "Anti-Detección",
                     color = TextPrimary,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
@@ -166,12 +168,93 @@ fun HomeScreen(
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     ActionButton(
+                        text = "Cola Inteligente",
+                        icon = Icons.Default.List,
+                        color = AccentCyan,
+                        onClick = onNavigateToSmartQueue,
+                        modifier = Modifier.weight(1f)
+                    )
+                    ActionButton(
+                        text = "Comportamiento",
+                        icon = Icons.Default.Psychology,
+                        color = AccentPurple,
+                        onClick = { /* Navigate to human behavior */ },
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+            }
+
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    ActionButton(
+                        text = "Ventana 24h",
+                        icon = Icons.Default.Schedule,
+                        color = AccentBlue,
+                        onClick = { /* Navigate to 24h window */ },
+                        modifier = Modifier.weight(1f)
+                    )
+                    ActionButton(
+                        text = "Detección Bloqueo",
+                        icon = Icons.Default.Shield,
+                        color = AccentOrange,
+                        onClick = onNavigateToBanDetection,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+            }
+
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    ActionButton(
+                        text = "Nivel de Riesgo",
+                        icon = Icons.Default.Warning,
+                        color = AccentRed,
+                        onClick = onNavigateToRiskLevel,
+                        modifier = Modifier.weight(1f)
+                    )
+                    ActionButton(
+                        text = "Riesgo",
+                        icon = Icons.Default.TrendingUp,
+                        color = AccentGreen,
+                        onClick = onNavigateToRiskLevel,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+            }
+
+            // Quick Actions Section
+            item {
+                Text(
+                    text = "Acciones Rápidas",
+                    color = TextPrimary,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+            }
+
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    ActionButton(
                         text = "Inventario",
+                        icon = Icons.Default.Inventory,
+                        color = AccentBlue,
                         onClick = onNavigateToInventory,
                         modifier = Modifier.weight(1f)
                     )
                     ActionButton(
-                        text = "Stats",
+                        text = "Estadísticas",
+                        icon = Icons.Default.Analytics,
+                        color = AccentPurple,
                         onClick = onNavigateToAnalytics,
                         modifier = Modifier.weight(1f)
                     )
@@ -184,13 +267,17 @@ fun HomeScreen(
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     ActionButton(
-                        text = "Cola",
-                        onClick = onNavigateToSmartQueue,
+                        text = "Plugins",
+                        icon = Icons.Default.Extension,
+                        color = AccentCyan,
+                        onClick = onNavigateToPlugins,
                         modifier = Modifier.weight(1f)
                     )
                     ActionButton(
-                        text = "Riesgo",
-                        onClick = onNavigateToRiskLevel,
+                        text = "Configuración",
+                        icon = Icons.Default.Settings,
+                        color = TextSecondary,
+                        onClick = onNavigateToSettings,
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -207,7 +294,6 @@ fun HomeScreen(
                 )
             }
 
-            // Placeholder for recent activity
             item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -245,9 +331,7 @@ private fun StatCard(
         colors = CardDefaults.cardColors(containerColor = SurfaceCard),
         shape = RoundedCornerShape(12.dp)
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
+        Column(modifier = Modifier.padding(16.dp)) {
             Text(
                 text = title,
                 color = TextSecondary,
@@ -267,20 +351,22 @@ private fun StatCard(
 @Composable
 private fun ActionButton(
     text: String,
+    icon: ImageVector,
+    color: Color,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Button(
         onClick = onClick,
         modifier = modifier.height(56.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = AccentPurple
-        ),
+        colors = ButtonDefaults.buttonColors(containerColor = color),
         shape = RoundedCornerShape(12.dp)
     ) {
+        Icon(icon, contentDescription = null, modifier = Modifier.size(20.dp))
+        Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = text,
-            fontSize = 14.sp,
+            fontSize = 12.sp,
             fontWeight = FontWeight.Medium
         )
     }

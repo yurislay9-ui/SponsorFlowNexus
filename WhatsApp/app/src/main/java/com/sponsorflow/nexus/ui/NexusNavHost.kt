@@ -1,9 +1,9 @@
 /**
  * SponsorFlow Nexus v1.0 - Navigation Host
- * 
+ *
  * Componente encargado de la gestión de navegación en la aplicación.
  * Implementa un sistema de rutas seguro y robusto.
- * 
+ *
  * @author SponsorFlow Nexus Team
  * @version 1.0
  */
@@ -19,13 +19,13 @@ import com.sponsorflow.nexus.ui.settings.IntegrationsScreen
 /**
  * Componente principal de navegación de la aplicación.
  * Gestiona todas las rutas de la aplicación.
- * 
+ *
  * @param navController Controlador de navegación
  * @param startDestination Ruta de destino inicial
  * @param queueManager Manager de cola inteligente
  * @param windowManager Manager de ventana de 24h
  * @param riskManager Manager de nivel de riesgo
- * @param banManager Manager de detección de bloqouos
+ * @param banManager Manager de detección de bloqueos
  * @param humanManager Manager de comportamiento humano
  */
 @Composable
@@ -55,70 +55,75 @@ fun NexusNavHost(
                 onNavigateToBanDetection = { navController.navigate("ban_detection") }
             )
         }
-        
+
         // Inventory Screen
         composable("inventory") {
             InventoryManagementScreen(
                 onBack = { navController.popBackStack() }
             )
         }
-        
+
         // Settings Screen
         composable("settings") {
             IntegrationsScreen(
                 onBack = { navController.popBackStack() }
             )
         }
-        
+
         // Chat Screen
         composable("chat") {
             AssistantChatScreen(
                 onBack = { navController.popBackStack() }
             )
         }
-        
+
         // Anti-Detección: Smart Queue
         composable("smart_queue") {
             com.sponsorflow.nexus.ui.queue.SmartQueueScreen(
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
+                queueManager = queueManager
             )
         }
 
         // Anti-Detección: Human Behavior
         composable("human_behavior") {
             com.sponsorflow.nexus.ui.human.HumanBehaviorScreen(
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
+                humanManager = humanManager
             )
         }
 
         // Anti-Detección: 24h Window
         composable("window_24h") {
             com.sponsorflow.nexus.ui.window.TwentyFourHourWindowScreen(
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
+                windowManager = windowManager
             )
         }
 
         // Anti-Detección: Risk Level
         composable("risk_level") {
             com.sponsorflow.nexus.ui.risk.RiskLevelScreen(
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
+                riskManager = riskManager
             )
         }
 
         // Anti-Detección: Ban Detection
         composable("ban_detection") {
             com.sponsorflow.nexus.ui.ban.BanDetectionScreen(
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
+                banManager = banManager
             )
         }
-        
+
         // Analytics
         composable("analytics") {
             com.sponsorflow.nexus.ui.dashboard.AnalyticsDashboardScreen(
                 onBack = { navController.popBackStack() }
             )
         }
-        
+
         // Plugins
         composable("plugins") {
             com.sponsorflow.nexus.ui.plugins.PluginManagerScreen(
