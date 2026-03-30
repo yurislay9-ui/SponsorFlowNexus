@@ -206,6 +206,7 @@ private fun InventoryStatCard(
     }
 }
 
+@Suppress("UNUSED_PARAMETER")
 @Composable
 private fun InventoryProductCard(
     product: ProductEntity,

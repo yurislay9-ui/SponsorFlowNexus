@@ -6,6 +6,8 @@ package com.sponsorflow.nexus.ui.autoresponder
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Message
+import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -20,9 +22,9 @@ import com.sponsorflow.nexus.autoresponder.*
 @Composable
 fun KeywordCard(response: KeywordResponse) {
     val actionIcon = when (response.actionType) {
-        KeywordActionType.SEND_MESSAGE -> Icons.Default.Message
+        KeywordActionType.SEND_MESSAGE -> Icons.AutoMirrored.Filled.Message
         KeywordActionType.SEND_PRODUCT -> Icons.Default.ShoppingCart
-        KeywordActionType.SEND_CATALOG -> Icons.Default.MenuBook
+        KeywordActionType.SEND_CATALOG -> Icons.AutoMirrored.Filled.MenuBook
         KeywordActionType.SEND_PRICE_LIST -> Icons.Default.AttachMoney
         KeywordActionType.ESCALATE_HUMAN -> Icons.Default.Person
         KeywordActionType.START_CHECKOUT -> Icons.Default.ShoppingCart

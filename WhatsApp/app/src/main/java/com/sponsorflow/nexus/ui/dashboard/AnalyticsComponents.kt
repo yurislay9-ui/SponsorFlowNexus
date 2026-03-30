@@ -6,6 +6,9 @@ package com.sponsorflow.nexus.ui.dashboard
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.TrendingUp
+import androidx.compose.material.icons.automirrored.filled.Message
+import androidx.compose.material.icons.automirrored.filled.Reply
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -26,7 +29,7 @@ fun ROICard(roi: ROIMetrics) {
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.TrendingUp, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(32.dp))
+                Icon(Icons.AutoMirrored.Filled.TrendingUp, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(32.dp))
                 Spacer(Modifier.width(12.dp))
                 Text("📈 ROI del Asistente", fontWeight = FontWeight.Bold, fontSize = 20.sp)
             }
@@ -36,7 +39,7 @@ fun ROICard(roi: ROIMetrics) {
                 MetricItem(label = "Ahorrado", value = "$${roi.costVsHumanAgent.toInt()}", icon = Icons.Default.Savings, color = Color(0xFF2196F3))
             }
             Spacer(Modifier.height(16.dp))
-            Divider()
+            HorizontalDivider()
             Spacer(Modifier.height(16.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 DetailItem("Mensajes", "${roi.totalMessagesProcessed}")
@@ -105,8 +108,8 @@ fun TodayMetricsCard(today: DailyStats) {
             Text("📅 Hoy", fontWeight = FontWeight.Bold, fontSize = 16.sp)
             Spacer(Modifier.height(12.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                StatBox("Mensajes", "${today.messagesReceived}", Icons.Default.Message)
-                StatBox("Respuestas", "${today.messagesSent}", Icons.Default.Reply)
+                StatBox("Mensajes", "${today.messagesReceived}", Icons.AutoMirrored.Filled.Message)
+                StatBox("Respuestas", "${today.messagesSent}", Icons.AutoMirrored.Filled.Reply)
                 StatBox("Ventas", "$${today.revenue}", Icons.Default.AttachMoney)
             }
         }

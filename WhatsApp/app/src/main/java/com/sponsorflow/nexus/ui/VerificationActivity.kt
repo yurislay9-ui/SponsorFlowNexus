@@ -76,6 +76,7 @@ class VerificationActivity : AppCompatActivity() {
         }
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun setupCodeInput(current: EditText, prev: EditText?, next: EditText?) {
         current.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && current.text.isNullOrEmpty() && prev != null) {

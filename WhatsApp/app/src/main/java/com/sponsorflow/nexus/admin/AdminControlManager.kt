@@ -10,6 +10,7 @@ class AdminControlManager(private val context: Context) {
     fun sendHeartbeat(): Boolean = true
 
     // NUEVO: usado por NexusCrashHandler
+    @Suppress("UNUSED_PARAMETER")
     suspend fun reportError(
         errorType: String,
         message: String,

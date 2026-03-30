@@ -6,6 +6,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+@Suppress("UNUSED_PARAMETER")
 @Composable
 fun TrainingConfigScreen(onBack: () -> Unit = {}) {
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {

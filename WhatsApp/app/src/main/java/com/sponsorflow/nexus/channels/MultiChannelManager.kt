@@ -57,6 +57,7 @@ class MultiChannelManager(private val context: Context) {
         return processNotification(channel, senderId, senderName, message, System.currentTimeMillis())
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun sendMessage(channel: Channel, recipientId: String, message: String, attachments: List<String>? = null): String? {
         val config = channelConfigs[channel] ?: return null
         if (!config.isEnabled || !config.isAccessibilityEnabled) return null

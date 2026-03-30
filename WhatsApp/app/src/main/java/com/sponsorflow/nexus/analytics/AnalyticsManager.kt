@@ -13,18 +13,21 @@ class AnalyticsManager(private val context: Context) {
 
     private fun dayKey(): String = "day_${System.currentTimeMillis() / 86400000}"
 
+    @Suppress("UNUSED_PARAMETER")
     fun recordMessageReceived(phone: String) {
         val s = getTodayStats()
         val updated = s.copy(totalMessagesDelivered = s.totalMessagesDelivered + 1)
         dailyStats[dayKey()] = updated
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun recordMessageSent(phone: String) {
         val s = getTodayStats()
         val updated = s.copy(totalMessagesSent = s.totalMessagesSent + 1)
         dailyStats[dayKey()] = updated
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun recordRevenue(amount: Double) { /* opcional: persistir en prefs si lo necesitas */ }
     fun recordConversion() { /* opcional */ }
 
